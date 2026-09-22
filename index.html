@@ -46,7 +46,6 @@
       background-attachment: fixed;
     }
 
-    /* Top Navigation Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -112,7 +111,6 @@
       background: rgba(255, 255, 255, 0.2);
     }
 
-    /* Sidebar Drawer */
     .sidebar-overlay {
       position: fixed;
       top: 0;
@@ -135,8 +133,8 @@
     .sidebar {
       position: fixed;
       top: 0;
-      left: -400px;
-      width: 380px;
+      left: -420px;
+      width: 400px;
       height: 100vh;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--card-border);
@@ -177,6 +175,11 @@
       border: 1px solid var(--card-border);
     }
 
+    .sidebar-section.highlighted {
+      border: 2px solid var(--accent-amber);
+      background: rgba(245, 158, 11, 0.05);
+    }
+
     .sidebar-section h3 {
       font-size: 1rem;
       color: var(--accent-blue);
@@ -192,6 +195,32 @@
     .sidebar-section ul {
       margin-left: 1.25rem;
       margin-top: 0.5rem;
+    }
+
+    .affiliate-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      margin-top: 0.75rem;
+      background: var(--accent-green);
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .affiliate-btn:hover {
+      background: #16a34a;
+    }
+
+    .affiliate-btn.mexc {
+      background: var(--accent-blue);
+    }
+
+    .affiliate-btn.mexc:hover {
+      background: #0284c7;
     }
 
     .pdf-link {
@@ -224,7 +253,6 @@
       color: var(--accent-amber);
     }
 
-    /* Main Container Layout */
     main {
       max-width: 900px;
       margin: 2rem auto;
@@ -243,7 +271,6 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Scoreboard */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -272,7 +299,6 @@
       font-weight: bold;
     }
 
-    /* Notice Banner */
     .notice-banner {
       background: rgba(245, 158, 11, 0.15);
       border: 1px solid var(--accent-amber);
@@ -295,7 +321,6 @@
       font-size: 0.75rem;
     }
 
-    /* Section Forms */
     .section-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -354,7 +379,6 @@
       cursor: pointer;
     }
 
-    /* Form Field */
     .form-group {
       margin-bottom: 1rem;
     }
@@ -383,7 +407,6 @@
       font-size: 0.875rem;
     }
 
-    /* Action Buttons */
     .action-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -413,7 +436,6 @@
       color: white;
     }
 
-    /* Log Output Table */
     .history-table {
       width: 100%;
       border-collapse: collapse;
@@ -430,11 +452,47 @@
     .history-table th {
       background: rgba(0,0,0,0.2);
     }
+
+    .chart-thumbnail {
+      width: 50px;
+      height: 35px;
+      object-fit: cover;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      z-index: 300;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header>
     <div class="header-left">
       <button class="hamburger" onclick="toggleSidebar()">☰</button>
@@ -448,13 +506,39 @@
     </div>
   </header>
 
-  <!-- Sidebar Overlay & Sidebar -->
   <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
   
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h2>Trading Knowledge Base</h2>
       <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+    </div>
+
+    <!-- Broker Information Section -->
+    <div class="sidebar-section highlighted">
+      <h3 style="color: var(--accent-amber);">⚠️ Brokers & Execution Model</h3>
+      <p><strong>Market Maker (B-Book) vs. ECN/STP Broker:</strong></p>
+      <ul>
+        <li><strong>Market Maker:</strong> Takes the opposing side of your trade. If you win, they lose. This introduces a structural conflict of interest, often leading to artificial slippage, wider spreads during volatility, or re-quotes.</li>
+        <li><strong>ECN Broker (True Direct Market Access):</strong> Routes orders directly to liquidity providers (banks/institutions). They profit purely on a fixed commission or tight spread, aligning their interests with reliable execution.</li>
+      </ul>
+      <p style="margin-top: 0.5rem; font-weight: bold; color: var(--text-main);">Recommended Execution Platforms:</p>
+      
+      <!-- IC Markets Referral Link -->
+      <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" class="affiliate-btn">
+        📈 Trade Forex/CFDs with IC Markets
+      </a>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+        <em>Benefits: Raw ECN Spreads from 0.0 pips, deep liquidity, and institutional-grade order matching.</em>
+      </p>
+
+      <!-- MEXC Referral Link -->
+      <a href="https://s.mexc.com/referral/rxBi11tniN" target="_blank" class="affiliate-btn mexc">
+        🚀 Trade Crypto on MEXC (Code: 44wXf)
+      </a>
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+        <em>Benefits: Lowest maker/taker fees, massive altcoin liquidity, and up to $140+ in welcome rewards.</em>
+      </p>
     </div>
 
     <!-- Recommended Reading -->
@@ -483,7 +567,7 @@
       </p>
     </div>
 
-    <!-- Trading Concepts -->
+    <!-- Core Trading Concepts -->
     <div class="sidebar-section">
       <h3>Core Trading Concepts</h3>
       <br>
@@ -509,14 +593,17 @@
     </div>
   </aside>
 
-  <!-- Main Workstation -->
+  <!-- Image View Modal -->
+  <div class="modal-overlay" id="imageModal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="Chart Screenshot Preview">
+  </div>
+
   <main>
     <div class="title-banner">
       <h1>Execution Guidance (EG)</h1>
       <p style="color: var(--text-muted); font-size: 0.875rem;">Disciplined Execution & System Validation Dashboard</p>
     </div>
 
-    <!-- Metrics -->
     <div class="metrics-grid">
       <div class="metric-card">
         <div class="metric-title">Compliance Rate</div>
@@ -532,13 +619,11 @@
       </div>
     </div>
 
-    <!-- Notice Banner -->
     <div class="notice-banner">
       <span>⚠️ <strong>Notice:</strong> Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
       <span class="edits-badge" id="editsBadge">2 Edits Left</span>
     </div>
 
-    <!-- Pre-Flight Checklist -->
     <div class="section-card">
       <div class="section-header">
         <span class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</span>
@@ -564,7 +649,6 @@
       </div>
     </div>
 
-    <!-- Setups to Avoid -->
     <div class="section-card">
       <div class="section-header">
         <span class="section-title avoid">Setup to Avoid (Filtered Out / Patient Pass)</span>
@@ -578,7 +662,6 @@
       </div>
     </div>
 
-    <!-- Notes & Attachments -->
     <div class="section-card">
       <div class="form-group">
         <label for="tradeNotes">Trade Note / Reason for Action:</label>
@@ -589,14 +672,12 @@
         <input type="file" id="chartScreenshot" accept="image/*">
       </div>
 
-      <!-- Action Buttons -->
       <div class="action-grid">
         <button class="btn-action btn-compliant" onclick="logTrade('compliant')">Log Compliant (+10)</button>
         <button class="btn-action btn-avoided" onclick="logTrade('avoided')">Log Avoided (Discipline +5)</button>
       </div>
     </div>
 
-    <!-- History Log Table -->
     <div class="section-card">
       <div class="section-header">
         <span class="section-title">Trade History Journal</span>
@@ -606,6 +687,7 @@
           <tr>
             <th>Type</th>
             <th>Notes</th>
+            <th>Chart</th>
             <th>Points</th>
             <th>Time</th>
           </tr>
@@ -614,6 +696,7 @@
           <tr>
             <td><span style="color: var(--accent-green); font-weight: bold;">Compliant</span></td>
             <td>Initial setup test</td>
+            <td>—</td>
             <td>+10</td>
             <td>Just now</td>
           </tr>
@@ -678,18 +761,47 @@
       }
     }
 
+    function openModal(imgSrc) {
+      document.getElementById('modalImg').src = imgSrc;
+      document.getElementById('imageModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').classList.remove('active');
+    }
+
     function logTrade(type) {
       const notes = document.getElementById('tradeNotes').value || "No notes provided";
+      const fileInput = document.getElementById('chartScreenshot');
       const table = document.getElementById('historyBody');
       const row = document.createElement('tr');
 
       entries++;
+      let imgTdHtml = '—';
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imgSrc = e.target.result;
+          renderRow(type, notes, `<img src="${imgSrc}" class="chart-thumbnail" onclick="openModal('${imgSrc}')" alt="Chart">`, table, row);
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        renderRow(type, notes, imgTdHtml, table, row);
+      }
+    }
+
+    function renderRow(type, notes, imgHtml, table, row) {
       if (type === 'compliant') {
         score += 10;
         compliantCount++;
         row.innerHTML = `
           <td><span style="color: var(--accent-green); font-weight: bold;">Compliant</span></td>
           <td>${notes}</td>
+          <td>${imgHtml}</td>
           <td>+10</td>
           <td>${new Date().toLocaleTimeString()}</td>
         `;
@@ -698,6 +810,7 @@
         row.innerHTML = `
           <td><span style="color: var(--accent-blue); font-weight: bold;">Avoided</span></td>
           <td>${notes}</td>
+          <td>${imgHtml}</td>
           <td>+5</td>
           <td>${new Date().toLocaleTimeString()}</td>
         `;
@@ -705,11 +818,10 @@
 
       table.prepend(row);
       
-      // Reset checkboxes & inputs
       document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
       document.getElementById('tradeNotes').value = '';
+      document.getElementById('chartScreenshot').value = '';
       
-      // Update Metrics
       document.getElementById('disciplineScore').innerText = score + " PTS";
       document.getElementById('loggedEntries').innerText = entries;
       const rate = Math.round((compliantCount / entries) * 100);
