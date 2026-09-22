@@ -1,800 +1,315 @@
-
-2 of 815
-(no subject)
-Inbox
-Summarize this email
-
-Leo Melvin Vibal
-Attachments
-8:56 PM (1 hour ago)
-to me
-
-
-
-
-Step 1: Upgrade the Web App Layout (UX & Functionality)
-Before sending paid traffic, your website needs to look like a professional, standalone software product rather than a simple code test.
-
-Add Clear Header Branding: Add a professional navigation bar at the top displaying your app name (e.g., Donchian System Firewall) and a tag line (e.g., Pre-Flight Execution Checklist for FX Traders).
-
-Ensure Mobile Responsiveness: Test the site on desktop and mobile screens to verify checkboxes, input fields, and trade-note text areas scale seamlessly.
-
-Refine the User Workflow: Keep your core functionality front and center (Checklist $\rightarrow$ Rule Validation $\rightarrow$ Trade Notes $\rightarrow$ Export/Save Log).
-
-Step 2: Essential Legal Pages for Google Ads Compliance
-Google Ads strictly monitors financial, trading, and investment-related tools. To pass Google's review process without your account getting flagged or disapproved, your website must include the following pages linked in the footer:
-
-Risk & Financial Disclaimer Page:
-
-Clearly state: "Trading foreign exchange, futures, and stocks carries high risk and may not be suitable for all investors. This software is a personal discipline and risk management tool, not financial advice or a signal service."
-
-Privacy Policy & Terms of Service:
-
-Disclose how user inputs or browser storage (localStorage) are handled.
-
-Contact / About Us Page:
-
-Include a valid contact email and business entity/support name to prove transparency.
-
-Step 3: Preparing Your Google Ads Campaign
-Trading software requires careful positioning on Google Ads to comply with financial advertising policies:
-
-Positioning (Do's & Don'ts):
-
-DO: Position it strictly as a "Trading Discipline Tool," "Risk Management Checklist," or "Execution Utility."
-
-DON'T: Use high-risk trigger words like "Guaranteed Profits," "Get Rich," "Trading Signals," or "Automated Win-Rate System". Google will suspend ad accounts making unverified financial earnings claims.
-
-Targeting High-Intent Keywords:
-
-Focus on search intent keywords like: day trading checklist tool, forex risk management app, trading journal checklist, or trading discipline software.
-
-Recommended Next Step
-Should we focus on updating your index.html code to add the professional header, footer, and required legal disclaimers first, or would you like to plan the Google Ads copy and landing page text?
-
-
-Data Privacy Notice
-
-Your Sensitive and Personal Information shall be processed, collected, stored, used, disclosed and transferred in accordance with our Data Privacy Policy which may be accessed at  https://www.pryce.com.ph/corporate-governance/companys-policies/pryce-corp/.
-
-DISCLAIMER: The information contained in this e-mail and/or attachments are confidential and privileged or otherwise protected by other legal rules. It is solely and exclusively intended for the use of the addressee or individual/s to whom it is addressed. Any views or opinions disclosed in this e-mail are directly and solely those of the author and do not represent or otherwise authorized by Pryce Group of Companies. 
-If you are not the intended recipient and received it by mistake, please notify the sender and delete the same immediately from your e-mail system. You are prohibited from using, disseminating, disclosing, forwarding, printing, or copying this e-mail.
-
-Pryce Group of Companies accepts no liability or damages for the information contained in this email, or for the consequent and necessary effects based on the information provided, including the virus that is possibly transmitted therein.
-
- 2 Attachments
-  •  Scanned by Gmail
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Execution Guidance (EG)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            tw: {
-              bg: '#f8fafc',
-              card: '#ffffff',
-              border: '#e2e8f0',
-              text: '#0f172a',
-              muted: '#64748b',
-              blue: '#2563eb',
-              sky: '#0284c7',
-              emerald: '#059669',
-              red: '#dc2626',
-            },
-            twDark: {
-              bg: '#0b0f17',
-              card: '#111827',
-              border: '#1f2937',
-              text: '#f9fafb',
-              muted: '#9ca3af',
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraderWellPower / EG Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#0b0f19',
+                        cardBg: '#131b2e',
+                        cardBorder: '#1e293b',
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-
-    .glass-panel {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.3);
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: rgba(148, 163, 184, 0.5);
-    }
-  </style>
+    </script>
+    <style>
+        :root {
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-glow: rgba(37, 99, 235, 0.3);
+        }
+        .dynamic-accent {
+            color: var(--accent-color) !important;
+        }
+        .dynamic-bg {
+            background-color: var(--accent-color) !important;
+        }
+        .dynamic-bg:hover {
+            background-color: var(--accent-hover) !important;
+        }
+        .dynamic-border {
+            border-color: var(--accent-color) !important;
+        }
+        .dynamic-shadow {
+            box-shadow: 0 10px 25px -5px var(--accent-glow) !important;
+        }
+        .dynamic-ring:focus {
+            --tw-ring-color: var(--accent-color) !important;
+        }
+    </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 min-h-screen flex flex-col font-sans transition-colors duration-200">
+<body class="bg-slate-50 dark:bg-darkBg text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between antialiased transition-colors duration-300">
 
-  <!-- HEADER BAR -->
-  <header class="sticky top-0 z-40 w-full bg-white/90 dark:bg-[#0b0f17]/90 border-b border-slate-200 dark:border-slate-800 glass-panel px-4 py-2.5 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-3">
-      <button onclick="toggleSidebar()" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none transition-colors" title="Toggle Sidebar Menu">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-      </button>
-      <div class="flex items-center gap-2 font-extrabold text-base tracking-tight text-slate-800 dark:text-slate-100">
-        <span class="text-blue-600 dark:text-sky-400 text-lg">⚡</span>
-        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">TRADERWAVES</span>
-        <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono ml-1">/ EG Platform</span>
-      </div>
-    </div>
-    
-    <!-- RIGHT HEADER TOOLS -->
-    <div class="flex items-center gap-2 sm:gap-3">
-      
-      <!-- New York Live Time Badge (KEPT) -->
-      <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200 shadow-sm">
-        <span class="text-slate-400">🌐</span>
-        <span class="hidden xs:inline">New York ·</span>
-        <span id="nyClock" class="font-mono font-bold text-blue-600 dark:text-sky-400">09:30:00 EST</span>
-      </div>
-
-      <!-- CEO & Platform Notification Bell (KEPT & INTERACTIVE) -->
-      <div class="relative">
-        <button id="notifBellBtn" onclick="toggleNotifications()" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative" title="Platform Notifications & Updates">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse"></span>
-        </button>
-
-        <!-- Notification Dropdown Modal -->
-        <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-50 p-4 space-y-3">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="text-base">📢</span>
-              <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100">Updates & Owner Announcement</h3>
-            </div>
-            <span class="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Official</span>
-          </div>
-
-          <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
-            <div class="p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 space-y-1">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-slate-800 dark:text-slate-200">Message from CEO</span>
-                <span class="text-[10px] text-slate-400">Today</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                "Welcome to the streamlined Execution Guidance (EG) workspace. Focus on strict discipline, statistical probability, and systematic trade validation."
-              </p>
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0e1422]/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg dynamic-bg flex items-center justify-center shadow-lg dynamic-shadow">
+                        <i class="fa-solid fa-bolt text-white text-sm font-bold"></i>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold tracking-wider text-slate-900 dark:text-white text-base">TRADERWELLPOWER</span>
+                        <span class="text-slate-400 font-light">/</span>
+                        <span class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700/50">EG Platform</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 space-y-1">
-              <div class="flex items-center justify-between text-xs">
-                <span class="font-bold text-blue-600 dark:text-sky-400">v2.4 System Release</span>
-                <span class="text-[10px] text-slate-400">2 days ago</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Integrated real-time CSV execution parsing and dual-axis equity curve visualizer to cross-evaluate rule adherence against portfolio return.
-              </p>
+            <div class="flex items-center space-x-3">
+                <!-- Color Theme Customizer -->
+                <div class="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-full text-xs shadow-inner">
+                    <span class="text-slate-500 dark:text-slate-400 text-[10px] font-semibold uppercase tracking-wider mr-1">Theme:</span>
+                    <button onclick="setThemeColor('#2563eb', '#1d4ed8', 'rgba(37, 99, 235, 0.3)')" class="w-4 h-4 rounded-full bg-blue-600 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-blue-500" title="Blue"></button>
+                    <button onclick="setThemeColor('#10b981', '#059669', 'rgba(16, 185, 129, 0.3)')" class="w-4 h-4 rounded-full bg-emerald-500 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-emerald-500" title="Green"></button>
+                    <button onclick="setThemeColor('#ef4444', '#dc2626', 'rgba(239, 68, 68, 0.3)')" class="w-4 h-4 rounded-full bg-red-500 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-red-500" title="Red"></button>
+                    <button onclick="setThemeColor('#0ea5e9', '#0284c7', 'rgba(14, 165, 233, 0.3)')" class="w-4 h-4 rounded-full bg-sky-400 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-sky-400" title="Light Blue"></button>
+                    <button onclick="setThemeColor('#b45309', '#92400e', 'rgba(180, 83, 9, 0.3)')" class="w-4 h-4 rounded-full bg-amber-700 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-amber-700" title="Brown"></button>
+                    <button onclick="setThemeColor('#8b5cf6', '#7c3aed', 'rgba(139, 92, 246, 0.3)')" class="w-4 h-4 rounded-full bg-violet-500 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-violet-500" title="Purple"></button>
+                </div>
+
+                <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="font-medium">10:21:16 EST</span>
+                </div>
+                
+                <button class="relative text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+                </button>
+                
+                <!-- Day/Night Toggle Button -->
+                <button id="darkModeToggle" onclick="toggleDarkMode()" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                </button>
             </div>
-          </div>
         </div>
-      </div>
+    </header>
 
-      <!-- Theme Toggle Button -->
-      <button onclick="toggleTheme()" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle Theme">
-        <span id="themeIcon">🌙</span>
-      </button>
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div class="bg-gradient-to-b from-white to-slate-100 dark:from-[#162035] dark:to-[#111827] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-colors duration-300">
+            <!-- Decorative background glow -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 dynamic-bg opacity-10 rounded-full blur-3xl pointer-events-none transition-all duration-300"></div>
+            
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 relative z-10">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Execution Guidance Workspace</h1>
+                        <span class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span> Active Session
+                        </span>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base">Cross-reference discipline scores against real broker CSV execution logs.</p>
+                </div>
+                <div>
+                    <button onclick="openUploadModal()" class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 dynamic-bg text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-lg dynamic-shadow transition transform hover:-translate-y-0.5 active:translate-y-0">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Connect CSV / Broker File</span>
+                    </button>
+                </div>
+            </div>
 
-    </div>
-  </header>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+                <!-- Compliance Card -->
+                <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Compliance</span>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">100%</span>
+                    </div>
+                    <div class="mt-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-emerald-500 dark:bg-emerald-400 h-full rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
 
-  <!-- OVERLAY FOR SIDEBAR -->
-  <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+                <!-- Discipline Score Card -->
+                <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Discipline Score</span>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">10</span>
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">PTS</span>
+                    </div>
+                    <div class="mt-3 w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                        <div class="dynamic-bg h-full rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
 
-  <!-- SIDEBAR NAVIGATION DRAWER -->
-  <aside id="sidebar" class="fixed top-0 left-0 w-[85vw] max-w-[360px] h-full bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto p-5 flex flex-col gap-5 shadow-2xl">
-    <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">📖</span>
-        <h2 class="font-bold text-slate-900 dark:text-slate-100 text-base">Knowledge Base</h2>
-      </div>
-      <button onclick="toggleSidebar()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-      </button>
-    </div>
+                <!-- Logged Trades Card -->
+                <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Logged Trades</span>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">1</span>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500 flex items-center justify-between">
+                        <span>Synced today</span>
+                        <i class="fa-solid fa-check text-emerald-500 dark:text-emerald-400"></i>
+                    </div>
+                </div>
 
-    <!-- BROKERS & EXECUTION MODEL SECTION -->
-    <div class="bg-amber-500/10 border border-amber-500/40 rounded-xl p-4 space-y-3">
-      <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-sm">
-        <span>⚠️</span>
-        <h3>Brokers & Execution Model</h3>
-      </div>
-      
-      <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-        <p class="font-semibold text-slate-800 dark:text-slate-100">Market Maker (B-Book) vs. ECN/STP Broker:</p>
-        <ul class="list-disc pl-4 space-y-1">
-          <li><strong class="text-red-600 dark:text-red-400">Market Maker (B-Book):</strong> Trades against you, creating conflicts of interest, spread widenings, and slippage.</li>
-          <li><strong class="text-emerald-600 dark:text-emerald-400">ECN Broker (DMA):</strong> Direct connection to liquidity providers with raw spreads and fixed commissions.</li>
-        </ul>
-      </div>
-
-      <div class="pt-2 border-t border-amber-500/20 space-y-2.5">
-        <p class="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">Verified Broker Partners</p>
-        
-        <!-- IC Markets Card -->
-        <div class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-xs text-blue-600 dark:text-sky-400">IC Markets (Raw ECN)</span>
-            <span class="text-[9px] bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-sky-300 px-1.5 py-0.5 rounded font-mono">Forex / Metals</span>
-          </div>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">0.0 Pip Raw Spreads with institutional DMA latency.</p>
-          <a href="https://ic.com/?camp=85679" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-sm transition-all active:scale-95">
-            Open Raw ECN Account
-          </a>
-        </div>
-
-        <!-- MEXC Crypto Card -->
-        <div class="bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2 shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-xs text-emerald-600 dark:text-emerald-400">MEXC Global</span>
-            <span class="text-[9px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-300 px-1.5 py-0.5 rounded font-mono">Crypto Futures</span>
-          </div>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Zero maker fees and high liquidity depth on altcoins.</p>
-          <a href="https://s.mexc.com/referral/rxBi11tniN" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-1.5 px-3 rounded-lg shadow-sm transition-all active:scale-95">
-            Trade Crypto (Code: 44wXf)
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- RECOMMENDED READING -->
-    <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 space-y-1.5">
-      <h3 class="text-xs font-bold text-blue-600 dark:text-sky-400 flex items-center gap-1.5">📚 Recommended Mindset Book</h3>
-      <p class="text-xs text-slate-600 dark:text-slate-300">Eliminate emotional error and execute purely on probability.</p>
-      <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-sky-400 hover:underline pt-1">
-        <span>Download "Trading in the Zone" (PDF)</span>
-      </a>
-    </div>
-
-    <!-- MATH OF RISK TO REWARD -->
-    <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 space-y-2 text-xs">
-      <h3 class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">📊 Math of Edge (1:3 Risk:Reward)</h3>
-      <div class="bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 font-mono space-y-1 text-[11px]">
-        <div>Sample Size: <span class="text-amber-500 font-bold">10 Trades</span></div>
-        <div>Risk / Reward: <span class="text-red-500 font-bold">$100</span> / <span class="text-emerald-500 font-bold">$300</span></div>
-        <div>Win Rate Needed: <span class="text-blue-500 font-bold">Only 30% (3/10)</span></div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- IMAGE MODAL -->
-  <div id="imageModal" onclick="closeModal()" class="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-    <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
-      <button onclick="closeModal()" class="absolute -top-10 right-0 text-white font-bold text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg border border-slate-600">✕ Close</button>
-      <img id="modalImg" src="" alt="Chart Full View" class="max-w-full max-h-[85vh] object-contain rounded-lg border border-slate-700 shadow-2xl">
-    </div>
-  </div>
-
-  <!-- MAIN WORKSPACE CONTAINER -->
-  <main class="max-w-6xl w-full mx-auto px-4 py-6 flex-1 flex flex-col gap-6">
-    
-    <!-- TOP WORKSPACE HEADER & CSV SYNC BANNER -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Execution Guidance Workspace</h1>
-            <span class="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">Active Session</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cross-reference discipline scores against real broker CSV execution logs.</p>
+                <!-- CSV Realized PNL Card -->
+                <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">CSV Realized PNL</span>
+                    <div class="flex items-baseline space-x-2">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">$0.00</span>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500 flex items-center justify-between">
+                        <span>No open positions</span>
+                        <span class="text-slate-500 dark:text-slate-400">USD</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- CSV Sync Button Trigger -->
-        <div class="flex items-center gap-2">
-          <label class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-            <span>Connect CSV / Broker File</span>
-            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
-          </label>
-        </div>
-      </div>
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white dark:bg-[#121929] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-slate-900 dark:text-slate-200 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list dynamic-accent"></i> Pre-Flight Execution Checklist
+                    </h3>
+                    <span class="text-xs dynamic-accent bg-blue-50 dark:bg-blue-500/10 px-2.5 py-1 rounded border border-blue-200 dark:border-blue-500/20 font-medium">Ready</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/60">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked class="w-4 h-4 rounded dynamic-ring bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Risk & Financial Disclaimer Verified</span>
+                        </div>
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Completed</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/60">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" checked class="w-4 h-4 rounded dynamic-ring bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Trading Discipline Rules Acknowledged</span>
+                        </div>
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Completed</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/60">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" class="w-4 h-4 rounded dynamic-ring bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700">
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Broker Execution Log Export Ready</span>
+                        </div>
+                        <span class="text-xs text-amber-600 dark:text-amber-400 font-medium">Pending Sync</span>
+                    </div>
+                </div>
+            </div>
 
-      <!-- METRICS STATS BAR -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-        <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
-          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-0.5">Compliance</span>
-          <span id="complianceRate" class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">100%</span>
+            <div class="bg-white dark:bg-[#121929] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-sm transition-colors duration-300">
+                <div>
+                    <h3 class="font-semibold text-slate-900 dark:text-slate-200 text-lg mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-500"></i> Platform Safety
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                        This software is a personal discipline and risk management tool, not financial advice or a signal service.
+                    </p>
+                </div>
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 flex justify-between items-center">
+                    <span>TraderWellPower v2.4</span>
+                    <span class="text-emerald-600 dark:text-emerald-400 font-medium">Secure Environment</span>
+                </div>
+            </div>
         </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
-          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-0.5">Discipline Score</span>
-          <span id="disciplineScore" class="text-xl font-extrabold text-blue-600 dark:text-sky-400">10 PTS</span>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
-          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-0.5">Logged Trades</span>
-          <span id="loggedEntries" class="text-xl font-extrabold text-amber-600 dark:text-amber-400">1</span>
-        </div>
-        <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
-          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-0.5">CSV Realized PnL</span>
-          <span id="csvPnL" class="text-xl font-extrabold text-slate-400">$0.00</span>
-        </div>
-      </div>
-    </div>
+    </main>
 
-    <!-- PERFORMANCE GRAPH & DIAGNOSTICS ROW -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Chart Box (2 cols) -->
-      <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <span>📈</span> Equity Curve vs. Discipline Score
-            </h2>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Dual-axis correlation between rule adherence and broker profitability.</p>
-          </div>
-          <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono px-2 py-1 rounded">Live Dual Axis</span>
+    <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 TraderWellPower / EG Platform. All rights reserved. Personal discipline tool only.</p>
+            <div class="flex space-x-6">
+                <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Terms of Service</a>
+                <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Risk Disclosure</a>
+            </div>
         </div>
-        
-        <div class="relative w-full h-64 sm:h-72">
-          <canvas id="performanceChart"></canvas>
-        </div>
-      </div>
+    </footer>
 
-      <!-- System Diagnostic Evaluator Box (1 col) -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3.5">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-2.5">
-          <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <span>🔬</span> System Edge Evaluator
-          </h2>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Automated diagnosis of discipline impact.</p>
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl relative transition-colors duration-300">
+            <button onclick="closeUploadModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Connect Broker CSV</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm mb-6">Upload your broker execution export file to sync trades and calculate discipline scores.</p>
+            <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 text-center hover:border-blue-500 transition cursor-pointer mb-6 bg-slate-50 dark:bg-slate-900/40">
+                <i class="fa-solid fa-file-arrow-up text-3xl dynamic-accent mb-3"></i>
+                <p class="text-sm font-medium text-slate-800 dark:text-slate-200">Drag & drop your CSV file here</p>
+                <p class="text-xs text-slate-500 mt-1">or browse files from your device</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeUploadModal()" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">Cancel</button>
+                <button onclick="simulateUpload()" class="px-5 py-2 rounded-xl text-sm font-semibold dynamic-bg text-white transition shadow-lg dynamic-shadow">Upload & Sync</button>
+            </div>
         </div>
-
-        <div id="diagnosticOutput" class="space-y-2.5 text-xs">
-          <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
-            <span class="font-bold text-slate-700 dark:text-slate-200">Execution Status:</span>
-            <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Upload a broker CSV or log more disciplined trades to generate statistical feedback.</p>
-          </div>
-
-          <div class="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-900/40 text-blue-900 dark:text-blue-200 space-y-1">
-            <span class="font-bold">Golden Rule:</span>
-            <p class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed">
-              When compliance is high (>90%), losses are pure statistical cost of business. If compliance is low, losses are self-inflicted execution flaws.
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- EDIT LIMIT NOTICE -->
-    <div class="bg-amber-500/10 border border-amber-500/40 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-      <div class="flex items-center gap-2 text-slate-800 dark:text-slate-200">
-        <span class="text-base">⚠️</span>
-        <span><strong>Notice:</strong> Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
-      </div>
-      <span id="editsBadge" class="bg-amber-500 text-slate-950 font-extrabold px-2.5 py-1 rounded-md text-[11px] whitespace-nowrap shadow-sm">2 Edits Left</span>
-    </div>
-
-    <!-- CHECKLISTS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      
-      <!-- Pre-flight Checklist -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3.5">
-        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
-          <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-            <span>✅</span> Pre-Flight Checklist (Compliant Entry)
-          </span>
-          <button onclick="editCriteria('preflight')" class="px-2 py-1 text-[11px] font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">✏️ Edit</button>
-        </div>
-        <div id="preflightList" class="space-y-2">
-          <label class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
-            <input type="checkbox" class="chk-preflight mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-            <div><strong class="text-slate-800 dark:text-slate-200">Take Profit Target:</strong> Area is explicitly mapped out on the chart before entry.</div>
-          </label>
-          <label class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
-            <input type="checkbox" class="chk-preflight mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-            <div><strong class="text-slate-800 dark:text-slate-200">Donchian / EMA Crossover:</strong> 3 consecutive candles closed crossing trigger band.</div>
-          </label>
-          <label class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
-            <input type="checkbox" class="chk-preflight mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
-            <div><strong class="text-slate-800 dark:text-slate-200">Execution Type:</strong> Limit or Stop Pending Order only (No market chasing).</div>
-          </label>
-        </div>
-      </div>
-
-      <!-- Setups To Avoid Checklist -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3.5">
-        <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
-          <span class="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400 flex items-center gap-2">
-            <span>🛑</span> Setup to Avoid (Filtered Out / Pass)
-          </span>
-          <button onclick="editCriteria('avoid')" class="px-2 py-1 text-[11px] font-medium border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">✏️ Edit</button>
-        </div>
-        <div id="avoidList" class="space-y-2">
-          <label class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
-            <input type="checkbox" class="chk-avoid mt-0.5 rounded border-slate-300 text-red-600 focus:ring-red-500">
-            <div><strong class="text-slate-800 dark:text-slate-200">Low Liquidity Spread:</strong> Setup occurred during spread widening or news event.</div>
-          </label>
-          <label class="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
-            <input type="checkbox" class="chk-avoid mt-0.5 rounded border-slate-300 text-red-600 focus:ring-red-500">
-            <div><strong class="text-slate-800 dark:text-slate-200">FOMO Retest:</strong> Price already reached target before secondary entry trigger.</div>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- TRADE LOGGING FORM -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-      <div class="space-y-1.5">
-        <label for="tradeNotes" class="block text-xs font-bold text-slate-700 dark:text-slate-200">Trade Reason / Execution Context:</label>
-        <textarea id="tradeNotes" rows="2" placeholder="Record entry setup details, currency pair, or rationale for passing..." class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"></textarea>
-      </div>
-
-      <div class="space-y-1.5">
-        <label for="chartScreenshot" class="block text-xs font-bold text-slate-700 dark:text-slate-200">Attach Chart Screenshot:</label>
-        <input type="file" id="chartScreenshot" accept="image/*" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 cursor-pointer">
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-        <button onclick="logTrade('compliant')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm transition-all active:scale-95 text-xs">
-          Log Compliant Execution (+10 PTS)
-        </button>
-        <button onclick="logTrade('avoided')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-sm transition-all active:scale-95 text-xs">
-          Log Avoided Bad Setup (+5 PTS)
-        </button>
-      </div>
-    </div>
-
-    <!-- TRADE HISTORY JOURNAL TABLE -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3 overflow-hidden">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-          Execution Journal
-        </span>
-        <span class="text-[11px] text-slate-400 font-mono">Filter: All Entries</span>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-          <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
-            <tr>
-              <th class="p-3">Type</th>
-              <th class="p-3">Notes</th>
-              <th class="p-3">Chart</th>
-              <th class="p-3">Points</th>
-              <th class="p-3">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-              <td class="p-3"><span class="text-emerald-600 dark:text-emerald-400 font-bold">Compliant</span></td>
-              <td class="p-3 text-slate-700 dark:text-slate-300">Initial system setup trade</td>
-              <td class="p-3 text-slate-400">—</td>
-              <td class="p-3 font-mono text-emerald-600 dark:text-emerald-400">+10</td>
-              <td class="p-3 text-slate-400 text-[11px]">Just now</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </main>
-
-  <script>
-    // System State Variables
-    let editsLeft = 2;
-    let score = 10;
-    let entries = 1;
-    let compliantCount = 1;
-    let csvTotalPnL = 0;
-
-    let chartInstance = null;
-    let chartDataPoints = {
-      labels: ['Trade 1'],
-      discipline: [10],
-      pnl: [0]
-    };
-
-    // Initialize Page Clock & Chart on Load
-    window.onload = function() {
-      updateNYClock();
-      setInterval(updateNYClock, 1000);
-      initChart();
-    };
-
-    // Live New York Time Clock
-    function updateNYClock() {
-      const options = {
-        timeZone: 'America/New_York',
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      };
-      const nyTime = new Intl.DateTimeFormat('en-US', options).format(new Date());
-      document.getElementById('nyClock').innerText = `${nyTime} EST`;
-    }
-
-    // Toggle Notifications Dropdown
-    function toggleNotifications() {
-      const dropdown = document.getElementById('notifDropdown');
-      dropdown.classList.toggle('hidden');
-    }
-
-    // Sidebar Drawer Toggle
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      const isOpen = !sidebar.classList.contains('-translate-x-full');
-
-      if (isOpen) {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-      } else {
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-      }
-    }
-
-    // Theme Switcher
-    function toggleTheme() {
-      const body = document.body;
-      const isDark = body.classList.contains('dark');
-      if (isDark) {
-        body.classList.remove('dark');
-        document.getElementById('themeIcon').innerText = '🌙';
-      } else {
-        body.classList.add('dark');
-        document.getElementById('themeIcon').innerText = '☀️';
-      }
-      if (chartInstance) chartInstance.update();
-    }
-
-    // Edit Checklist Criteria (Max 2 Limits)
-    function editCriteria(type) {
-      if (editsLeft <= 0) {
-        alert("Edit limit reached! Rule editing is locked to prevent moving goalposts during strategy sample validation.");
-        return;
-      }
-      
-      const newText = prompt("Enter replacement criterion description:");
-      if (newText && newText.trim() !== "") {
-        editsLeft--;
-        document.getElementById('editsBadge').innerText = `${editsLeft} Edits Left`;
-        
-        const targetList = type === 'preflight' ? 'preflightList' : 'avoidList';
-        const colorClass = type === 'preflight' ? 'text-emerald-600 focus:ring-emerald-500' : 'text-red-600 focus:ring-red-500';
-        
-        const container = document.getElementById(targetList);
-        const newItem = document.createElement('label');
-        newItem.className = 'flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors';
-        newItem.innerHTML = `
-          <input type="checkbox" class="mt-0.5 rounded border-slate-300 ${colorClass}">
-          <div><strong class="text-slate-800 dark:text-slate-200">Custom Rule:</strong> ${newText.trim()}</div>
-        `;
-        container.appendChild(newItem);
-      }
-    }
-
-    // Modal Image Preview
-    function openModal(imgSrc) {
-      document.getElementById('modalImg').src = imgSrc;
-      const modal = document.getElementById('imageModal');
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-    }
-
-    function closeModal() {
-      const modal = document.getElementById('imageModal');
-      modal.classList.add('opacity-0', 'pointer-events-none');
-    }
-
-    // Log Trade Action
-    function logTrade(type) {
-      const notes = document.getElementById('tradeNotes').value.trim() || "Routine strategy log";
-      const fileInput = document.getElementById('chartScreenshot');
-      const table = document.getElementById('historyBody');
-      const row = document.createElement('tr');
-      row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors";
-
-      entries++;
-      let imgTdHtml = '<span class="text-slate-400">—</span>';
-
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          const imgSrc = e.target.result;
-          const imgPreview = `<img src="${imgSrc}" class="w-10 h-7 object-cover rounded border border-slate-300 dark:border-slate-700 cursor-pointer hover:scale-105 transition-transform" onclick="openModal('${imgSrc}')" alt="Chart">`;
-          renderTradeRow(type, notes, imgPreview, table, row);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        renderTradeRow(type, notes, imgTdHtml, table, row);
-      }
-    }
-
-    function renderTradeRow(type, notes, imgHtml, table, row) {
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      if (type === 'compliant') {
-        score += 10;
-        compliantCount++;
-        row.innerHTML = `
-          <td class="p-3"><span class="text-emerald-600 dark:text-emerald-400 font-bold">Compliant</span></td>
-          <td class="p-3 text-slate-700 dark:text-slate-300">${notes}</td>
-          <td class="p-3">${imgHtml}</td>
-          <td class="p-3 font-mono text-emerald-600 dark:text-emerald-400">+10</td>
-          <td class="p-3 text-slate-400 text-[11px]">${timeStr}</td>
-        `;
-      } else {
-        score += 5;
-        row.innerHTML = `
-          <td class="p-3"><span class="text-blue-600 dark:text-sky-400 font-bold">Avoided</span></td>
-          <td class="p-3 text-slate-700 dark:text-slate-300">${notes}</td>
-          <td class="p-3">${imgHtml}</td>
-          <td class="p-3 font-mono text-blue-600 dark:text-sky-400">+5</td>
-          <td class="p-3 text-slate-400 text-[11px]">${timeStr}</td>
-        `;
-      }
-
-      table.prepend(row);
-
-      // Reset form
-      document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-      document.getElementById('tradeNotes').value = '';
-      document.getElementById('chartScreenshot').value = '';
-
-      // Update metrics
-      document.getElementById('disciplineScore').innerText = score + " PTS";
-      document.getElementById('loggedEntries').innerText = entries;
-      const rate = Math.round((compliantCount / entries) * 100);
-      document.getElementById('complianceRate').innerText = rate + "%";
-
-      // Push to Chart
-      chartDataPoints.labels.push(`Trade ${entries}`);
-      chartDataPoints.discipline.push(score);
-      chartDataPoints.pnl.push(csvTotalPnL);
-      chartInstance.update();
-
-      updateDiagnostics();
-    }
-
-    // CSV Parser for Realized Broker PnL
-    function handleCSVUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split('\n');
-        let parsedPnL = 0;
-        let count = 0;
-
-        lines.forEach(line => {
-          const cols = line.split(',');
-          cols.forEach(val => {
-            const num = parseFloat(val);
-            if (!isNaN(num) && Math.abs(num) > 0.01 && Math.abs(num) < 100000) {
-              parsedPnL += num;
-              count++;
-            }
-          });
-        });
-
-        csvTotalPnL = parseFloat(parsedPnL.toFixed(2));
-        const pnlElem = document.getElementById('csvPnL');
-        pnlElem.innerText = (csvTotalPnL >= 0 ? '+' : '') + '$' + csvTotalPnL.toLocaleString();
-        pnlElem.className = `text-xl font-extrabold ${csvTotalPnL >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
-
-        // Update last chart point PnL
-        chartDataPoints.pnl[chartDataPoints.pnl.length - 1] = csvTotalPnL;
-        chartInstance.update();
-        updateDiagnostics();
-      };
-      reader.readAsText(file);
-    }
-
-    // Chart.js Dual-Axis Setup
-    function initChart() {
-      const ctx = document.getElementById('performanceChart').getContext('2d');
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: chartDataPoints.labels,
-          datasets: [
-            {
-              label: 'Discipline Score (PTS)',
-              data: chartDataPoints.discipline,
-              borderColor: '#0284c7',
-              backgroundColor: 'rgba(2, 132, 199, 0.1)',
-              yAxisID: 'yDiscipline',
-              tension: 0.3,
-              fill: true
-            },
-            {
-              label: 'Realized Broker PnL ($)',
-              data: chartDataPoints.pnl,
-              borderColor: '#10b981',
-              backgroundColor: 'transparent',
-              borderDash: [4, 4],
-              yAxisID: 'yPnL',
-              tension: 0.2
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          interaction: { mode: 'index', intersect: false },
-          scales: {
-            x: {
-              grid: { display: false }
-            },
-            yDiscipline: {
-              type: 'linear',
-              position: 'left',
-              title: { display: true, text: 'Discipline Points' }
-            },
-            yPnL: {
-              type: 'linear',
-              position: 'right',
-              title: { display: true, text: 'Broker PnL ($)' },
-              grid: { drawOnChartArea: false }
-            }
-          }
+    <script>
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
         }
-      });
-    }
 
-    // Diagnostic System Analysis
-    function updateDiagnostics() {
-      const rate = Math.round((compliantCount / entries) * 100);
-      const output = document.getElementById('diagnosticOutput');
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+        }
 
-      let statusMessage = "";
-      if (rate >= 85) {
-        statusMessage = `<div class="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-200">
-          <strong class="block mb-0.5">🟢 Excellent Process Adherence (${rate}%)</strong>
-          Your execution is consistent. Profits/losses now strictly reflect underlying edge math.
-        </div>`;
-      } else {
-        statusMessage = `<div class="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40 text-amber-900 dark:text-amber-200">
-          <strong class="block mb-0.5">⚠️ Rule Deviations Detected (${rate}%)</strong>
-          Low compliance increases risk of unexpected drawdown. Focus on passing bad setups.
-        </div>`;
-      }
+        function simulateUpload() {
+            alert('CSV connection simulated successfully!');
+            closeUploadModal();
+        }
 
-      output.innerHTML = statusMessage + `
-        <div class="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-900/40 text-blue-900 dark:text-blue-200 space-y-1">
-          <span class="font-bold">Golden Rule:</span>
-          <p class="text-[11px] leading-relaxed">
-            When compliance is high (>90%), losses are pure statistical cost of business. If compliance is low, losses are self-inflicted execution flaws.
-          </p>
-        </div>
-      `;
-    }
-  </script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function setThemeColor(color, hoverColor, glowColor) {
+            document.documentElement.style.setProperty('--accent-color', color);
+            document.documentElement.style.setProperty('--accent-hover', hoverColor);
+            document.documentElement.style.setProperty('--accent-glow', glowColor);
+            localStorage.setItem('accentColor', color);
+            localStorage.setItem('accentHover', hoverColor);
+            localStorage.setItem('accentGlow', glowColor);
+        }
+
+        // Initialize theme preferences
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.getElementById('themeIcon');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon';
+            } else {
+                document.documentElement.classList.add('dark');
+                icon.className = 'fa-solid fa-sun';
+            }
+
+            const savedColor = localStorage.getItem('accentColor');
+            const savedHover = localStorage.getItem('accentHover');
+            const savedGlow = localStorage.getItem('accentGlow');
+            if (savedColor && savedHover && savedGlow) {
+                setThemeColor(savedColor, savedHover, savedGlow);
+            }
+        });
+    </script>
 </body>
 </html>
