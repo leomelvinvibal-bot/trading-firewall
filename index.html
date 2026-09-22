@@ -268,7 +268,27 @@
         .btn-log.active-pass { background-color: var(--accent-green); color: #ffffff; border-color: var(--accent-green); cursor: pointer; }
         .btn-log.active-avoid { background-color: var(--accent-red); color: #ffffff; border-color: var(--accent-red); cursor: pointer; }
 
-        .data-sync-row { display: flex; gap: 10px; margin-top: 20px; }
+        /* Storage & Backup Notice Box */
+        .info-box {
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-blue);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--muted-text);
+        }
+        .info-box strong {
+            color: var(--title-color);
+        }
+        .info-box ul {
+            margin: 6px 0 0 0;
+            padding-left: 18px;
+        }
+
+        .data-sync-row { display: flex; gap: 10px; margin-top: 12px; }
         .btn-sync {
             flex: 1;
             background-color: var(--box-bg);
@@ -385,6 +405,16 @@
     <div class="action-row">
         <button id="logPassButton" class="btn-log" disabled onclick="logTrade('pass')">Log Compliant (+10)</button>
         <button id="logAvoidButton" class="btn-log" disabled onclick="logTrade('avoid')">Log Avoided (Discipline +5)</button>
+    </div>
+
+    <!-- Clarification Info Box for End Users -->
+    <div class="info-box">
+        <strong>🔒 Private Local Storage & Backup Notice:</strong>
+        <ul>
+            <li>Your trades, charts, and settings are saved <strong>100% locally</strong> in this browser database (IndexedDB). No data goes to an external server.</li>
+            <li><strong>Moving Browsers or Devices?</strong> Data in Chrome will not automatically show in Safari or on a phone. Use <strong>💾 Export State</strong> to download your backup file, then use <strong>📂 Import State</strong> on your other device/browser.</li>
+            <li><strong>Clearing Browser History/Cache?</strong> Always click <strong>💾 Export State</strong> first to save a backup, so you don't lose your trade history.</li>
+        </ul>
     </div>
 
     <div class="data-sync-row">
@@ -532,7 +562,6 @@
             await initDB();
             const savedState = await loadStateFromDB();
 
-            // Migration fallback from localStorage if present
             if (!savedState && localStorage.getItem('donchianFilteredState')) {
                 try {
                     const localLegacy = JSON.parse(localStorage.getItem('donchianFilteredState'));
