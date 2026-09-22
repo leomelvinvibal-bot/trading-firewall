@@ -11,12 +11,12 @@
     <style>
         :root {
             --bg-color: #0b0f17;
-            --container-bg: #111827;
-            --box-bg: #1f2937;
-            --box-inner: #111827;
+            --container-bg: rgba(17, 24, 39, 0.92);
+            --box-bg: rgba(31, 41, 55, 0.85);
+            --box-inner: rgba(17, 24, 39, 0.85);
             --text-color: #f3f4f6;
             --title-color: #ffffff;
-            --border-color: #374151;
+            --border-color: rgba(55, 65, 81, 0.8);
             --muted-text: #9ca3af;
             --accent-blue: #3b82f6;
             --accent-blue-hover: #2563eb;
@@ -28,12 +28,12 @@
 
         body.light-mode {
             --bg-color: #f3f4f6;
-            --container-bg: #ffffff;
-            --box-bg: #f9fafb;
-            --box-inner: #ffffff;
+            --container-bg: rgba(255, 255, 255, 0.92);
+            --box-bg: rgba(249, 250, 251, 0.85);
+            --box-inner: rgba(255, 255, 255, 0.85);
             --text-color: #1f2937;
             --title-color: #111827;
-            --border-color: #e5e7eb;
+            --border-color: rgba(229, 231, 235, 0.8);
             --muted-text: #6b7280;
             --accent-blue: #2563eb;
             --accent-blue-hover: #1d4ed8;
@@ -49,19 +49,25 @@
 
         body { 
             background-color: var(--bg-color); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-color); 
             font-family: 'Inter', system-ui, -apple-system, sans-serif; 
             padding: 40px 20px; 
             transition: background-color 0.3s, color 0.3s;
             margin: 0;
+            min-height: 100vh;
         }
         .container { 
             max-width: 740px; 
             margin: 0 auto; 
             background: var(--container-bg); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 32px; 
             border-radius: 16px; 
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4); 
             border: 1px solid var(--border-color); 
             transition: background-color 0.3s, border-color 0.3s;
         }
@@ -70,17 +76,21 @@
             margin-bottom: 24px;
             position: relative;
         }
-        .theme-toggle-btn {
+        .top-controls {
             position: absolute;
             top: 0;
             right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        .theme-toggle-btn {
             background: var(--box-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             transition: all 0.2s;
         }
@@ -430,7 +440,11 @@
 
 <div class="container">
     <div class="header-container">
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light Mode</button>
+        <div class="top-controls">
+            <button class="theme-toggle-btn" onclick="promptBgUpload()">🖼️ BG Image</button>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light Mode</button>
+            <input type="file" id="bgFileInput" accept="image/*" style="display:none" onchange="uploadBgImage(event)">
+        </div>
         <div class="shield-icon">🛡️</div>
         <h1>Execution Guidance (EG)</h1>
     </div>
@@ -521,6 +535,7 @@
         meta: [],
         brokerEquity: [0],
         theme: 'dark',
+        bgImage: null,
         editsRemaining: 2,
         passCriteria: DEFAULT_PASS_CRITERIA,
         avoidCriteria: DEFAULT_AVOID_CRITERIA
@@ -530,6 +545,7 @@
     let tradeMeta = appData.meta;
     let brokerEquity = appData.brokerEquity || [0];
     let currentTheme = appData.theme || 'dark';
+    let bgImage = appData.bgImage || null;
     let editsRemaining = appData.editsRemaining !== undefined ? appData.editsRemaining : 2;
     let passCriteria = appData.passCriteria || DEFAULT_PASS_CRITERIA;
     let avoidCriteria = appData.avoidCriteria || DEFAULT_AVOID_CRITERIA;
@@ -540,6 +556,33 @@
     if (currentTheme === 'light') {
         document.body.classList.add('light-mode');
         document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+    }
+
+    if (bgImage) {
+        document.body.style.backgroundImage = `url(${bgImage})`;
+    }
+
+    function promptBgUpload() {
+        if (bgImage && confirm("Would you like to remove your custom background? Click OK to remove, or Cancel to choose a new photo.")) {
+            bgImage = null;
+            document.body.style.backgroundImage = 'none';
+            persistAndRefresh();
+            return;
+        }
+        document.getElementById('bgFileInput').click();
+    }
+
+    function uploadBgImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            bgImage = e.target.result;
+            document.body.style.backgroundImage = `url(${bgImage})`;
+            persistAndRefresh();
+        };
+        reader.readAsDataURL(file);
     }
 
     function updateEditBadge() {
@@ -801,6 +844,7 @@
             meta: tradeMeta, 
             brokerEquity: brokerEquity,
             theme: currentTheme,
+            bgImage: bgImage,
             editsRemaining: editsRemaining,
             passCriteria: passCriteria,
             avoidCriteria: avoidCriteria
@@ -855,6 +899,7 @@
             meta: tradeMeta, 
             brokerEquity: brokerEquity, 
             theme: currentTheme,
+            bgImage: bgImage,
             editsRemaining: editsRemaining,
             passCriteria: passCriteria,
             avoidCriteria: avoidCriteria
@@ -884,9 +929,12 @@
                     tradeMeta = imported.meta;
                     brokerEquity = imported.brokerEquity || [0];
                     currentTheme = imported.theme || 'dark';
+                    bgImage = imported.bgImage || null;
                     editsRemaining = imported.editsRemaining !== undefined ? imported.editsRemaining : 2;
                     passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
                     avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+                    if (bgImage) document.body.style.backgroundImage = `url(${bgImage})`;
+                    else document.body.style.backgroundImage = 'none';
                     persistAndRefresh();
                     alert("Imported successfully!");
                 }
@@ -902,6 +950,8 @@
             scores = [0];
             tradeMeta = [];
             brokerEquity = [0];
+            bgImage = null;
+            document.body.style.backgroundImage = 'none';
             editsRemaining = 2;
             passCriteria = DEFAULT_PASS_CRITERIA;
             avoidCriteria = DEFAULT_AVOID_CRITERIA;
