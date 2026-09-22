@@ -2,59 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Execution Guidance (EG)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --container-bg: #191919;
-            --box-bg: #212121;
-            --box-inner: #161616;
-            --text-color: #e0e0e0;
+            --bg-color: #0b0f17;
+            --container-bg: #111827;
+            --box-bg: #1f2937;
+            --box-inner: #111827;
+            --text-color: #f3f4f6;
             --title-color: #ffffff;
-            --border-color: #2d2d2d;
-            --muted-text: #aaa;
-            --accent-blue: #2b5af0;
-            --accent-green: #00cc66;
+            --border-color: #374151;
+            --muted-text: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
+            --accent-green: #10b981;
+            --accent-green-hover: #059669;
             --accent-red: #ef4444;
-            --accent-yellow: #eab308;
+            --accent-yellow: #f59e0b;
         }
 
         body.light-mode {
-            --bg-color: #f4f6f8;
+            --bg-color: #f3f4f6;
             --container-bg: #ffffff;
-            --box-bg: #f8fafc;
-            --box-inner: #edf2f7;
-            --text-color: #2d3748;
-            --title-color: #1a202c;
-            --border-color: #e2e8f0;
-            --muted-text: #718096;
-            --accent-blue: #3182ce;
-            --accent-green: #38a169;
-            --accent-red: #e53e3e;
+            --box-bg: #f9fafb;
+            --box-inner: #ffffff;
+            --text-color: #1f2937;
+            --title-color: #111827;
+            --border-color: #e5e7eb;
+            --muted-text: #6b7280;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --accent-green: #059669;
+            --accent-green-hover: #047857;
+            --accent-red: #dc2626;
             --accent-yellow: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body { 
             background-color: var(--bg-color); 
             color: var(--text-color); 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            padding: 25px; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            padding: 40px 20px; 
             transition: background-color 0.3s, color 0.3s;
+            margin: 0;
         }
         .container { 
-            max-width: 700px; 
+            max-width: 740px; 
             margin: 0 auto; 
             background: var(--container-bg); 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+            padding: 32px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3); 
             border: 1px solid var(--border-color); 
             transition: background-color 0.3s, border-color 0.3s;
         }
         .header-container {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
             position: relative;
         }
         .theme-toggle-btn {
@@ -64,44 +77,48 @@
             background: var(--box-bg);
             color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
+            transition: all 0.2s;
+        }
+        .theme-toggle-btn:hover {
+            border-color: var(--accent-blue);
         }
         .shield-icon {
-            font-size: 28px;
-            margin-bottom: 5px;
+            font-size: 32px;
+            margin-bottom: 8px;
             display: inline-block;
         }
         h1 { 
             color: var(--title-color); 
             font-size: 24px; 
             margin: 0; 
-            font-weight: 700; 
-            line-height: 1.3;
+            font-weight: 800; 
+            letter-spacing: -0.02em;
         }
         
-        /* Notice & Warning Box */
         .notice-banner {
-            background: rgba(234, 179, 8, 0.12);
-            border: 1px solid var(--accent-yellow);
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
             color: var(--accent-yellow);
             padding: 12px 16px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
         .edits-left-badge {
             background: var(--accent-yellow);
-            color: #121212;
-            padding: 3px 8px;
+            color: #0b0f17;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 11px;
             font-weight: 800;
@@ -112,24 +129,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0 10px 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
         }
         .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--title-color);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-blue);
         }
         .btn-edit-criteria {
             background: var(--box-bg);
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-            padding: 4px 10px;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
             font-size: 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-edit-criteria:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
         }
         .btn-edit-criteria:disabled {
             opacity: 0.4;
@@ -142,19 +165,22 @@
             background: var(--box-bg); 
             padding: 14px 18px; 
             border-radius: 10px; 
-            margin-bottom: 12px; 
+            margin-bottom: 10px; 
             display: flex; 
             align-items: center; 
-            border: 2px solid var(--accent-blue); 
+            border: 1px solid var(--border-color); 
             transition: all 0.2s ease; 
         }
-        .criterion.avoid-criterion {
-            border: 2px solid var(--accent-red);
+        .criterion:hover {
+            border-color: var(--accent-blue);
+        }
+        .criterion.avoid-criterion:hover {
+            border-color: var(--accent-red);
         }
         input[type="checkbox"] { 
-            width: 20px; 
-            height: 20px; 
-            margin-right: 18px; 
+            width: 18px; 
+            height: 18px; 
+            margin-right: 14px; 
             cursor: pointer; 
             accent-color: var(--accent-green); 
             flex-shrink: 0;
@@ -166,153 +192,172 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .criterion-input-title, .criterion-input-desc {
             background: var(--box-inner);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px 10px;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 13px;
             width: 100%;
-            box-sizing: border-box;
         }
         label { 
-            font-size: 14px; 
+            font-size: 13px; 
             cursor: pointer; 
             line-height: 1.5; 
-            color: var(--text-color); 
+            color: var(--muted-text); 
         }
         label strong {
             color: var(--title-color);
+            font-weight: 700;
         }
         .btn-add-item {
             width: 100%;
-            background: var(--box-bg);
+            background: transparent;
             color: var(--accent-blue);
             border: 1px dashed var(--accent-blue);
-            padding: 8px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 8px;
             font-size: 13px;
             cursor: pointer;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             font-weight: 600;
         }
 
         .trade-meta-box {
             background: var(--box-bg);
-            padding: 16px 20px;
-            border-radius: 10px;
-            margin-top: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
             border: 1px solid var(--border-color);
         }
         .trade-meta-box label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: var(--accent-blue);
+            color: var(--title-color);
+            font-size: 13px;
         }
         .trade-meta-box textarea {
             width: 100%;
             background: var(--box-inner);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 8px;
             color: var(--text-color);
-            padding: 10px;
+            padding: 12px;
             font-family: inherit;
             resize: vertical;
             height: 70px;
-            box-sizing: border-box;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .trade-meta-box textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
         }
         .trade-meta-box input[type="file"] {
             color: var(--muted-text);
-            font-size: 13px;
+            font-size: 12px;
         }
+
         .action-row {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
         .btn-log { 
             flex: 1;
-            padding: 15px; 
-            background-color: var(--box-inner); 
-            border: none; 
-            border-radius: 8px; 
+            padding: 14px; 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
             color: var(--muted-text); 
-            font-size: 15px; 
-            font-weight: bold; 
+            font-size: 14px; 
+            font-weight: 700; 
             cursor: not-allowed; 
             transition: all 0.2s; 
         }
         .btn-log.active-pass {
             background-color: var(--accent-green);
-            color: #fff;
+            color: #ffffff;
+            border-color: var(--accent-green);
             cursor: pointer;
+        }
+        .btn-log.active-pass:hover {
+            background-color: var(--accent-green-hover);
         }
         .btn-log.active-avoid {
             background-color: var(--accent-red);
-            color: #fff;
+            color: #ffffff;
+            border-color: var(--accent-red);
             cursor: pointer;
         }
+
         .data-sync-row {
             display: flex;
             gap: 10px;
             margin-top: 20px;
-            flex-wrap: wrap;
         }
         .btn-sync {
             flex: 1;
             background-color: var(--box-bg);
-            color: var(--accent-blue);
-            border: 1px solid var(--accent-blue);
-            padding: 10px;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
             font-size: 12px;
-            border-radius: 6px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
-            min-width: 140px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         .btn-sync:hover {
-            background-color: rgba(43, 90, 240, 0.1);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
         }
+
         .btn-reset { 
             width: 100%; 
             background-color: transparent; 
             color: var(--accent-red); 
-            border: 1px solid var(--accent-red); 
-            margin-top: 15px; 
-            padding: 8px; 
+            border: 1px dashed var(--accent-red); 
+            margin-top: 20px; 
+            padding: 10px; 
             font-size: 12px; 
-            border-radius: 6px; 
+            font-weight: 600;
+            border-radius: 8px; 
             cursor: pointer; 
-            opacity: 0.7; 
-            transition: opacity 0.2s; 
+            opacity: 0.8; 
+            transition: all 0.2s; 
         }
         .btn-reset:hover { 
             opacity: 1; 
-            background-color: rgba(239, 68, 68, 0.08); 
+            background-color: rgba(239, 68, 68, 0.1); 
         }
+
         .chart-container { 
-            margin-top: 25px; 
-            background: var(--box-inner); 
-            padding: 15px; 
-            border-radius: 8px; 
+            margin-top: 24px; 
+            background: var(--box-bg); 
+            padding: 16px; 
+            border-radius: 12px; 
             border: 1px solid var(--border-color); 
         }
         .log-history-list {
             margin-top: 20px;
-            background: var(--box-inner);
-            padding: 15px;
-            border-radius: 8px;
+            background: var(--box-bg);
+            padding: 16px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            max-height: 200px;
+            max-height: 220px;
             overflow-y: auto;
         }
         .log-item {
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
             font-size: 13px;
         }
@@ -321,25 +366,26 @@
         }
 
         .judgement-box {
-            margin-top: 25px;
+            margin-top: 24px;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             background: var(--box-bg);
-            border: 2px solid var(--border-color);
+            border: 1px solid var(--border-color);
             text-align: center;
         }
         .judgement-badge {
             display: inline-block;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 800;
-            padding: 8px 16px;
+            padding: 6px 16px;
             border-radius: 20px;
             margin-top: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .badge-edge { background: rgba(0,204,102,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
-        .badge-no-edge { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        .badge-gambler { background: rgba(234,179,8,0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+        .badge-edge { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-no-edge { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .badge-gambler { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
 
         .modal {
             display: none;
@@ -354,31 +400,29 @@
             justify-content: center;
         }
         .modal-content {
-            background: var(--box-bg);
-            padding: 15px;
-            border-radius: 8px;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 12px;
             max-width: 90%;
             max-height: 90%;
             text-align: center;
             border: 1px solid var(--border-color);
-            box-shadow: 0 5px 25px rgba(0,0,0,0.9);
         }
         .modal-content img {
             max-width: 100%;
-            max-height: 75vh;
-            border-radius: 4px;
+            max-height: 70vh;
+            border-radius: 8px;
             display: block;
-            margin: 0 auto;
+            margin: 0 auto 12px auto;
         }
         .close-modal {
-            margin-top: 10px;
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 6px 15px;
-            border-radius: 4px;
+            padding: 8px 18px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -391,7 +435,7 @@
         <h1>Execution Guidance (EG)</h1>
     </div>
 
-    <!-- Rule Notification Banner -->
+    <!-- Notice Banner -->
     <div class="notice-banner">
         <span>⚠️ Notice: Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
         <span class="edits-left-badge" id="editsLeftBadge">2 Edits Left</span>
@@ -439,9 +483,9 @@
     </div>
 
     <div class="judgement-box" id="judgementBox">
-        <div style="font-size: 13px; font-weight: 600; color: var(--muted-text);">SYSTEM & EXECUTION EVALUATION</div>
+        <div style="font-size: 12px; font-weight: 700; color: var(--muted-text); letter-spacing: 0.05em; text-transform: uppercase;">System & Execution Assessment</div>
         <div id="judgementBadge" class="judgement-badge badge-gambler">Awaiting Data</div>
-        <div id="judgementDesc" style="font-size: 13px; margin-top: 8px; color: var(--text-color);">Upload broker CSV trades and log execution records to generate assessment.</div>
+        <div id="judgementDesc" style="font-size: 13px; margin-top: 10px; color: var(--muted-text);">Upload broker CSV trades and log execution records to generate assessment.</div>
     </div>
 
     <div class="log-history-list" id="tradeHistoryLog">
@@ -451,10 +495,10 @@
     <button class="btn-reset" onclick="resetChart()">Clear Data & Reset Graph</button>
 </div>
 
-<!-- Image Viewer Modal Popup -->
+<!-- Image Modal -->
 <div id="imageModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="modalTitle" style="margin-top:0; color: var(--title-color);"></h3>
+        <h3 id="modalTitle" style="margin-top:0; color: var(--title-color); font-size: 16px;"></h3>
         <img id="modalImage" src="" alt="Chart Screenshot">
         <button class="close-modal" onclick="closeModal()">Close Preview</button>
     </div>
@@ -519,7 +563,7 @@
                         <input type="text" class="criterion-input-title" id="p_title_${idx}" value="${item.title}">
                         <input type="text" class="criterion-input-desc" id="p_desc_${idx}" value="${item.desc}">
                     ` : `
-                        <label for="c_${idx}"><strong>${item.title}:</strong>${item.desc}</label>
+                        <label for="c_${idx}"><strong>${item.title}:</strong>&nbsp;${item.desc}</label>
                     `}
                 </div>
             </div>
@@ -534,7 +578,7 @@
                         <input type="text" class="criterion-input-title" id="a_title_${idx}" value="${item.title}">
                         <input type="text" class="criterion-input-desc" id="a_desc_${idx}" value="${item.desc}">
                     ` : `
-                        <label for="a_${idx}"><strong>${item.title}:</strong>${item.desc}</label>
+                        <label for="a_${idx}"><strong>${item.title}:</strong>&nbsp;${item.desc}</label>
                     `}
                 </div>
             </div>
@@ -545,7 +589,7 @@
 
     function toggleEditMode(type) {
         if (editsRemaining <= 0) {
-            alert("No edits remaining! You have reached the maximum limit of 2 criteria renewals to protect your system sample validity.");
+            alert("No edits remaining! Maximum limit reached to preserve sample size validity.");
             return;
         }
 
@@ -590,14 +634,14 @@
 
         editsRemaining--;
         persistAndRefresh();
-        alert(`Criteria updated! You have ${editsRemaining} criteria edit(s) remaining.`);
+        alert(`Criteria updated! ${editsRemaining} edit(s) remaining.`);
     }
 
     function addNewCriterion(type) {
         if (type === 'pass') {
-            passCriteria.push({ title: "New Rule", desc: "Enter description here..." });
+            passCriteria.push({ title: "New Rule", desc: "Enter description..." });
         } else {
-            avoidCriteria.push({ title: "New Avoid Rule", desc: "Enter description here..." });
+            avoidCriteria.push({ title: "New Avoid Rule", desc: "Enter description..." });
         }
         renderChecklists();
     }
@@ -671,12 +715,11 @@
 
         persistAndRefresh();
 
-        // Reset inputs
         document.querySelectorAll('.pass-check, .avoid-check').forEach(cb => cb.checked = false);
         document.getElementById('tradeNote').value = '';
         document.getElementById('tradeScreenshot').value = '';
         validateChecklists();
-        alert(`Recorded successfully! (${actionLabel})`);
+        alert(`Logged! (${actionLabel})`);
     }
 
     function importCsvPrompt() {
@@ -705,7 +748,7 @@
 
             brokerEquity = equityPoints;
             persistAndRefresh();
-            alert("Broker CSV trade records successfully uploaded and equity curve mapped!");
+            alert("Broker CSV data imported!");
         };
         reader.readAsText(file);
     }
@@ -738,16 +781,16 @@
         else if (disciplinePct >= 80 && equityGrowth < 0) {
             badge.className = "judgement-badge badge-no-edge";
             badge.innerText = "SYSTEM DOES NOT HAVE AN EDGE";
-            desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but broker equity curve is declining. System lacks a statistical edge.`;
+            desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but equity curve is declining. System lacks a statistical edge.`;
         } 
         else if (disciplinePct >= 75 && equityGrowth >= 0) {
             badge.className = "judgement-badge badge-edge";
             badge.innerText = "PROFITABLE EDGE";
-            desc.innerText = `Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth. Retain current system parameters.`;
+            desc.innerText = `Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth.`;
         } 
         else {
             badge.className = "judgement-badge badge-gambler";
-            badge.innerText = "INSUFFICIENT DISCIPLINE / MIXED RESULTS";
+            badge.innerText = "MIXED RESULTS";
             desc.innerText = "Execution discipline needs tightening to render an accurate system edge diagnosis.";
         }
     }
@@ -819,7 +862,7 @@
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateBundle));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "donchian_filtered_backup.json");
+        downloadAnchor.setAttribute("download", "execution_guidance_backup.json");
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
@@ -845,19 +888,17 @@
                     passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
                     avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
                     persistAndRefresh();
-                    alert("Complete history, criteria settings, and equity metrics imported successfully!");
-                } else {
-                    alert("Invalid backup format.");
+                    alert("Imported successfully!");
                 }
             } catch (err) {
-                alert("Error reading backup file.");
+                alert("Error reading file.");
             }
         };
         reader.readAsText(file);
     }
 
     function resetChart() {
-        if(confirm("Reset all historical records, broker equity, criteria edits, notes, and screenshots? This cannot be undone.")) {
+        if(confirm("Reset all historical records and settings?")) {
             scores = [0];
             tradeMeta = [];
             brokerEquity = [0];
@@ -877,21 +918,21 @@
                 {
                     label: 'Discipline Score Points',
                     data: scores,
-                    borderColor: '#00cc66',
-                    backgroundColor: 'rgba(0, 204, 102, 0.05)',
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.08)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.1,
+                    tension: 0.2,
                     yAxisID: 'y'
                 },
                 {
-                    label: 'Broker Account Equity Curve ($)',
+                    label: 'Broker Account Equity ($)',
                     data: brokerEquity,
-                    borderColor: '#2b5af0',
-                    backgroundColor: 'rgba(43, 90, 240, 0.05)',
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.08)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.1,
+                    tension: 0.2,
                     yAxisID: 'y1'
                 }
             ]
@@ -903,7 +944,7 @@
                     type: 'linear',
                     display: true,
                     position: 'left',
-                    grid: { color: 'rgba(150, 150, 150, 0.15)' },
+                    grid: { color: 'rgba(150, 150, 150, 0.1)' },
                     title: { display: true, text: 'Discipline Score' }
                 },
                 y1: { 
@@ -911,9 +952,9 @@
                     display: true,
                     position: 'right',
                     grid: { drawOnChartArea: false },
-                    title: { display: true, text: 'Broker Equity ($)' }
+                    title: { display: true, text: 'Equity ($)' }
                 },
-                x: { grid: { color: 'rgba(150, 150, 150, 0.15)' } }
+                x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
             }
         }
     });
