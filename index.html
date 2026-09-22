@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,28 +30,17 @@
             --accent-hover: #1d4ed8;
             --accent-glow: rgba(37, 99, 235, 0.3);
         }
-        .dynamic-accent {
-            color: var(--accent-color) !important;
-        }
-        .dynamic-bg {
-            background-color: var(--accent-color) !important;
-        }
-        .dynamic-bg:hover {
-            background-color: var(--accent-hover) !important;
-        }
-        .dynamic-border {
-            border-color: var(--accent-color) !important;
-        }
-        .dynamic-shadow {
-            box-shadow: 0 10px 25px -5px var(--accent-glow) !important;
-        }
-        .dynamic-ring:focus {
-            --tw-ring-color: var(--accent-color) !important;
-        }
+        .dynamic-accent { color: var(--accent-color) !important; }
+        .dynamic-bg { background-color: var(--accent-color) !important; }
+        .dynamic-bg:hover { background-color: var(--accent-hover) !important; }
+        .dynamic-border { border-color: var(--accent-color) !important; }
+        .dynamic-shadow { box-shadow: 0 10px 25px -5px var(--accent-glow) !important; }
+        .dynamic-ring:focus { --tw-ring-color: var(--accent-color) !important; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between antialiased transition-colors duration-300">
 
+    <!-- Header -->
     <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0e1422]/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -71,7 +60,7 @@
             </div>
 
             <div class="flex items-center space-x-3">
-                <!-- Color Theme Customizer -->
+                <!-- Theme Color Selector -->
                 <div class="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-full text-xs shadow-inner">
                     <span class="text-slate-500 dark:text-slate-400 text-[10px] font-semibold uppercase tracking-wider mr-1">Theme:</span>
                     <button onclick="setThemeColor('#2563eb', '#1d4ed8', 'rgba(37, 99, 235, 0.3)')" class="w-4 h-4 rounded-full bg-blue-600 hover:scale-110 transition ring-offset-1 focus:ring-2 focus:ring-blue-500" title="Blue"></button>
@@ -84,7 +73,7 @@
 
                 <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-medium">10:21:16 EST</span>
+                    <span class="font-medium" id="live-clock">10:21:16 EST</span>
                 </div>
                 
                 <button class="relative text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -92,7 +81,6 @@
                     <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
                 </button>
                 
-                <!-- Day/Night Toggle Button -->
                 <button id="darkModeToggle" onclick="toggleDarkMode()" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                     <i id="themeIcon" class="fa-solid fa-sun"></i>
                 </button>
@@ -100,9 +88,11 @@
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+        
+        <!-- Top Workspace Banner -->
         <div class="bg-gradient-to-b from-white to-slate-100 dark:from-[#162035] dark:to-[#111827] border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-colors duration-300">
-            <!-- Decorative background glow -->
             <div class="absolute -top-24 -right-24 w-96 h-96 dynamic-bg opacity-10 rounded-full blur-3xl pointer-events-none transition-all duration-300"></div>
             
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 relative z-10">
@@ -123,8 +113,8 @@
                 </div>
             </div>
 
+            <!-- Top Metric Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-                <!-- Compliance Card -->
                 <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Compliance</span>
                     <div class="flex items-baseline space-x-2">
@@ -135,7 +125,6 @@
                     </div>
                 </div>
 
-                <!-- Discipline Score Card -->
                 <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Discipline Score</span>
                     <div class="flex items-baseline space-x-2">
@@ -147,7 +136,6 @@
                     </div>
                 </div>
 
-                <!-- Logged Trades Card -->
                 <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Logged Trades</span>
                     <div class="flex items-baseline space-x-2">
@@ -159,7 +147,6 @@
                     </div>
                 </div>
 
-                <!-- CSV Realized PNL Card -->
                 <div class="bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 backdrop-blur-sm flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">CSV Realized PNL</span>
                     <div class="flex items-baseline space-x-2">
@@ -173,7 +160,8 @@
             </div>
         </div>
 
-        <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Middle Section: Checklist & Safety Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 bg-white dark:bg-[#121929] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-semibold text-slate-900 dark:text-slate-200 text-lg flex items-center gap-2">
@@ -221,8 +209,76 @@
                 </div>
             </div>
         </div>
+
+        <!-- Restored Additional Sections/Modules -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Active Trade Execution Feed Module -->
+            <div class="bg-white dark:bg-[#121929] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-slate-900 dark:text-slate-200 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-wave-square dynamic-accent"></i> Execution Feed & Rules Monitor
+                    </h3>
+                    <span class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2.5 py-1 rounded font-medium">Live Stream</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <div>
+                                <p class="font-medium text-slate-800 dark:text-slate-200">EURUSD - Order Validation</p>
+                                <p class="text-xs text-slate-500">Spread: 0.8 pips (Within maximum limit)</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">Passed</span>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-sm">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <div>
+                                <p class="font-medium text-slate-800 dark:text-slate-200">US30 - Risk Size Parameter</p>
+                                <p class="text-xs text-slate-500">Fixed risk-to-reward model active (1:2)</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">Validated</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk & Session Metrics Log Module -->
+            <div class="bg-white dark:bg-[#121929] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm transition-colors duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-slate-900 dark:text-slate-200 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie dynamic-accent"></i> Session Risk Summary
+                    </h3>
+                    <span class="text-xs text-slate-500 font-medium">Daily Limit: 2.0%</span>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-600 dark:text-slate-400 mb-1.5">
+                            <span>Current Drawdown Utilization</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-200">0.00% / 2.00% Max</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                            <div class="bg-blue-500 h-full rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <span class="text-[11px] uppercase tracking-wider text-slate-500">Max Allowed Lots</span>
+                            <p class="text-base font-bold text-slate-800 dark:text-slate-100 mt-0.5">1.50 Lots</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                            <span class="text-[11px] uppercase tracking-wider text-slate-500">Trailing Stop Lock</span>
+                            <p class="text-base font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Enabled</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
+    <!-- Footer -->
     <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p>&copy; 2026 TraderWellPower / EG Platform. All rights reserved. Personal discipline tool only.</p>
@@ -291,7 +347,7 @@
             localStorage.setItem('accentGlow', glowColor);
         }
 
-        // Initialize theme preferences
+        // Initialize theme preferences & restore state
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const icon = document.getElementById('themeIcon');
