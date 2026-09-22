@@ -6,21 +6,21 @@
   <title>Execution Guidance (EG)</title>
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: rgba(30, 41, 59, 0.85);
-      --card-border: #334155;
-      --text-main: #f8fafc;
+      --bg-color: #0d131f;
+      --card-bg: rgba(22, 32, 50, 0.9);
+      --card-border: #2a3a52;
+      --text-main: #f1f5f9;
       --text-muted: #94a3b8;
       --accent-blue: #38bdf8;
       --accent-green: #22c55e;
       --accent-red: #ef4444;
       --accent-amber: #f59e0b;
-      --sidebar-bg: #1e293b;
+      --sidebar-bg: #151e2d;
     }
 
     body.light-mode {
       --bg-color: #f1f5f9;
-      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.95);
       --card-border: #cbd5e1;
       --text-main: #0f172a;
       --text-muted: #64748b;
@@ -65,18 +65,25 @@
       gap: 1rem;
     }
 
-    .hamburger {
-      font-size: 1.5rem;
+    .hamburger-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
       cursor: pointer;
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      padding: 0.5rem;
-      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
     }
 
-    .hamburger:hover {
-      background: rgba(255, 255, 255, 0.1);
+    .hamburger-btn:hover {
+      background: var(--accent-blue);
+      color: #000;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
 
     .brand-logo {
@@ -97,7 +104,7 @@
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 0.5rem 1rem;
@@ -108,7 +115,7 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.18);
     }
 
     .sidebar-overlay {
@@ -117,7 +124,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(4px);
       z-index: 200;
       opacity: 0;
@@ -133,8 +140,8 @@
     .sidebar {
       position: fixed;
       top: 0;
-      left: -420px;
-      width: 400px;
+      left: -440px;
+      width: 420px;
       height: 100vh;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--card-border);
@@ -145,7 +152,7 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
     }
 
     .sidebar.active {
@@ -169,7 +176,7 @@
     }
 
     .sidebar-section {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.15);
       border-radius: 8px;
       padding: 1rem;
       border: 1px solid var(--card-border);
@@ -177,7 +184,8 @@
 
     .sidebar-section.highlighted {
       border: 2px solid var(--accent-amber);
-      background: rgba(245, 158, 11, 0.05);
+      background: rgba(245, 158, 11, 0.08);
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
     }
 
     .sidebar-section h3 {
@@ -198,29 +206,33 @@
     }
 
     .affiliate-btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       width: 100%;
       text-align: center;
-      padding: 0.6rem 1rem;
+      padding: 0.75rem 1rem;
       margin-top: 0.75rem;
       background: var(--accent-green);
-      color: white;
+      color: #ffffff;
       text-decoration: none;
       font-weight: bold;
       border-radius: 6px;
-      transition: background 0.2s;
+      transition: transform 0.2s, background 0.2s;
     }
 
     .affiliate-btn:hover {
       background: #16a34a;
+      transform: translateY(-2px);
     }
 
     .affiliate-btn.mexc {
-      background: var(--accent-blue);
+      background: #0284c7;
     }
 
     .affiliate-btn.mexc:hover {
-      background: #0284c7;
+      background: #0369a1;
     }
 
     .pdf-link {
@@ -368,7 +380,7 @@
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
-      background: rgba(0,0,0,0.1);
+      background: rgba(0, 0, 0, 0.15);
       padding: 0.75rem;
       border-radius: 6px;
       font-size: 0.875rem;
@@ -450,7 +462,7 @@
     }
 
     .history-table th {
-      background: rgba(0,0,0,0.2);
+      background: rgba(0, 0, 0, 0.2);
     }
 
     .chart-thumbnail {
@@ -468,7 +480,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 300;
       display: flex;
       justify-content: center;
@@ -487,7 +499,7 @@
       max-width: 90%;
       max-height: 90%;
       border-radius: 8px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     }
   </style>
 </head>
@@ -495,7 +507,9 @@
 
   <header>
     <div class="header-left">
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <button class="hamburger-btn" onclick="toggleSidebar()">
+        <span>☰</span> Menu & Brokers
+      </button>
       <div class="brand-logo">
         <span>🛡️</span> Execution Guidance (EG)
       </div>
@@ -507,7 +521,7 @@
   </header>
 
   <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
-  
+
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <h2>Trading Knowledge Base</h2>
@@ -516,28 +530,35 @@
 
     <!-- Broker Information Section -->
     <div class="sidebar-section highlighted">
-      <h3 style="color: var(--accent-amber);">⚠️ Brokers & Execution Model</h3>
-      <p><strong>Market Maker (B-Book) vs. ECN/STP Broker:</strong></p>
+      <h3 style="color: var(--accent-amber);">⚠️ CFD Brokers: Market Maker vs. ECN</h3>
+      <p><strong>Why Market Makers (B-Book) Are NOT Recommended:</strong></p>
       <ul>
-        <li><strong>Market Maker:</strong> Takes the opposing side of your trade. If you win, they lose. This introduces a structural conflict of interest, often leading to artificial slippage, wider spreads during volatility, or re-quotes.</li>
-        <li><strong>ECN Broker (True Direct Market Access):</strong> Routes orders directly to liquidity providers (banks/institutions). They profit purely on a fixed commission or tight spread, aligning their interests with reliable execution.</li>
+        <li><strong>Conflict of Interest:</strong> Market Makers take the opposite side of your trade. If you win, they lose money. This creates an inherent incentive for them to manipulate spreads, induce slippage, or re-quote orders during critical moments.</li>
+        <li><strong>Artificial Spreads:</strong> They control price feeds internally rather than connecting directly to the interbank market.</li>
       </ul>
-      <p style="margin-top: 0.5rem; font-weight: bold; color: var(--text-main);">Recommended Execution Platforms:</p>
       
+      <p style="margin-top: 0.75rem;"><strong>Why ECN Brokers Are Recommended:</strong></p>
+      <ul>
+        <li><strong>Direct Market Access:</strong> ECN (Electronic Communication Network) brokers route your orders straight to Tier-1 banks and liquidity providers.</li>
+        <li><strong>No Conflict:</strong> They make money exclusively on a transparent fixed commission or tight spread, meaning they benefit when you trade effectively.</li>
+      </ul>
+
+      <p style="margin-top: 1rem; font-weight: bold; color: var(--text-main);">Recommended Execution Brokers:</p>
+
       <!-- IC Markets Referral Link -->
-      <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" class="affiliate-btn">
-        📈 Trade Forex/CFDs with IC Markets
+      <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" rel="noopener" class="affiliate-btn">
+        📈 Trade Forex & CFDs on IC Markets
       </a>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-        <em>Benefits: Raw ECN Spreads from 0.0 pips, deep liquidity, and institutional-grade order matching.</em>
+        <em>Benefits: True Raw ECN Spreads from 0.0 pips, institutional liquidity, fast order execution.</em>
       </p>
 
       <!-- MEXC Referral Link -->
-      <a href="https://s.mexc.com/referral/rxBi11tniN" target="_blank" class="affiliate-btn mexc">
+      <a href="https://s.mexc.com/referral/rxBi11tniN" target="_blank" rel="noopener" class="affiliate-btn mexc">
         🚀 Trade Crypto on MEXC (Code: 44wXf)
       </a>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-        <em>Benefits: Lowest maker/taker fees, massive altcoin liquidity, and up to $140+ in welcome rewards.</em>
+        <em>Benefits: Industry-leading lowest fees, deep crypto altcoin market depth, and up to $140+ in signup rewards.</em>
       </p>
     </div>
 
@@ -545,7 +566,7 @@
     <div class="sidebar-section">
       <h3>Recommended Reading</h3>
       <p>Master the psychological foundation of market expectations.</p>
-      <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" class="pdf-link">
+      <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" rel="noopener" class="pdf-link">
         📖 Read Trading in the Zone (PDF)
       </a>
     </div>
@@ -578,18 +599,15 @@
       <p>A statistical advantage over the market that produces a positive expected value (EV) across a large sample size of trades.</p>
       <br>
       <p><strong>Impact of Execution:</strong></p>
-      <p>Even the best edge fails if execution is poor (e.g., chasing trades, early exits, emotional entries). Perfect execution bridges strategy to profitability.</p>
+      <p>Even the best edge fails if execution is poor. Disciplined execution bridges strategy to long-term profitability.</p>
     </div>
 
     <!-- Mission Quote -->
     <div class="sidebar-section">
       <div class="quote-box">
-        "A profitable trading system is easy to find, but hard to follow. Most traders fail not because the strategy is wrong, but because they lack patience to stick with it. Quick profits lead to overtrading and revenge trades. Consistent profits come from discipline, patience, and trusting the process."
+        "A profitable trading system is easy to find, but hard to follow. Most traders fail not because the strategy is wrong, but because they lack patience to stick with it. Consistent profits come from discipline, patience, and trusting the process."
         <div class="quote-author">- EG Mission Statement</div>
       </div>
-      <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
-        That is why this site is built: to guide and protect traders.
-      </p>
     </div>
   </aside>
 
@@ -777,7 +795,6 @@
       const row = document.createElement('tr');
 
       entries++;
-      let imgTdHtml = '—';
 
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
@@ -790,7 +807,7 @@
         
         reader.readAsDataURL(file);
       } else {
-        renderRow(type, notes, imgTdHtml, table, row);
+        renderRow(type, notes, "—", table, row);
       }
     }
 
