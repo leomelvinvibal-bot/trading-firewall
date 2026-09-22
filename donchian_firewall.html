@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Donchian System Pre-Flight Firewall</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            padding: 25px; 
+        }
+        .container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            background: #191919; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7); 
+            border: 1px solid #2d2d2d; 
+        }
+        .header-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .shield-icon {
+            font-size: 28px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        h1 { 
+            color: #ffffff; 
+            font-size: 24px; 
+            margin: 0; 
+            font-weight: 700; 
+            line-height: 1.3;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+            color: #fff;
+            border-bottom: 1px solid #333;
+            padding-bottom: 5px;
+        }
+        .criterion { 
+            background: #212121; 
+            padding: 16px 20px; 
+            border-radius: 10px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            border: 2px solid #2b5af0; 
+            transition: all 0.2s ease; 
+        }
+        .criterion.avoid-criterion {
+            border: 2px solid #ef4444;
+        }
+        .criterion:hover { 
+            background: #262626; 
+        }
+        input[type="checkbox"] { 
+            width: 20px; 
+            height: 20px; 
+            margin-right: 18px; 
+            cursor: pointer; 
+            accent-color: #00cc66; 
+            flex-shrink: 0;
+        }
+        input[type="checkbox"].avoid-check {
+            accent-color: #ef4444;
+        }
+        label { 
+            font-size: 14px; 
+            cursor: pointer; 
+            line-height: 1.5; 
+            color: #d1d5db; 
+        }
+        label strong {
+            color: #ffffff;
+        }
+        .trade-meta-box {
+            background: #212121;
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid #2d2d2d;
+        }
+        .trade-meta-box label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+        .trade-meta-box textarea {
+            width: 100%;
+            background: #161616;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            resize: vertical;
+            height: 70px;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+        }
+        .trade-meta-box input[type="file"] {
+            color: #aaa;
+            font-size: 13px;
+        }
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-log { 
+            flex: 1;
+            padding: 15px; 
+            background-color: #3a3a3a; 
+            border: none; 
+            border-radius: 8px; 
+            color: #888; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: not-allowed; 
+            transition: all 0.2s; 
+        }
+        .btn-log.active-pass {
+            background-color: #00cc66;
+            color: #fff;
+            cursor: pointer;
+        }
+        .btn-log.active-avoid {
+            background-color: #ef4444;
+            color: #fff;
+            cursor: pointer;
+        }
+        .data-sync-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-sync {
+            flex: 1;
+            background-color: #262626;
+            color: #3b82f6;
+            border: 1px solid #2b5af0;
+            padding: 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-sync:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .btn-reset { 
+            width: 100%; 
+            background-color: transparent; 
+            color: #ef4444; 
+            border: 1px solid #ef4444; 
+            margin-top: 15px; 
+            padding: 8px; 
+            font-size: 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            opacity: 0.5; 
+            transition: opacity 0.2s; 
+        }
+        .btn-reset:hover { 
+            opacity: 1; 
+            background-color: rgba(239, 68, 68, 0.08); 
+        }
+        .chart-container { 
+            margin-top: 25px; 
+            background: #161616; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #2d2d2d; 
+        }
+        .log-history-list {
+            margin-top: 20px;
+            background: #161616;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2d2d2d;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #252525;
+            font-size: 13px;
+        }
+        .log-item:last-child {
+            border-bottom: none;
+        }
+        /* Modal Popup Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+            border: 1px solid #444;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.9);
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 4px;
+            display: block;
+            margin: 0 auto;
+        }
+        .close-modal {
+            margin-top: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-container">
+        <div class="shield-icon">🛡️</div>
+        <h1>Donchian System<br>Firewall</h1>
+    </div>
+    
+    <div class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</div>
+    <div id="checklist">
+        <div class="criterion">
+            <input type="checkbox" id="c1" class="pass-check" onchange="validateChecklists()">
+            <label for="c1"><strong>Take Profit Target:</strong> Area is explicitly mapped out on the chart.</label>
+        </div>
+        <div class="criterion">
+            <input type="checkbox" id="c2" class="pass-check" onchange="validateChecklists()">
+            <label for="c2"><strong>Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</label>
+        </div>
+        <div class="criterion">
+            <input type="checkbox" id="c3" class="pass-check" onchange="validateChecklists()">
+            <label for="c3"><strong>Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</label>
+        </div>
+        <div class="criterion">
+            <input type="checkbox" id="c4" class="pass-check" onchange="validateChecklists()">
+            <label for="c4"><strong>Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</label>
+        </div>
+    </div>
+
+    <div class="section-title" style="color: #ef4444;">Setup to Avoid (Filtered Out / Patient Pass)</div>
+    <div id="avoidChecklist">
+        <div class="criterion avoid-criterion">
+            <input type="checkbox" id="a1" class="avoid-check" onchange="validateChecklists()">
+            <label for="a1"><strong>Failed Trigger Criteria:</strong> Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure).</label>
+        </div>
+    </div>
+
+    <div class="trade-meta-box">
+        <label for="tradeNote">Trade Note / Reason for Action:</label>
+        <textarea id="tradeNote" placeholder="Enter market context, asset pair, or reason for taking/avoiding the setup..."></textarea>
+        
+        <label for="tradeScreenshot">Attach Chart Screenshot:</label>
+        <input type="file" id="tradeScreenshot" accept="image/*">
+    </div>
+
+    <div class="action-row">
+        <button id="logPassButton" class="btn-log" disabled onclick="logTrade('pass')">Log Compliant (+10)</button>
+        <button id="logAvoidButton" class="btn-log" disabled onclick="logTrade('avoid')">Log Avoided (Discipline +5)</button>
+    </div>
+
+    <div class="data-sync-row">
+        <button class="btn-sync" onclick="exportHistory()">💾 Export History File</button>
+        <button class="btn-sync" onclick="importHistoryPrompt()">📂 Import History File</button>
+        <input type="file" id="importFile" style="display: none;" onchange="importHistory(event)">
+    </div>
+
+    <div class="chart-container">
+        <canvas id="disciplineChart"></canvas>
+    </div>
+
+    <div class="log-history-list" id="tradeHistoryLog">
+        <div style="color: #666; font-size: 13px; text-align: center;">No records logged in this session yet.</div>
+    </div>
+
+    <button class="btn-reset" onclick="resetChart()">Clear Data & Reset Graph</button>
+</div>
+
+<!-- Image Viewer Modal Popup -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img id="modalImage" src="" alt="Chart Screenshot">
+        <button class="close-modal" onclick="closeModal()">Close Preview</button>
+    </div>
+</div>
+
+<script>
+    let appData = JSON.parse(localStorage.getItem('donchianFilteredState')) || {
+        scores: [0],
+        meta: []
+    };
+
+    let scores = appData.scores;
+    let tradeMeta = appData.meta;
+    let labels = scores.map((_, i) => i === 0 ? "Start" : `Log ${i}`);
+
+    function validateChecklists() {
+        const passChecked = ['c1', 'c2', 'c3', 'c4'].every(id => document.getElementById(id).checked);
+        const avoidChecked = document.getElementById('a1').checked;
+
+        const passBtn = document.getElementById('logPassButton');
+        const avoidBtn = document.getElementById('logAvoidButton');
+
+        passBtn.disabled = !passChecked;
+        if (passChecked) passBtn.classList.add('active-pass');
+        else passBtn.classList.remove('active-pass');
+
+        avoidBtn.disabled = !avoidChecked;
+        if (avoidChecked) avoidBtn.classList.add('active-avoid');
+        else avoidBtn.classList.remove('active-avoid');
+    }
+
+    function logTrade(type) {
+        const noteText = document.getElementById('tradeNote').value.trim();
+        const fileInput = document.getElementById('tradeScreenshot');
+        
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                saveRecord(type, noteText, e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            saveRecord(type, noteText, null);
+        }
+    }
+
+    function saveRecord(type, note, imageBase64) {
+        let currentScore = scores[scores.length - 1];
+        let pointsAdded = type === 'pass' ? 10 : 5;
+        let actionLabel = type === 'pass' ? 'Compliant Position' : 'Avoided Setup';
+
+        scores.push(currentScore + pointsAdded);
+        labels.push(`Log ${scores.length - 1}`);
+        
+        tradeMeta.push({
+            id: scores.length - 1,
+            type: type,
+            title: actionLabel,
+            timestamp: new Date().toLocaleString(),
+            note: note || "No notes provided.",
+            image: imageBase64
+        });
+
+        persistAndRefresh();
+
+        // Reset inputs
+        ['c1', 'c2', 'c3', 'c4', 'a1'].forEach(id => document.getElementById(id).checked = false);
+        document.getElementById('tradeNote').value = '';
+        document.getElementById('tradeScreenshot').value = '';
+        validateChecklists();
+        alert(`Recorded successfully! (${actionLabel})`);
+    }
+
+    function persistAndRefresh() {
+        const stateBundle = { scores: scores, meta: tradeMeta };
+        localStorage.setItem('donchianFilteredState', JSON.stringify(stateBundle));
+        
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = scores;
+        chart.update();
+        renderLogHistory();
+    }
+
+    function renderLogHistory() {
+        const container = document.getElementById('tradeHistoryLog');
+        if (tradeMeta.length === 0) {
+            container.innerHTML = `<div style="color: #666; font-size: 13px; text-align: center;">No records logged in this session yet.</div>`;
+            return;
+        }
+        
+        container.innerHTML = tradeMeta.map((item, index) => `
+            <div class="log-item">
+                <strong style="color: ${item.type === 'pass' ? '#00cc66' : '#ef4444'};">${item.title} #${item.id}</strong> (${item.timestamp})<br>
+                <span style="color: #ccc;">Note:</span> ${item.note}
+                ${item.image ? `<br><a href="#" onclick="openModal('${index}'); return false;" style="color: #3b82f6; font-size: 12px; font-weight: 600;">🖼️ View Chart Screenshot</a>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function openModal(index) {
+        const item = tradeMeta[index];
+        if (item && item.image) {
+            document.getElementById('modalImage').src = item.image;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    function exportHistory() {
+        const stateBundle = { scores: scores, meta: tradeMeta };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateBundle));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "donchian_filtered_backup.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function importHistoryPrompt() {
+        document.getElementById('importFile').click();
+    }
+
+    function importHistory(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (imported && Array.isArray(imported.scores) && Array.isArray(imported.meta)) {
+                    scores = imported.scores;
+                    tradeMeta = imported.meta;
+                    labels = scores.map((_, i) => i === 0 ? "Start" : `Log ${i}`);
+                    persistAndRefresh();
+                    alert("Complete history, avoided setups, notes, and screenshots successfully imported!");
+                } else {
+                    alert("Invalid history backup format.");
+                }
+            } catch (err) {
+                alert("Error reading backup file.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function resetChart() {
+        if(confirm("Reset all historical records, notes, and screenshots? This cannot be undone.")) {
+            scores = [0];
+            tradeMeta = [];
+            labels = ["Start"];
+            persistAndRefresh();
+        }
+    }
+
+    const ctx = document.getElementById('disciplineChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Behavioral Discipline Score (%)',
+                data: scores,
+                borderColor: '#00cc66',
+                backgroundColor: 'rgba(0, 204, 102, 0.05)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { grid: { color: '#2d2d2d' }, ticks: { color: '#aaa' }, min: 0 },
+                x: { grid: { color: '#2d2d2d' }, ticks: { color: '#aaa' } }
+            },
+            plugins: { legend: { labels: { color: '#fff' } } }
+        }
+    });
+
+    renderLogHistory();
+</script>
+
+</body>
+</html>
