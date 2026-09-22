@@ -3,36 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Execution Guidance (EG) - Professional</title>
+    <title>Execution Guidance (EG)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #080c14;
-            --container-bg: rgba(15, 23, 42, 0.88);
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-inner: rgba(15, 23, 42, 0.6);
-            --text-color: #f8fafc;
+            --bg-color: #0b0f17;
+            --container-bg: rgba(17, 24, 39, 0.92);
+            --box-bg: rgba(31, 41, 55, 0.85);
+            --box-inner: rgba(17, 24, 39, 0.85);
+            --text-color: #f3f4f6;
             --title-color: #ffffff;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --muted-text: #94a3b8;
+            --border-color: rgba(55, 65, 81, 0.8);
+            --muted-text: #9ca3af;
             --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
             --accent-green: #10b981;
+            --accent-green-hover: #059669;
             --accent-red: #ef4444;
             --accent-yellow: #f59e0b;
         }
 
         body.light-mode {
-            --bg-color: #f1f5f9;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --card-bg: rgba(248, 250, 252, 0.8);
-            --card-inner: rgba(255, 255, 255, 0.9);
-            --text-color: #0f172a;
-            --title-color: #020617;
-            --border-color: rgba(0, 0, 0, 0.08);
-            --muted-text: #64748b;
+            --bg-color: #f3f4f6;
+            --container-bg: rgba(255, 255, 255, 0.92);
+            --box-bg: rgba(249, 250, 251, 0.85);
+            --box-inner: rgba(255, 255, 255, 0.85);
+            --text-color: #1f2937;
+            --title-color: #111827;
+            --border-color: rgba(229, 231, 235, 0.8);
+            --muted-text: #6b7280;
+            --accent-blue: #2563eb;
+            --accent-blue-hover: #1d4ed8;
+            --accent-green: #059669;
+            --accent-green-hover: #047857;
+            --accent-red: #dc2626;
+            --accent-yellow: #d97706;
         }
 
         * { box-sizing: border-box; }
@@ -44,58 +52,288 @@
             background-attachment: fixed;
             color: var(--text-color); 
             font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-            padding: 30px 16px; 
+            padding: 40px 20px; 
+            transition: background-color 0.3s, color 0.3s;
             margin: 0;
             min-height: 100vh;
         }
-
         .container { 
-            max-width: 800px; 
+            max-width: 760px; 
             margin: 0 auto; 
             background: var(--container-bg); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 32px; 
-            border-radius: 20px; 
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4); 
             border: 1px solid var(--border-color); 
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
+        /* KPI Dashboard Bar */
         .kpi-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             margin-bottom: 24px;
         }
-
         .kpi-card {
-            background: var(--card-bg);
+            background: var(--box-bg);
             border: 1px solid var(--border-color);
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 10px;
             text-align: center;
         }
-
         .kpi-val {
             font-size: 20px;
             font-weight: 800;
             color: var(--title-color);
             margin-top: 4px;
         }
-
         .kpi-label {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--muted-text);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .top-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 8px;
+        }
+        .theme-toggle-btn {
+            background: var(--box-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .theme-toggle-btn:hover { border-color: var(--accent-blue); }
+        .shield-icon { font-size: 32px; margin-bottom: 8px; display: inline-block; }
+        h1 { 
+            color: var(--title-color); 
+            font-size: 24px; 
+            margin: 0; 
+            font-weight: 800; 
+            letter-spacing: -0.02em;
+        }
+        
+        .notice-banner {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--accent-yellow);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .edits-left-badge {
+            background: var(--accent-yellow);
+            color: #0b0f17;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-blue);
+        }
+        .btn-edit-criteria {
+            background: var(--box-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-edit-criteria:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .criterion { 
+            background: var(--box-bg); 
+            padding: 14px 18px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            display: flex; 
+            align-items: center; 
+            border: 1px solid var(--border-color); 
+            transition: all 0.2s ease; 
+        }
+        .criterion:hover { border-color: var(--accent-blue); }
+        .criterion.avoid-criterion:hover { border-color: var(--accent-red); }
+        input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+            margin-right: 14px; 
+            cursor: pointer; 
+            accent-color: var(--accent-green); 
+            flex-shrink: 0;
+        }
+        input[type="checkbox"].avoid-check { accent-color: var(--accent-red); }
+        .criterion-content { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .criterion-input-title, .criterion-input-desc {
+            background: var(--box-inner);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+        }
+        label { font-size: 13px; cursor: pointer; line-height: 1.5; color: var(--muted-text); }
+        label strong { color: var(--title-color); font-weight: 700; }
+        
+        .btn-add-item {
+            width: 100%;
+            background: transparent;
+            color: var(--accent-blue);
+            border: 1px dashed var(--accent-blue);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .trade-meta-box {
+            background: var(--box-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .trade-meta-box label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--title-color); font-size: 13px; }
+        .trade-meta-box textarea {
+            width: 100%;
+            background: var(--box-inner);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            padding: 12px;
+            font-family: inherit;
+            resize: vertical;
+            height: 70px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .trade-meta-box textarea:focus { outline: none; border-color: var(--accent-blue); }
+
+        .action-row { display: flex; gap: 12px; margin-top: 20px; }
+        .btn-log { 
+            flex: 1;
+            padding: 14px; 
+            background-color: var(--box-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            color: var(--muted-text); 
+            font-size: 14px; 
+            font-weight: 700; 
+            cursor: not-allowed; 
+            transition: all 0.2s; 
+        }
+        .btn-log.active-pass { background-color: var(--accent-green); color: #ffffff; border-color: var(--accent-green); cursor: pointer; }
+        .btn-log.active-avoid { background-color: var(--accent-red); color: #ffffff; border-color: var(--accent-red); cursor: pointer; }
+
+        .data-sync-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-sync {
+            flex: 1;
+            background-color: var(--box-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-sync:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .btn-reset { 
+            width: 100%; 
+            background-color: transparent; 
+            color: var(--accent-red); 
+            border: 1px dashed var(--accent-red); 
+            margin-top: 20px; 
+            padding: 10px; 
+            font-size: 12px; 
+            font-weight: 600;
+            border-radius: 8px; 
+            cursor: pointer; 
+            opacity: 0.8; 
+            transition: all 0.2s; 
+        }
+
+        .chart-container { margin-top: 24px; background: var(--box-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .log-history-list { margin-top: 20px; background: var(--box-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); max-height: 220px; overflow-y: auto; }
+        .log-item { padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+        .log-item:last-child { border-bottom: none; }
+
+        .judgement-box { margin-top: 24px; padding: 20px; border-radius: 12px; background: var(--box-bg); border: 1px solid var(--border-color); text-align: center; }
+        .judgement-badge { display: inline-block; font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 20px; margin-top: 10px; text-transform: uppercase; }
+        .badge-edge { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-no-edge { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .badge-gambler { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
+        .modal-content { background: var(--container-bg); padding: 20px; border-radius: 12px; max-width: 90%; max-height: 90%; text-align: center; border: 1px solid var(--border-color); }
+        .modal-content img { max-width: 100%; max-height: 70vh; border-radius: 8px; display: block; margin: 0 auto 12px auto; }
+        .close-modal { background: var(--accent-red); color: white; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Quick KPI Bar -->
+    <div class="header-container">
+        <div class="top-controls">
+            <button class="theme-toggle-btn" onclick="promptBgUpload()">🖼️ BG Image</button>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light Mode</button>
+            <input type="file" id="bgFileInput" accept="image/*" style="display:none" onchange="uploadBgImage(event)">
+        </div>
+        <div class="shield-icon">🛡️</div>
+        <h1>Execution Guidance (EG)</h1>
+    </div>
+
+    <!-- Quick KPI Summary Bar -->
     <div class="kpi-row">
         <div class="kpi-card">
             <div class="kpi-label">Compliance Rate</div>
@@ -110,7 +348,581 @@
             <div class="kpi-val" id="kpiLogs">0</div>
         </div>
     </div>
+
+    <!-- Notice Banner -->
+    <div class="notice-banner">
+        <span>⚠️ Notice: Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
+        <span class="edits-left-badge" id="editsLeftBadge">2 Edits Left</span>
+    </div>
+    
+    <div class="section-header">
+        <div class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</div>
+        <button class="btn-edit-criteria" id="editBtnCompliant" onclick="toggleEditMode('pass')">✏️ Edit Criteria</button>
+    </div>
+    
+    <div id="checklist"></div>
+    <button class="btn-add-item" id="addPassBtn" style="display: none;" onclick="addNewCriterion('pass')">+ Add Compliant Criterion</button>
+
+    <div class="section-header">
+        <div class="section-title" style="color: var(--accent-red);">Setup to Avoid (Filtered Out / Patient Pass)</div>
+        <button class="btn-edit-criteria" id="editBtnAvoid" onclick="toggleEditMode('avoid')">✏️ Edit Criteria</button>
+    </div>
+    
+    <div id="avoidChecklist"></div>
+    <button class="btn-add-item" id="addAvoidBtn" style="display: none; border-color: var(--accent-red); color: var(--accent-red);" onclick="addNewCriterion('avoid')">+ Add Avoid Criterion</button>
+
+    <div class="trade-meta-box">
+        <label for="tradeNote">Trade Note / Reason for Action:</label>
+        <textarea id="tradeNote" placeholder="Enter market context, asset pair, or reason for taking/avoiding the setup..."></textarea>
+        
+        <label for="tradeScreenshot">Attach Chart Screenshot:</label>
+        <input type="file" id="tradeScreenshot" accept="image/*">
+    </div>
+
+    <div class="action-row">
+        <button id="logPassButton" class="btn-log" disabled onclick="logTrade('pass')">Log Compliant (+10)</button>
+        <button id="logAvoidButton" class="btn-log" disabled onclick="logTrade('avoid')">Log Avoided (Discipline +5)</button>
+    </div>
+
+    <div class="data-sync-row">
+        <button class="btn-sync" onclick="exportHistory()">💾 Export State</button>
+        <button class="btn-sync" onclick="importHistoryPrompt()">📂 Import State</button>
+        <button class="btn-sync" onclick="importCsvPrompt()">📊 Upload Broker CSV Trades</button>
+        <input type="file" id="importFile" style="display: none;" onchange="importHistory(event)">
+        <input type="file" id="importCsvFile" accept=".csv" style="display: none;" onchange="importBrokerCsv(event)">
+    </div>
+
+    <div class="chart-container">
+        <canvas id="disciplineChart"></canvas>
+    </div>
+
+    <div class="judgement-box" id="judgementBox">
+        <div style="font-size: 12px; font-weight: 700; color: var(--muted-text); letter-spacing: 0.05em; text-transform: uppercase;">System & Execution Assessment</div>
+        <div id="judgementBadge" class="judgement-badge badge-gambler">Awaiting Data</div>
+        <div id="judgementDesc" style="font-size: 13px; margin-top: 10px; color: var(--muted-text);">Upload broker CSV trades and log execution records to generate assessment.</div>
+    </div>
+
+    <div class="log-history-list" id="tradeHistoryLog">
+        <div style="color: var(--muted-text); font-size: 13px; text-align: center;">No records logged in this session yet.</div>
+    </div>
+
+    <button class="btn-reset" onclick="resetChart()">Clear Data & Reset Graph</button>
 </div>
 
+<!-- Image Modal -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="modalTitle" style="margin-top:0; color: var(--title-color); font-size: 16px;"></h3>
+        <img id="modalImage" src="" alt="Chart Screenshot">
+        <button class="close-modal" onclick="closeModal()">Close Preview</button>
+    </div>
+</div>
+
+<script>
+    const DEFAULT_PASS_CRITERIA = [
+        { title: "Take Profit Target", desc: "Area is explicitly mapped out on the chart." },
+        { title: "Donchian Crossover", desc: "3 consecutive candles have closed crossing the middle band." },
+        { title: "Execution Style", desc: "Order is an exact Limit or Stop Pending Position (No Market Orders)." },
+        { title: "Timing Gateway", desc: "Order is placed precisely 8 to 10 minutes before the crossing candle closes." }
+    ];
+
+    const DEFAULT_AVOID_CRITERIA = [
+        { title: "Failed Trigger Criteria", desc: "Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure)." }
+    ];
+
+    let appData = JSON.parse(localStorage.getItem('donchianFilteredState')) || {
+        scores: [0],
+        meta: [],
+        brokerEquity: [0],
+        theme: 'dark',
+        bgImage: null,
+        editsRemaining: 2,
+        passCriteria: DEFAULT_PASS_CRITERIA,
+        avoidCriteria: DEFAULT_AVOID_CRITERIA
+    };
+
+    let scores = appData.scores;
+    let tradeMeta = appData.meta;
+    let brokerEquity = appData.brokerEquity || [0];
+    let currentTheme = appData.theme || 'dark';
+    let bgImage = appData.bgImage || null;
+    let editsRemaining = appData.editsRemaining !== undefined ? appData.editsRemaining : 2;
+    let passCriteria = appData.passCriteria || DEFAULT_PASS_CRITERIA;
+    let avoidCriteria = appData.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+
+    let isEditingPass = false;
+    let isEditingAvoid = false;
+
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+    }
+
+    if (bgImage) {
+        document.body.style.backgroundImage = `url(${bgImage})`;
+    }
+
+    function promptBgUpload() {
+        if (bgImage && confirm("Would you like to remove your custom background? Click OK to remove, or Cancel to choose a new photo.")) {
+            bgImage = null;
+            document.body.style.backgroundImage = 'none';
+            persistAndRefresh();
+            return;
+        }
+        document.getElementById('bgFileInput').click();
+    }
+
+    function uploadBgImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            bgImage = e.target.result;
+            document.body.style.backgroundImage = `url(${bgImage})`;
+            persistAndRefresh();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updateKpis() {
+        const totalLogs = tradeMeta.length;
+        const compliantLogs = tradeMeta.filter(m => m.type === 'pass').length;
+        const currentScore = scores[scores.length - 1];
+
+        const compRate = totalLogs > 0 ? ((compliantLogs / totalLogs) * 100).toFixed(0) + '%' : '100%';
+        
+        document.getElementById('kpiCompliance').innerText = compRate;
+        document.getElementById('kpiScore').innerText = `${currentScore} PTS`;
+        document.getElementById('kpiLogs').innerText = totalLogs;
+    }
+
+    function updateEditBadge() {
+        const badge = document.getElementById('editsLeftBadge');
+        badge.innerText = `${editsRemaining} Edits Left`;
+        if (editsRemaining <= 0) {
+            badge.style.background = 'var(--accent-red)';
+            badge.style.color = '#fff';
+            document.getElementById('editBtnCompliant').disabled = true;
+            document.getElementById('editBtnAvoid').disabled = true;
+        }
+    }
+
+    function renderChecklists() {
+        const passContainer = document.getElementById('checklist');
+        passContainer.innerHTML = passCriteria.map((item, idx) => `
+            <div class="criterion">
+                <input type="checkbox" id="c_${idx}" class="pass-check" ${isEditingPass ? 'disabled' : ''} onchange="validateChecklists()">
+                <div class="criterion-content">
+                    ${isEditingPass ? `
+                        <input type="text" class="criterion-input-title" id="p_title_${idx}" value="${item.title}">
+                        <input type="text" class="criterion-input-desc" id="p_desc_${idx}" value="${item.desc}">
+                    ` : `
+                        <label for="c_${idx}"><strong>${item.title}:</strong>&nbsp;${item.desc}</label>
+                    `}
+                </div>
+            </div>
+        `).join('');
+
+        const avoidContainer = document.getElementById('avoidChecklist');
+        avoidContainer.innerHTML = avoidCriteria.map((item, idx) => `
+            <div class="criterion avoid-criterion">
+                <input type="checkbox" id="a_${idx}" class="avoid-check" ${isEditingAvoid ? 'disabled' : ''} onchange="validateChecklists()">
+                <div class="criterion-content">
+                    ${isEditingAvoid ? `
+                        <input type="text" class="criterion-input-title" id="a_title_${idx}" value="${item.title}">
+                        <input type="text" class="criterion-input-desc" id="a_desc_${idx}" value="${item.desc}">
+                    ` : `
+                        <label for="a_${idx}"><strong>${item.title}:</strong>&nbsp;${item.desc}</label>
+                    `}
+                </div>
+            </div>
+        `).join('');
+
+        updateEditBadge();
+    }
+
+    function toggleEditMode(type) {
+        if (editsRemaining <= 0) {
+            alert("No edits remaining! Maximum limit reached to preserve sample size validity.");
+            return;
+        }
+
+        if (type === 'pass') {
+            if (!isEditingPass) {
+                isEditingPass = true;
+                document.getElementById('editBtnCompliant').innerText = "💾 Save Criteria";
+                document.getElementById('addPassBtn').style.display = "block";
+            } else {
+                saveCriteria('pass');
+            }
+        } else {
+            if (!isEditingAvoid) {
+                isEditingAvoid = true;
+                document.getElementById('editBtnAvoid').innerText = "💾 Save Criteria";
+                document.getElementById('addAvoidBtn').style.display = "block";
+            } else {
+                saveCriteria('avoid');
+            }
+        }
+        renderChecklists();
+    }
+
+    function saveCriteria(type) {
+        if (type === 'pass') {
+            passCriteria = passCriteria.map((_, idx) => ({
+                title: document.getElementById(`p_title_${idx}`).value.trim() || `Rule #${idx + 1}`,
+                desc: document.getElementById(`p_desc_${idx}`).value.trim() || "No description."
+            }));
+            isEditingPass = false;
+            document.getElementById('editBtnCompliant').innerText = "✏️ Edit Criteria";
+            document.getElementById('addPassBtn').style.display = "none";
+        } else {
+            avoidCriteria = avoidCriteria.map((_, idx) => ({
+                title: document.getElementById(`a_title_${idx}`).value.trim() || `Avoid Rule #${idx + 1}`,
+                desc: document.getElementById(`a_desc_${idx}`).value.trim() || "No description."
+            }));
+            isEditingAvoid = false;
+            document.getElementById('editBtnAvoid').innerText = "✏️ Edit Criteria";
+            document.getElementById('addAvoidBtn').style.display = "none";
+        }
+
+        editsRemaining--;
+        persistAndRefresh();
+        alert(`Criteria updated! ${editsRemaining} edit(s) remaining.`);
+    }
+
+    function addNewCriterion(type) {
+        if (type === 'pass') {
+            passCriteria.push({ title: "New Rule", desc: "Enter description..." });
+        } else {
+            avoidCriteria.push({ title: "New Avoid Rule", desc: "Enter description..." });
+        }
+        renderChecklists();
+    }
+
+    function toggleTheme() {
+        if (document.body.classList.contains('light-mode')) {
+            document.body.classList.remove('light-mode');
+            currentTheme = 'dark';
+            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
+        } else {
+            document.body.classList.add('light-mode');
+            currentTheme = 'light';
+            document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+        }
+        persistAndRefresh();
+    }
+
+    function validateChecklists() {
+        const passInputs = document.querySelectorAll('.pass-check');
+        const passChecked = passInputs.length > 0 && Array.from(passInputs).every(cb => cb.checked);
+
+        const avoidInputs = document.querySelectorAll('.avoid-check');
+        const avoidChecked = avoidInputs.length > 0 && Array.from(avoidInputs).some(cb => cb.checked);
+
+        const passBtn = document.getElementById('logPassButton');
+        const avoidBtn = document.getElementById('logAvoidButton');
+
+        passBtn.disabled = !passChecked;
+        if (passChecked) passBtn.classList.add('active-pass');
+        else passBtn.classList.remove('active-pass');
+
+        avoidBtn.disabled = !avoidChecked;
+        if (avoidChecked) avoidBtn.classList.add('active-avoid');
+        else avoidBtn.classList.remove('active-avoid');
+    }
+
+    function logTrade(type) {
+        const noteText = document.getElementById('tradeNote').value.trim();
+        const fileInput = document.getElementById('tradeScreenshot');
+        
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                saveRecord(type, noteText, e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            saveRecord(type, noteText, null);
+        }
+    }
+
+    function saveRecord(type, note, imageBase64) {
+        let currentScore = scores[scores.length - 1];
+        let pointsAdded = type === 'pass' ? 10 : 5;
+        let actionLabel = type === 'pass' ? 'Compliant Position' : 'Avoided Setup';
+
+        scores.push(currentScore + pointsAdded);
+        
+        let sampleNum = tradeMeta.filter(m => m.image).length + (imageBase64 ? 1 : 0);
+        let sampleTitle = imageBase64 ? `Sample size #${Math.min(sampleNum, 50)}` : null;
+
+        tradeMeta.push({
+            id: scores.length - 1,
+            type: type,
+            title: actionLabel,
+            sampleTitle: sampleTitle,
+            timestamp: new Date().toLocaleString(),
+            note: note || "No notes provided.",
+            image: imageBase64
+        });
+
+        persistAndRefresh();
+
+        document.querySelectorAll('.pass-check, .avoid-check').forEach(cb => cb.checked = false);
+        document.getElementById('tradeNote').value = '';
+        document.getElementById('tradeScreenshot').value = '';
+        validateChecklists();
+        alert(`Logged! (${actionLabel})`);
+    }
+
+    function importCsvPrompt() {
+        document.getElementById('importCsvFile').click();
+    }
+
+    function importBrokerCsv(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split('\n');
+            let runningEquity = 0;
+            let equityPoints = [0];
+
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length > 1) {
+                    let pnl = parseFloat(row[row.length - 1]) || parseFloat(row[row.length - 2]) || 0;
+                    runningEquity += pnl;
+                    equityPoints.push(runningEquity);
+                }
+            }
+
+            brokerEquity = equityPoints;
+            persistAndRefresh();
+            alert("Broker CSV data imported!");
+        };
+        reader.readAsText(file);
+    }
+
+    function evaluateJudgement() {
+        const badge = document.getElementById('judgementBadge');
+        const desc = document.getElementById('judgementDesc');
+
+        const totalLogs = scores.length - 1;
+        const maxPossibleScore = totalLogs * 10;
+        const currentScore = scores[scores.length - 1];
+        const disciplinePct = maxPossibleScore > 0 ? (currentScore / maxPossibleScore) * 100 : 0;
+
+        const equityStart = brokerEquity[0] || 0;
+        const equityEnd = brokerEquity[brokerEquity.length - 1] || 0;
+        const equityGrowth = equityEnd - equityStart;
+
+        if (totalLogs === 0 && brokerEquity.length <= 1) {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "Awaiting Data";
+            desc.innerText = "Upload broker CSV trades and log execution records to generate assessment.";
+            return;
+        }
+
+        if (disciplinePct < 70) {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "GAMBLER";
+            desc.innerText = `Discipline adherence is low (${disciplinePct.toFixed(1)}%). Executions are inconsistent regardless of trade results.`;
+        } 
+        else if (disciplinePct >= 80 && equityGrowth < 0) {
+            badge.className = "judgement-badge badge-no-edge";
+            badge.innerText = "SYSTEM DOES NOT HAVE AN EDGE";
+            desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but equity curve is declining. System lacks a statistical edge.`;
+        } 
+        else if (disciplinePct >= 75 && equityGrowth >= 0) {
+            badge.className = "judgement-badge badge-edge";
+            badge.innerText = "PROFITABLE EDGE";
+            desc.innerText = `Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth.`;
+        } 
+        else {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "MIXED RESULTS";
+            desc.innerText = "Execution discipline needs tightening to render an accurate system edge diagnosis.";
+        }
+    }
+
+    function persistAndRefresh() {
+        const stateBundle = { 
+            scores: scores, 
+            meta: tradeMeta, 
+            brokerEquity: brokerEquity,
+            theme: currentTheme,
+            bgImage: bgImage,
+            editsRemaining: editsRemaining,
+            passCriteria: passCriteria,
+            avoidCriteria: avoidCriteria
+        };
+        localStorage.setItem('donchianFilteredState', JSON.stringify(stateBundle));
+        
+        let maxLen = Math.max(scores.length, brokerEquity.length);
+        let labels = Array.from({length: maxLen}, (_, i) => i === 0 ? "Start" : `Trade ${i}`);
+
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = scores;
+        chart.data.datasets[1].data = brokerEquity;
+        chart.update();
+
+        updateKpis();
+        renderChecklists();
+        renderLogHistory();
+        evaluateJudgement();
+    }
+
+    function renderLogHistory() {
+        const container = document.getElementById('tradeHistoryLog');
+        if (tradeMeta.length === 0) {
+            container.innerHTML = `<div style="color: var(--muted-text); font-size: 13px; text-align: center;">No records logged in this session yet.</div>`;
+            return;
+        }
+        
+        container.innerHTML = tradeMeta.map((item, index) => `
+            <div class="log-item">
+                <strong style="color: ${item.type === 'pass' ? 'var(--accent-green)' : 'var(--accent-red)'};">${item.title} #${item.id}</strong> (${item.timestamp})<br>
+                <span style="color: var(--muted-text);">Note:</span> ${item.note}
+                ${item.image ? `<br><a href="#" onclick="openModal('${index}'); return false;" style="color: var(--accent-blue); font-size: 12px; font-weight: 600;">🖼️ View ${item.sampleTitle || 'Chart Screenshot'}</a>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function openModal(index) {
+        const item = tradeMeta[index];
+        if (item && item.image) {
+            document.getElementById('modalTitle').innerText = item.sampleTitle || "Chart Screenshot";
+            document.getElementById('modalImage').src = item.image;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    function exportHistory() {
+        const stateBundle = { 
+            scores: scores, 
+            meta: tradeMeta, 
+            brokerEquity: brokerEquity, 
+            theme: currentTheme,
+            bgImage: bgImage,
+            editsRemaining: editsRemaining,
+            passCriteria: passCriteria,
+            avoidCriteria: avoidCriteria
+        };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateBundle));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "execution_guidance_backup.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    function importHistoryPrompt() {
+        document.getElementById('importFile').click();
+    }
+
+    function importHistory(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (imported && Array.isArray(imported.scores) && Array.isArray(imported.meta)) {
+                    scores = imported.scores;
+                    tradeMeta = imported.meta;
+                    brokerEquity = imported.brokerEquity || [0];
+                    currentTheme = imported.theme || 'dark';
+                    bgImage = imported.bgImage || null;
+                    editsRemaining = imported.editsRemaining !== undefined ? imported.editsRemaining : 2;
+                    passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
+                    avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+                    if (bgImage) document.body.style.backgroundImage = `url(${bgImage})`;
+                    else document.body.style.backgroundImage = 'none';
+                    persistAndRefresh();
+                    alert("Imported successfully!");
+                }
+            } catch (err) {
+                alert("Error reading file.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function resetChart() {
+        if(confirm("Reset all historical records and settings?")) {
+            scores = [0];
+            tradeMeta = [];
+            brokerEquity = [0];
+            bgImage = null;
+            document.body.style.backgroundImage = 'none';
+            editsRemaining = 2;
+            passCriteria = DEFAULT_PASS_CRITERIA;
+            avoidCriteria = DEFAULT_AVOID_CRITERIA;
+            persistAndRefresh();
+        }
+    }
+
+    const ctx = document.getElementById('disciplineChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Start"],
+            datasets: [
+                {
+                    label: 'Discipline Score Points',
+                    data: scores,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.2,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Broker Account Equity ($)',
+                    data: brokerEquity,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.2,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: 'rgba(150, 150, 150, 0.1)' },
+                    title: { display: true, text: 'Discipline Score' }
+                },
+                y1: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    title: { display: true, text: 'Equity ($)' }
+                },
+                x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
+            }
+        }
+    });
+
+    persistAndRefresh();
+</script>
 </body>
 </html>
