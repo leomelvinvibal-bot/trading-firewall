@@ -6,6 +6,8 @@
   <title>Execution Guidance (EG)</title>
   <!-- Chart.js CDN for Graphs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse CDN for Parsing Broker CSV Files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <style>
     :root {
       --bg-color: #0d131f;
@@ -312,6 +314,17 @@
       font-size: 0.75rem;
     }
 
+    .system-status-box {
+      border: 1px dashed var(--card-border);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
     .section-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -579,7 +592,7 @@
   <main>
     <div class="title-banner">
       <h1>Execution Guidance (EG)</h1>
-      <p style="color: var(--text-muted); font-size: 0.875rem;">Disciplined Execution & System Validation Dashboard</p>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">Disciplined Execution & Broker Equity Edge Diagnostic Engine</p>
     </div>
 
     <div class="metrics-grid">
@@ -656,12 +669,27 @@
       </div>
     </div>
 
-    <!-- Dynamic Execution Graph -->
+    <!-- Broker CSV Upload & Edge Diagnostics Card -->
     <div class="section-card">
       <div class="section-header">
-        <span class="section-title">Execution Discipline Trend Graph</span>
+        <span class="section-title">Broker Trade History CSV Upload</span>
       </div>
-      <div style="height: 250px; position: relative;">
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+        Upload your broker's CSV export (MT4/MT5/cTrader/MEXC/IC Markets) to overlay real account equity growth against execution discipline points.
+      </p>
+      <input type="file" id="brokerCsvFile" accept=".csv" onchange="handleCsvUpload(event)">
+      
+      <div id="systemStatusBox" class="system-status-box" style="display: none;">
+        Status: <span id="systemStatusLabel" style="color: var(--accent-amber);">Awaiting CSV Upload...</span>
+      </div>
+    </div>
+
+    <!-- Execution Discipline & Broker Equity Dual-Axis Graph -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Execution Discipline vs. Broker Equity Comparison Graph</span>
+      </div>
+      <div style="height: 280px; position: relative;">
         <canvas id="executionGraph"></canvas>
       </div>
     </div>
@@ -699,6 +727,8 @@
     let entries = 1;
     let compliantCount = 1;
 
+    let brokerEquityData = [];
+
     const bgList = [
       '',
       'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80',
@@ -706,31 +736,62 @@
     ];
     let bgIndex = 0;
 
-    // Execution Trend Chart Setup
-    let graphLabels = ['Start'];
-    let scoreData = [10];
+    // Dual-Axis Comparison Chart Setup
+    let graphLabels = ['Start', 'Entry #1'];
+    let scoreData = [0, 10];
+    
     const ctxGraph = document.getElementById('executionGraph').getContext('2d');
     const executionChart = new Chart(ctxGraph, {
       type: 'line',
       data: {
         labels: graphLabels,
-        datasets: [{
-          label: 'Discipline Points',
-          data: scoreData,
-          borderColor: '#38bdf8',
-          backgroundColor: 'rgba(56, 189, 248, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 4
-        }]
+        datasets: [
+          {
+            label: 'Discipline Points (Execution)',
+            data: scoreData,
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            yAxisID: 'y'
+          },
+          {
+            label: 'Broker Account Equity ($)',
+            data: brokerEquityData,
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34, 197, 94, 0.05)',
+            fill: false,
+            tension: 0.3,
+            pointRadius: 4,
+            yAxisID: 'y1'
+          }
+        ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: true, labels: { color: '#f1f5f9' } } },
         scales: {
           x: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' } },
-          y: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' }, beginAtZero: true }
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            title: { display: true, text: 'Discipline Score', color: '#38bdf8' },
+            ticks: { color: '#38bdf8' },
+            grid: { color: '#2a3a52' },
+            beginAtZero: true
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            title: { display: true, text: 'Broker Equity ($)', color: '#22c55e' },
+            ticks: { color: '#22c55e' },
+            grid: { drawOnChartArea: false }
+          }
         }
       }
     });
@@ -819,6 +880,85 @@
       document.getElementById('imageModal').classList.remove('active');
     }
 
+    function handleCsvUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          processBrokerData(results.data);
+        }
+      });
+    }
+
+    function processBrokerData(data) {
+      brokerEquityData = [];
+      let runningBalance = 1000; // Default starting equity assumption if balance column missing
+
+      data.forEach((row) => {
+        // Find potential Profit/PNL/Balance columns from standard broker CSV formats
+        const profit = row.Profit ?? row.PNL ?? row.pnl ?? row['P/L'] ?? row.Amount ?? row.amount;
+        const balance = row.Balance ?? row.balance;
+
+        if (balance !== undefined) {
+          runningBalance = balance;
+          brokerEquityData.push(runningBalance);
+        } else if (profit !== undefined) {
+          runningBalance += parseFloat(profit);
+          brokerEquityData.push(runningBalance);
+        }
+      });
+
+      if (brokerEquityData.length === 0) {
+        alert("Could not automatically detect Profit or Balance column in CSV. Please ensure your CSV contains 'Profit', 'P/L', or 'Balance' headers.");
+        return;
+      }
+
+      // Update Chart
+      executionChart.data.datasets[1].data = brokerEquityData;
+      executionChart.update();
+
+      // Analyze Edge Diagnostic Match
+      evaluateSystemDiagnostics();
+    }
+
+    function evaluateSystemDiagnostics() {
+      const statusBox = document.getElementById('systemStatusBox');
+      const statusLabel = document.getElementById('systemStatusLabel');
+      statusBox.style.display = 'block';
+
+      if (scoreData.length < 2 || brokerEquityData.length < 2) {
+        statusLabel.style.color = 'var(--text-muted)';
+        statusLabel.innerText = "Insufficient data points for comparative analysis.";
+        return;
+      }
+
+      const initialScore = scoreData[1] || 0;
+      const finalScore = scoreData[scoreData.length - 1];
+      const executionIsUp = finalScore >= initialScore;
+
+      const initialEquity = brokerEquityData[0];
+      const finalEquity = brokerEquityData[brokerEquityData.length - 1];
+      const equityIsUp = finalEquity >= initialEquity;
+
+      if (executionIsUp && !equityIsUp) {
+        statusLabel.style.color = 'var(--accent-red)';
+        statusLabel.innerHTML = '❌ <strong>NO SYSTEM EDGE / UNPROFITABLE SYSTEM:</strong> High execution discipline accompanied by declining broker equity indicates the trading system itself lacks statistical expectancy or win rate.';
+      } else if (executionIsUp && equityIsUp) {
+        statusLabel.style.color = 'var(--accent-green)';
+        statusLabel.innerHTML = '✅ <strong>PROFITABLE SYSTEM WITH EDGE:</strong> Disciplined execution directly aligns with positive equity growth.';
+      } else if (!executionIsUp && equityIsUp) {
+        statusLabel.style.color = 'var(--accent-amber)';
+        statusLabel.innerHTML = '⚠️ <strong>GAMBLING / RANDOM TRADES (UNRELIABLE RESULT):</strong> Broker equity is growing despite declining execution discipline. Profit is likely due to market randomness/luck rather than a repeatable strategy.';
+      } else {
+        statusLabel.style.color = 'var(--accent-red)';
+        statusLabel.innerHTML = '⚠️ <strong>POOR DISCIPLINE & LOSSES:</strong> Declining discipline accompanied by equity loss.';
+      }
+    }
+
     function logTrade(type) {
       const notes = document.getElementById('tradeNotes').value || "No notes provided";
       const fileInput = document.getElementById('chartScreenshot');
@@ -869,8 +1009,11 @@
       
       // Update Graph
       executionChart.data.labels.push(`Entry #${entries}`);
-      executionChart.data.datasets[0].data.push(score);
+      scoreData.push(score);
+      executionChart.data.datasets[0].data = scoreData;
       executionChart.update();
+
+      evaluateSystemDiagnostics();
 
       document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
       document.getElementById('tradeNotes').value = '';
