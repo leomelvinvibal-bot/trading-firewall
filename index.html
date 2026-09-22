@@ -70,7 +70,6 @@
             transition: background-color 0.3s, border-color 0.3s;
         }
 
-        /* KPI Dashboard Bar */
         .kpi-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -308,11 +307,16 @@
         .log-item { padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .log-item:last-child { border-bottom: none; }
 
+        /* Judgement Box Styling with Target Sample Setting */
         .judgement-box { margin-top: 24px; padding: 20px; border-radius: 12px; background: var(--box-bg); border: 1px solid var(--border-color); text-align: center; }
-        .judgement-badge { display: inline-block; font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 20px; margin-top: 10px; text-transform: uppercase; }
+        .sample-setting-bar { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 12px; color: var(--muted-text); }
+        .sample-input { background: var(--box-inner); border: 1px solid var(--border-color); color: var(--text-color); font-weight: 700; width: 60px; text-align: center; padding: 4px; border-radius: 6px; }
+        
+        .judgement-badge { display: inline-block; font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 20px; margin-top: 6px; text-transform: uppercase; }
         .badge-edge { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .badge-no-edge { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
         .badge-gambler { background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+        .badge-pending { background: rgba(156, 163, 175, 0.15); color: var(--muted-text); border: 1px solid var(--muted-text); }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); align-items: center; justify-content: center; }
         .modal-content { background: var(--container-bg); padding: 20px; border-radius: 12px; max-width: 90%; max-height: 90%; text-align: center; border: 1px solid var(--border-color); }
@@ -397,9 +401,13 @@
     </div>
 
     <div class="judgement-box" id="judgementBox">
-        <div style="font-size: 12px; font-weight: 700; color: var(--muted-text); letter-spacing: 0.05em; text-transform: uppercase;">System & Execution Assessment</div>
-        <div id="judgementBadge" class="judgement-badge badge-gambler">Awaiting Data</div>
-        <div id="judgementDesc" style="font-size: 13px; margin-top: 10px; color: var(--muted-text);">Upload broker CSV trades and log execution records to generate assessment.</div>
+        <div class="sample-setting-bar">
+            <span>Required Target Sample Size:</span>
+            <input type="number" id="targetSampleInput" class="sample-input" value="30" min="5" max="500" onchange="updateTargetSample(this.value)">
+            <span>Trades</span>
+        </div>
+        <div id="judgementBadge" class="judgement-badge badge-pending">INSUFFICIENT SAMPLE SIZE</div>
+        <div id="judgementDesc" style="font-size: 13px; margin-top: 10px; color: var(--muted-text);">Collect a minimum sample of trades before assessment can be rendered.</div>
     </div>
 
     <div class="log-history-list" id="tradeHistoryLog">
@@ -437,6 +445,7 @@
         theme: 'dark',
         bgImage: null,
         editsRemaining: 2,
+        targetSampleSize: 30,
         passCriteria: DEFAULT_PASS_CRITERIA,
         avoidCriteria: DEFAULT_AVOID_CRITERIA
     };
@@ -447,11 +456,14 @@
     let currentTheme = appData.theme || 'dark';
     let bgImage = appData.bgImage || null;
     let editsRemaining = appData.editsRemaining !== undefined ? appData.editsRemaining : 2;
+    let targetSampleSize = appData.targetSampleSize || 30;
     let passCriteria = appData.passCriteria || DEFAULT_PASS_CRITERIA;
     let avoidCriteria = appData.avoidCriteria || DEFAULT_AVOID_CRITERIA;
 
     let isEditingPass = false;
     let isEditingAvoid = false;
+
+    document.getElementById('targetSampleInput').value = targetSampleSize;
 
     if (currentTheme === 'light') {
         document.body.classList.add('light-mode');
@@ -483,6 +495,13 @@
             persistAndRefresh();
         };
         reader.readAsDataURL(file);
+    }
+
+    function updateTargetSample(val) {
+        let num = parseInt(val, 10);
+        if (isNaN(num) || num < 1) num = 30;
+        targetSampleSize = num;
+        persistAndRefresh();
     }
 
     function updateKpis() {
@@ -712,8 +731,19 @@
         const badge = document.getElementById('judgementBadge');
         const desc = document.getElementById('judgementDesc');
 
-        const totalLogs = scores.length - 1;
-        const maxPossibleScore = totalLogs * 10;
+        const totalLogged = tradeMeta.length;
+        const totalCsvTrades = Math.max(0, brokerEquity.length - 1);
+        const currentSample = Math.max(totalLogged, totalCsvTrades);
+
+        // Check if required target sample size has been achieved
+        if (currentSample < targetSampleSize) {
+            badge.className = "judgement-badge badge-pending";
+            badge.innerText = "NO RESULT YET (INSUFFICIENT SAMPLE)";
+            desc.innerText = `Current sample count: ${currentSample} / ${targetSampleSize} required trades. Complete the target sample size to unlock edge diagnosis.`;
+            return;
+        }
+
+        const maxPossibleScore = totalLogged * 10;
         const currentScore = scores[scores.length - 1];
         const disciplinePct = maxPossibleScore > 0 ? (currentScore / maxPossibleScore) * 100 : 0;
 
@@ -721,32 +751,25 @@
         const equityEnd = brokerEquity[brokerEquity.length - 1] || 0;
         const equityGrowth = equityEnd - equityStart;
 
-        if (totalLogs === 0 && brokerEquity.length <= 1) {
-            badge.className = "judgement-badge badge-gambler";
-            badge.innerText = "Awaiting Data";
-            desc.innerText = "Upload broker CSV trades and log execution records to generate assessment.";
-            return;
-        }
-
         if (disciplinePct < 70) {
             badge.className = "judgement-badge badge-gambler";
             badge.innerText = "GAMBLER";
-            desc.innerText = `Discipline adherence is low (${disciplinePct.toFixed(1)}%). Executions are inconsistent regardless of trade results.`;
+            desc.innerText = `Sample criteria met (${currentSample} trades), but discipline adherence is low (${disciplinePct.toFixed(1)}%). Executions are inconsistent.`;
         } 
         else if (disciplinePct >= 80 && equityGrowth < 0) {
             badge.className = "judgement-badge badge-no-edge";
             badge.innerText = "SYSTEM DOES NOT HAVE AN EDGE";
-            desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but equity curve is declining. System lacks a statistical edge.`;
+            desc.innerText = `Sample criteria met (${currentSample} trades). Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but equity curve is declining. System lacks a statistical edge.`;
         } 
         else if (disciplinePct >= 75 && equityGrowth >= 0) {
             badge.className = "judgement-badge badge-edge";
             badge.innerText = "PROFITABLE EDGE";
-            desc.innerText = `Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth.`;
+            desc.innerText = `Sample criteria met (${currentSample} trades). Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth.`;
         } 
         else {
             badge.className = "judgement-badge badge-gambler";
             badge.innerText = "MIXED RESULTS";
-            desc.innerText = "Execution discipline needs tightening to render an accurate system edge diagnosis.";
+            desc.innerText = `Sample criteria met (${currentSample} trades). Execution discipline needs tightening to render a definitive edge diagnosis.`;
         }
     }
 
@@ -754,10 +777,11 @@
         const stateBundle = { 
             scores: scores, 
             meta: tradeMeta, 
-            brokerEquity: brokerEquity,
+            brokerEquity: brokerEquity, 
             theme: currentTheme,
             bgImage: bgImage,
             editsRemaining: editsRemaining,
+            targetSampleSize: targetSampleSize,
             passCriteria: passCriteria,
             avoidCriteria: avoidCriteria
         };
@@ -814,6 +838,7 @@
             theme: currentTheme,
             bgImage: bgImage,
             editsRemaining: editsRemaining,
+            targetSampleSize: targetSampleSize,
             passCriteria: passCriteria,
             avoidCriteria: avoidCriteria
         };
@@ -844,8 +869,10 @@
                     currentTheme = imported.theme || 'dark';
                     bgImage = imported.bgImage || null;
                     editsRemaining = imported.editsRemaining !== undefined ? imported.editsRemaining : 2;
+                    targetSampleSize = imported.targetSampleSize || 30;
                     passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
                     avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+                    document.getElementById('targetSampleInput').value = targetSampleSize;
                     if (bgImage) document.body.style.backgroundImage = `url(${bgImage})`;
                     else document.body.style.backgroundImage = 'none';
                     persistAndRefresh();
@@ -866,6 +893,8 @@
             bgImage = null;
             document.body.style.backgroundImage = 'none';
             editsRemaining = 2;
+            targetSampleSize = 30;
+            document.getElementById('targetSampleInput').value = 30;
             passCriteria = DEFAULT_PASS_CRITERIA;
             avoidCriteria = DEFAULT_AVOID_CRITERIA;
             persistAndRefresh();
