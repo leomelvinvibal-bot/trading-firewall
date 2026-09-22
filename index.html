@@ -17,6 +17,7 @@
             --accent-blue: #2b5af0;
             --accent-green: #00cc66;
             --accent-red: #ef4444;
+            --accent-yellow: #eab308;
         }
 
         body.light-mode {
@@ -31,6 +32,7 @@
             --accent-blue: #3182ce;
             --accent-green: #38a169;
             --accent-red: #e53e3e;
+            --accent-yellow: #d97706;
         }
 
         body { 
@@ -80,17 +82,65 @@
             font-weight: 700; 
             line-height: 1.3;
         }
-        .section-title {
-            font-size: 15px;
+        
+        /* Notice & Warning Box */
+        .notice-banner {
+            background: rgba(234, 179, 8, 0.12);
+            border: 1px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .edits-left-badge {
+            background: var(--accent-yellow);
+            color: #121212;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 20px 0 10px 0;
-            color: var(--title-color);
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 5px;
         }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--title-color);
+        }
+        .btn-edit-criteria {
+            background: var(--box-bg);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-edit-criteria:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: var(--border-color);
+            color: var(--muted-text);
+        }
+
         .criterion { 
             background: var(--box-bg); 
-            padding: 16px 20px; 
+            padding: 14px 18px; 
             border-radius: 10px; 
             margin-bottom: 12px; 
             display: flex; 
@@ -112,6 +162,22 @@
         input[type="checkbox"].avoid-check {
             accent-color: var(--accent-red);
         }
+        .criterion-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .criterion-input-title, .criterion-input-desc {
+            background: var(--box-inner);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 100%;
+            box-sizing: border-box;
+        }
         label { 
             font-size: 14px; 
             cursor: pointer; 
@@ -121,6 +187,19 @@
         label strong {
             color: var(--title-color);
         }
+        .btn-add-item {
+            width: 100%;
+            background: var(--box-bg);
+            color: var(--accent-blue);
+            border: 1px dashed var(--accent-blue);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
         .trade-meta-box {
             background: var(--box-bg);
             padding: 16px 20px;
@@ -241,7 +320,6 @@
             border-bottom: none;
         }
 
-        /* Judgement Box */
         .judgement-box {
             margin-top: 25px;
             padding: 20px;
@@ -261,9 +339,8 @@
         }
         .badge-edge { background: rgba(0,204,102,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
         .badge-no-edge { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        .badge-gambler { background: rgba(234,179,8,0.15); color: #eab308; border: 1px solid #eab308; }
+        .badge-gambler { background: rgba(234,179,8,0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
 
-        /* Modal Popup Styling */
         .modal {
             display: none;
             position: fixed;
@@ -313,34 +390,28 @@
         <div class="shield-icon">🛡️</div>
         <h1>Execution Guidance (EG)</h1>
     </div>
-    
-    <div class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</div>
-    <div id="checklist">
-        <div class="criterion">
-            <input type="checkbox" id="c1" class="pass-check" onchange="validateChecklists()">
-            <label for="c1"><strong>Take Profit Target:</strong> Area is explicitly mapped out on the chart.</label>
-        </div>
-        <div class="criterion">
-            <input type="checkbox" id="c2" class="pass-check" onchange="validateChecklists()">
-            <label for="c2"><strong>Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</label>
-        </div>
-        <div class="criterion">
-            <input type="checkbox" id="c3" class="pass-check" onchange="validateChecklists()">
-            <label for="c3"><strong>Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</label>
-        </div>
-        <div class="criterion">
-            <input type="checkbox" id="c4" class="pass-check" onchange="validateChecklists()">
-            <label for="c4"><strong>Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</label>
-        </div>
-    </div>
 
-    <div class="section-title" style="color: var(--accent-red);">Setup to Avoid (Filtered Out / Patient Pass)</div>
-    <div id="avoidChecklist">
-        <div class="criterion avoid-criterion">
-            <input type="checkbox" id="a1" class="avoid-check" onchange="validateChecklists()">
-            <label for="a1"><strong>Failed Trigger Criteria:</strong> Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure).</label>
-        </div>
+    <!-- Rule Notification Banner -->
+    <div class="notice-banner">
+        <span>⚠️ Notice: Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
+        <span class="edits-left-badge" id="editsLeftBadge">2 Edits Left</span>
     </div>
+    
+    <div class="section-header">
+        <div class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</div>
+        <button class="btn-edit-criteria" id="editBtnCompliant" onclick="toggleEditMode('pass')">✏️ Edit Criteria</button>
+    </div>
+    
+    <div id="checklist"></div>
+    <button class="btn-add-item" id="addPassBtn" style="display: none;" onclick="addNewCriterion('pass')">+ Add Compliant Criterion</button>
+
+    <div class="section-header">
+        <div class="section-title" style="color: var(--accent-red);">Setup to Avoid (Filtered Out / Patient Pass)</div>
+        <button class="btn-edit-criteria" id="editBtnAvoid" onclick="toggleEditMode('avoid')">✏️ Edit Criteria</button>
+    </div>
+    
+    <div id="avoidChecklist"></div>
+    <button class="btn-add-item" id="addAvoidBtn" style="display: none; border-color: var(--accent-red); color: var(--accent-red);" onclick="addNewCriterion('avoid')">+ Add Avoid Criterion</button>
 
     <div class="trade-meta-box">
         <label for="tradeNote">Trade Note / Reason for Action:</label>
@@ -390,21 +461,145 @@
 </div>
 
 <script>
+    const DEFAULT_PASS_CRITERIA = [
+        { title: "Take Profit Target", desc: "Area is explicitly mapped out on the chart." },
+        { title: "Donchian Crossover", desc: "3 consecutive candles have closed crossing the middle band." },
+        { title: "Execution Style", desc: "Order is an exact Limit or Stop Pending Position (No Market Orders)." },
+        { title: "Timing Gateway", desc: "Order is placed precisely 8 to 10 minutes before the crossing candle closes." }
+    ];
+
+    const DEFAULT_AVOID_CRITERIA = [
+        { title: "Failed Trigger Criteria", desc: "Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure)." }
+    ];
+
     let appData = JSON.parse(localStorage.getItem('donchianFilteredState')) || {
         scores: [0],
         meta: [],
         brokerEquity: [0],
-        theme: 'dark'
+        theme: 'dark',
+        editsRemaining: 2,
+        passCriteria: DEFAULT_PASS_CRITERIA,
+        avoidCriteria: DEFAULT_AVOID_CRITERIA
     };
 
     let scores = appData.scores;
     let tradeMeta = appData.meta;
     let brokerEquity = appData.brokerEquity || [0];
     let currentTheme = appData.theme || 'dark';
+    let editsRemaining = appData.editsRemaining !== undefined ? appData.editsRemaining : 2;
+    let passCriteria = appData.passCriteria || DEFAULT_PASS_CRITERIA;
+    let avoidCriteria = appData.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+
+    let isEditingPass = false;
+    let isEditingAvoid = false;
 
     if (currentTheme === 'light') {
         document.body.classList.add('light-mode');
         document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+    }
+
+    function updateEditBadge() {
+        const badge = document.getElementById('editsLeftBadge');
+        badge.innerText = `${editsRemaining} Edits Left`;
+        if (editsRemaining <= 0) {
+            badge.style.background = 'var(--accent-red)';
+            badge.style.color = '#fff';
+            document.getElementById('editBtnCompliant').disabled = true;
+            document.getElementById('editBtnAvoid').disabled = true;
+        }
+    }
+
+    function renderChecklists() {
+        const passContainer = document.getElementById('checklist');
+        passContainer.innerHTML = passCriteria.map((item, idx) => `
+            <div class="criterion">
+                <input type="checkbox" id="c_${idx}" class="pass-check" ${isEditingPass ? 'disabled' : ''} onchange="validateChecklists()">
+                <div class="criterion-content">
+                    ${isEditingPass ? `
+                        <input type="text" class="criterion-input-title" id="p_title_${idx}" value="${item.title}">
+                        <input type="text" class="criterion-input-desc" id="p_desc_${idx}" value="${item.desc}">
+                    ` : `
+                        <label for="c_${idx}"><strong>${item.title}:</strong>${item.desc}</label>
+                    `}
+                </div>
+            </div>
+        `).join('');
+
+        const avoidContainer = document.getElementById('avoidChecklist');
+        avoidContainer.innerHTML = avoidCriteria.map((item, idx) => `
+            <div class="criterion avoid-criterion">
+                <input type="checkbox" id="a_${idx}" class="avoid-check" ${isEditingAvoid ? 'disabled' : ''} onchange="validateChecklists()">
+                <div class="criterion-content">
+                    ${isEditingAvoid ? `
+                        <input type="text" class="criterion-input-title" id="a_title_${idx}" value="${item.title}">
+                        <input type="text" class="criterion-input-desc" id="a_desc_${idx}" value="${item.desc}">
+                    ` : `
+                        <label for="a_${idx}"><strong>${item.title}:</strong>${item.desc}</label>
+                    `}
+                </div>
+            </div>
+        `).join('');
+
+        updateEditBadge();
+    }
+
+    function toggleEditMode(type) {
+        if (editsRemaining <= 0) {
+            alert("No edits remaining! You have reached the maximum limit of 2 criteria renewals to protect your system sample validity.");
+            return;
+        }
+
+        if (type === 'pass') {
+            if (!isEditingPass) {
+                isEditingPass = true;
+                document.getElementById('editBtnCompliant').innerText = "💾 Save Criteria";
+                document.getElementById('addPassBtn').style.display = "block";
+            } else {
+                saveCriteria('pass');
+            }
+        } else {
+            if (!isEditingAvoid) {
+                isEditingAvoid = true;
+                document.getElementById('editBtnAvoid').innerText = "💾 Save Criteria";
+                document.getElementById('addAvoidBtn').style.display = "block";
+            } else {
+                saveCriteria('avoid');
+            }
+        }
+        renderChecklists();
+    }
+
+    function saveCriteria(type) {
+        if (type === 'pass') {
+            passCriteria = passCriteria.map((_, idx) => ({
+                title: document.getElementById(`p_title_${idx}`).value.trim() || `Rule #${idx + 1}`,
+                desc: document.getElementById(`p_desc_${idx}`).value.trim() || "No description."
+            }));
+            isEditingPass = false;
+            document.getElementById('editBtnCompliant').innerText = "✏️ Edit Criteria";
+            document.getElementById('addPassBtn').style.display = "none";
+        } else {
+            avoidCriteria = avoidCriteria.map((_, idx) => ({
+                title: document.getElementById(`a_title_${idx}`).value.trim() || `Avoid Rule #${idx + 1}`,
+                desc: document.getElementById(`a_desc_${idx}`).value.trim() || "No description."
+            }));
+            isEditingAvoid = false;
+            document.getElementById('editBtnAvoid').innerText = "✏️ Edit Criteria";
+            document.getElementById('addAvoidBtn').style.display = "none";
+        }
+
+        editsRemaining--;
+        persistAndRefresh();
+        alert(`Criteria updated! You have ${editsRemaining} criteria edit(s) remaining.`);
+    }
+
+    function addNewCriterion(type) {
+        if (type === 'pass') {
+            passCriteria.push({ title: "New Rule", desc: "Enter description here..." });
+        } else {
+            avoidCriteria.push({ title: "New Avoid Rule", desc: "Enter description here..." });
+        }
+        renderChecklists();
     }
 
     function toggleTheme() {
@@ -421,8 +616,11 @@
     }
 
     function validateChecklists() {
-        const passChecked = ['c1', 'c2', 'c3', 'c4'].every(id => document.getElementById(id).checked);
-        const avoidChecked = document.getElementById('a1').checked;
+        const passInputs = document.querySelectorAll('.pass-check');
+        const passChecked = passInputs.length > 0 && Array.from(passInputs).every(cb => cb.checked);
+
+        const avoidInputs = document.querySelectorAll('.avoid-check');
+        const avoidChecked = avoidInputs.length > 0 && Array.from(avoidInputs).some(cb => cb.checked);
 
         const passBtn = document.getElementById('logPassButton');
         const avoidBtn = document.getElementById('logAvoidButton');
@@ -458,7 +656,6 @@
 
         scores.push(currentScore + pointsAdded);
         
-        // Count uploaded images to generate sequential sample size title (1-50 limit style)
         let sampleNum = tradeMeta.filter(m => m.image).length + (imageBase64 ? 1 : 0);
         let sampleTitle = imageBase64 ? `Sample size #${Math.min(sampleNum, 50)}` : null;
 
@@ -475,7 +672,7 @@
         persistAndRefresh();
 
         // Reset inputs
-        ['c1', 'c2', 'c3', 'c4', 'a1'].forEach(id => document.getElementById(id).checked = false);
+        document.querySelectorAll('.pass-check, .avoid-check').forEach(cb => cb.checked = false);
         document.getElementById('tradeNote').value = '';
         document.getElementById('tradeScreenshot').value = '';
         validateChecklists();
@@ -497,11 +694,9 @@
             let runningEquity = 0;
             let equityPoints = [0];
 
-            // Auto-detect columns with profit/pnl or raw values
             for (let i = 1; i < lines.length; i++) {
                 const row = lines[i].split(',');
                 if (row.length > 1) {
-                    // Try parsing numerical profit/pnl from last column or standard position column
                     let pnl = parseFloat(row[row.length - 1]) || parseFloat(row[row.length - 2]) || 0;
                     runningEquity += pnl;
                     equityPoints.push(runningEquity);
@@ -535,19 +730,16 @@
             return;
         }
 
-        // Rule 1: Low discipline adherence -> GAMBLER
         if (disciplinePct < 70) {
             badge.className = "judgement-badge badge-gambler";
             badge.innerText = "GAMBLER";
             desc.innerText = `Discipline adherence is low (${disciplinePct.toFixed(1)}%). Executions are inconsistent regardless of trade results.`;
         } 
-        // Rule 2: High discipline adherence + declining equity curve -> SYSTEM DOES NOT HAVE AN EDGE
         else if (disciplinePct >= 80 && equityGrowth < 0) {
             badge.className = "judgement-badge badge-no-edge";
             badge.innerText = "SYSTEM DOES NOT HAVE AN EDGE";
             desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but broker equity curve is declining. System lacks a statistical edge.`;
         } 
-        // Rule 3: High discipline adherence + positive equity curve -> PROFITABLE EDGE
         else if (disciplinePct >= 75 && equityGrowth >= 0) {
             badge.className = "judgement-badge badge-edge";
             badge.innerText = "PROFITABLE EDGE";
@@ -565,7 +757,10 @@
             scores: scores, 
             meta: tradeMeta, 
             brokerEquity: brokerEquity,
-            theme: currentTheme 
+            theme: currentTheme,
+            editsRemaining: editsRemaining,
+            passCriteria: passCriteria,
+            avoidCriteria: avoidCriteria
         };
         localStorage.setItem('donchianFilteredState', JSON.stringify(stateBundle));
         
@@ -577,6 +772,7 @@
         chart.data.datasets[1].data = brokerEquity;
         chart.update();
 
+        renderChecklists();
         renderLogHistory();
         evaluateJudgement();
     }
@@ -611,7 +807,15 @@
     }
 
     function exportHistory() {
-        const stateBundle = { scores: scores, meta: tradeMeta, brokerEquity: brokerEquity, theme: currentTheme };
+        const stateBundle = { 
+            scores: scores, 
+            meta: tradeMeta, 
+            brokerEquity: brokerEquity, 
+            theme: currentTheme,
+            editsRemaining: editsRemaining,
+            passCriteria: passCriteria,
+            avoidCriteria: avoidCriteria
+        };
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateBundle));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
@@ -637,8 +841,11 @@
                     tradeMeta = imported.meta;
                     brokerEquity = imported.brokerEquity || [0];
                     currentTheme = imported.theme || 'dark';
+                    editsRemaining = imported.editsRemaining !== undefined ? imported.editsRemaining : 2;
+                    passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
+                    avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
                     persistAndRefresh();
-                    alert("Complete history, state, and equity metrics imported successfully!");
+                    alert("Complete history, criteria settings, and equity metrics imported successfully!");
                 } else {
                     alert("Invalid backup format.");
                 }
@@ -650,10 +857,13 @@
     }
 
     function resetChart() {
-        if(confirm("Reset all historical records, broker equity, notes, and screenshots? This cannot be undone.")) {
+        if(confirm("Reset all historical records, broker equity, criteria edits, notes, and screenshots? This cannot be undone.")) {
             scores = [0];
             tradeMeta = [];
             brokerEquity = [0];
+            editsRemaining = 2;
+            passCriteria = DEFAULT_PASS_CRITERIA;
+            avoidCriteria = DEFAULT_AVOID_CRITERIA;
             persistAndRefresh();
         }
     }
@@ -710,8 +920,5 @@
 
     persistAndRefresh();
 </script>
-</body>
-</html>
-
 </body>
 </html>
