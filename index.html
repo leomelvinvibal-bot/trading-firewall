@@ -2,27 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Donchian System Pre-Flight Firewall</title>
+    <title>Execution Guidance (EG)</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --bg-color: #121212;
+            --container-bg: #191919;
+            --box-bg: #212121;
+            --box-inner: #161616;
+            --text-color: #e0e0e0;
+            --title-color: #ffffff;
+            --border-color: #2d2d2d;
+            --muted-text: #aaa;
+            --accent-blue: #2b5af0;
+            --accent-green: #00cc66;
+            --accent-red: #ef4444;
+        }
+
+        body.light-mode {
+            --bg-color: #f4f6f8;
+            --container-bg: #ffffff;
+            --box-bg: #f8fafc;
+            --box-inner: #edf2f7;
+            --text-color: #2d3748;
+            --title-color: #1a202c;
+            --border-color: #e2e8f0;
+            --muted-text: #718096;
+            --accent-blue: #3182ce;
+            --accent-green: #38a169;
+            --accent-red: #e53e3e;
+        }
+
         body { 
-            background-color: #121212; 
-            color: #e0e0e0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
             padding: 25px; 
+            transition: background-color 0.3s, color 0.3s;
         }
         .container { 
-            max-width: 650px; 
+            max-width: 700px; 
             margin: 0 auto; 
-            background: #191919; 
+            background: var(--container-bg); 
             padding: 30px; 
             border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.7); 
-            border: 1px solid #2d2d2d; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); 
+            border: 1px solid var(--border-color); 
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .header-container {
             text-align: center;
             margin-bottom: 25px;
+            position: relative;
+        }
+        .theme-toggle-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--box-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
         }
         .shield-icon {
             font-size: 28px;
@@ -30,7 +74,7 @@
             display: inline-block;
         }
         h1 { 
-            color: #ffffff; 
+            color: var(--title-color); 
             font-size: 24px; 
             margin: 0; 
             font-weight: 700; 
@@ -40,65 +84,62 @@
             font-size: 15px;
             font-weight: 600;
             margin: 20px 0 10px 0;
-            color: #fff;
-            border-bottom: 1px solid #333;
+            color: var(--title-color);
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 5px;
         }
         .criterion { 
-            background: #212121; 
+            background: var(--box-bg); 
             padding: 16px 20px; 
             border-radius: 10px; 
             margin-bottom: 12px; 
             display: flex; 
             align-items: center; 
-            border: 2px solid #2b5af0; 
+            border: 2px solid var(--accent-blue); 
             transition: all 0.2s ease; 
         }
         .criterion.avoid-criterion {
-            border: 2px solid #ef4444;
-        }
-        .criterion:hover { 
-            background: #262626; 
+            border: 2px solid var(--accent-red);
         }
         input[type="checkbox"] { 
             width: 20px; 
             height: 20px; 
             margin-right: 18px; 
             cursor: pointer; 
-            accent-color: #00cc66; 
+            accent-color: var(--accent-green); 
             flex-shrink: 0;
         }
         input[type="checkbox"].avoid-check {
-            accent-color: #ef4444;
+            accent-color: var(--accent-red);
         }
         label { 
             font-size: 14px; 
             cursor: pointer; 
             line-height: 1.5; 
-            color: #d1d5db; 
+            color: var(--text-color); 
         }
         label strong {
-            color: #ffffff;
+            color: var(--title-color);
         }
         .trade-meta-box {
-            background: #212121;
+            background: var(--box-bg);
             padding: 16px 20px;
             border-radius: 10px;
             margin-top: 15px;
-            border: 1px solid #2d2d2d;
+            border: 1px solid var(--border-color);
         }
         .trade-meta-box label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
-            color: #3b82f6;
+            color: var(--accent-blue);
         }
         .trade-meta-box textarea {
             width: 100%;
-            background: #161616;
-            border: 1px solid #333;
+            background: var(--box-inner);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            color: #fff;
+            color: var(--text-color);
             padding: 10px;
             font-family: inherit;
             resize: vertical;
@@ -107,7 +148,7 @@
             margin-bottom: 12px;
         }
         .trade-meta-box input[type="file"] {
-            color: #aaa;
+            color: var(--muted-text);
             font-size: 13px;
         }
         .action-row {
@@ -118,22 +159,22 @@
         .btn-log { 
             flex: 1;
             padding: 15px; 
-            background-color: #3a3a3a; 
+            background-color: var(--box-inner); 
             border: none; 
             border-radius: 8px; 
-            color: #888; 
+            color: var(--muted-text); 
             font-size: 15px; 
             font-weight: bold; 
             cursor: not-allowed; 
             transition: all 0.2s; 
         }
         .btn-log.active-pass {
-            background-color: #00cc66;
+            background-color: var(--accent-green);
             color: #fff;
             cursor: pointer;
         }
         .btn-log.active-avoid {
-            background-color: #ef4444;
+            background-color: var(--accent-red);
             color: #fff;
             cursor: pointer;
         }
@@ -141,32 +182,34 @@
             display: flex;
             gap: 10px;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
         .btn-sync {
             flex: 1;
-            background-color: #262626;
-            color: #3b82f6;
-            border: 1px solid #2b5af0;
+            background-color: var(--box-bg);
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
             padding: 10px;
             font-size: 12px;
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
+            min-width: 140px;
         }
         .btn-sync:hover {
-            background-color: rgba(59, 130, 246, 0.1);
+            background-color: rgba(43, 90, 240, 0.1);
         }
         .btn-reset { 
             width: 100%; 
             background-color: transparent; 
-            color: #ef4444; 
-            border: 1px solid #ef4444; 
+            color: var(--accent-red); 
+            border: 1px solid var(--accent-red); 
             margin-top: 15px; 
             padding: 8px; 
             font-size: 12px; 
             border-radius: 6px; 
             cursor: pointer; 
-            opacity: 0.5; 
+            opacity: 0.7; 
             transition: opacity 0.2s; 
         }
         .btn-reset:hover { 
@@ -175,28 +218,51 @@
         }
         .chart-container { 
             margin-top: 25px; 
-            background: #161616; 
+            background: var(--box-inner); 
             padding: 15px; 
             border-radius: 8px; 
-            border: 1px solid #2d2d2d; 
+            border: 1px solid var(--border-color); 
         }
         .log-history-list {
             margin-top: 20px;
-            background: #161616;
+            background: var(--box-inner);
             padding: 15px;
             border-radius: 8px;
-            border: 1px solid #2d2d2d;
+            border: 1px solid var(--border-color);
             max-height: 200px;
             overflow-y: auto;
         }
         .log-item {
             padding: 8px 0;
-            border-bottom: 1px solid #252525;
+            border-bottom: 1px solid var(--border-color);
             font-size: 13px;
         }
         .log-item:last-child {
             border-bottom: none;
         }
+
+        /* Judgement Box */
+        .judgement-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--box-bg);
+            border: 2px solid var(--border-color);
+            text-align: center;
+        }
+        .judgement-badge {
+            display: inline-block;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        .badge-edge { background: rgba(0,204,102,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .badge-no-edge { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .badge-gambler { background: rgba(234,179,8,0.15); color: #eab308; border: 1px solid #eab308; }
+
         /* Modal Popup Styling */
         .modal {
             display: none;
@@ -211,13 +277,13 @@
             justify-content: center;
         }
         .modal-content {
-            background: #222;
+            background: var(--box-bg);
             padding: 15px;
             border-radius: 8px;
             max-width: 90%;
             max-height: 90%;
             text-align: center;
-            border: 1px solid #444;
+            border: 1px solid var(--border-color);
             box-shadow: 0 5px 25px rgba(0,0,0,0.9);
         }
         .modal-content img {
@@ -229,7 +295,7 @@
         }
         .close-modal {
             margin-top: 10px;
-            background: #ef4444;
+            background: var(--accent-red);
             color: white;
             border: none;
             padding: 6px 15px;
@@ -243,8 +309,9 @@
 
 <div class="container">
     <div class="header-container">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Light Mode</button>
         <div class="shield-icon">🛡️</div>
-        <h1>Donchian System<br>Firewall</h1>
+        <h1>Execution Guidance (EG)</h1>
     </div>
     
     <div class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</div>
@@ -267,7 +334,7 @@
         </div>
     </div>
 
-    <div class="section-title" style="color: #ef4444;">Setup to Avoid (Filtered Out / Patient Pass)</div>
+    <div class="section-title" style="color: var(--accent-red);">Setup to Avoid (Filtered Out / Patient Pass)</div>
     <div id="avoidChecklist">
         <div class="criterion avoid-criterion">
             <input type="checkbox" id="a1" class="avoid-check" onchange="validateChecklists()">
@@ -289,17 +356,25 @@
     </div>
 
     <div class="data-sync-row">
-        <button class="btn-sync" onclick="exportHistory()">💾 Export History File</button>
-        <button class="btn-sync" onclick="importHistoryPrompt()">📂 Import History File</button>
+        <button class="btn-sync" onclick="exportHistory()">💾 Export State</button>
+        <button class="btn-sync" onclick="importHistoryPrompt()">📂 Import State</button>
+        <button class="btn-sync" onclick="importCsvPrompt()">📊 Upload Broker CSV Trades</button>
         <input type="file" id="importFile" style="display: none;" onchange="importHistory(event)">
+        <input type="file" id="importCsvFile" accept=".csv" style="display: none;" onchange="importBrokerCsv(event)">
     </div>
 
     <div class="chart-container">
         <canvas id="disciplineChart"></canvas>
     </div>
 
+    <div class="judgement-box" id="judgementBox">
+        <div style="font-size: 13px; font-weight: 600; color: var(--muted-text);">SYSTEM & EXECUTION EVALUATION</div>
+        <div id="judgementBadge" class="judgement-badge badge-gambler">Awaiting Data</div>
+        <div id="judgementDesc" style="font-size: 13px; margin-top: 8px; color: var(--text-color);">Upload broker CSV trades and log execution records to generate assessment.</div>
+    </div>
+
     <div class="log-history-list" id="tradeHistoryLog">
-        <div style="color: #666; font-size: 13px; text-align: center;">No records logged in this session yet.</div>
+        <div style="color: var(--muted-text); font-size: 13px; text-align: center;">No records logged in this session yet.</div>
     </div>
 
     <button class="btn-reset" onclick="resetChart()">Clear Data & Reset Graph</button>
@@ -308,6 +383,7 @@
 <!-- Image Viewer Modal Popup -->
 <div id="imageModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="modalTitle" style="margin-top:0; color: var(--title-color);"></h3>
         <img id="modalImage" src="" alt="Chart Screenshot">
         <button class="close-modal" onclick="closeModal()">Close Preview</button>
     </div>
@@ -316,12 +392,33 @@
 <script>
     let appData = JSON.parse(localStorage.getItem('donchianFilteredState')) || {
         scores: [0],
-        meta: []
+        meta: [],
+        brokerEquity: [0],
+        theme: 'dark'
     };
 
     let scores = appData.scores;
     let tradeMeta = appData.meta;
-    let labels = scores.map((_, i) => i === 0 ? "Start" : `Log ${i}`);
+    let brokerEquity = appData.brokerEquity || [0];
+    let currentTheme = appData.theme || 'dark';
+
+    if (currentTheme === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+    }
+
+    function toggleTheme() {
+        if (document.body.classList.contains('light-mode')) {
+            document.body.classList.remove('light-mode');
+            currentTheme = 'dark';
+            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
+        } else {
+            document.body.classList.add('light-mode');
+            currentTheme = 'light';
+            document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+        }
+        persistAndRefresh();
+    }
 
     function validateChecklists() {
         const passChecked = ['c1', 'c2', 'c3', 'c4'].every(id => document.getElementById(id).checked);
@@ -360,12 +457,16 @@
         let actionLabel = type === 'pass' ? 'Compliant Position' : 'Avoided Setup';
 
         scores.push(currentScore + pointsAdded);
-        labels.push(`Log ${scores.length - 1}`);
         
+        // Count uploaded images to generate sequential sample size title (1-50 limit style)
+        let sampleNum = tradeMeta.filter(m => m.image).length + (imageBase64 ? 1 : 0);
+        let sampleTitle = imageBase64 ? `Sample size #${Math.min(sampleNum, 50)}` : null;
+
         tradeMeta.push({
             id: scores.length - 1,
             type: type,
             title: actionLabel,
+            sampleTitle: sampleTitle,
             timestamp: new Date().toLocaleString(),
             note: note || "No notes provided.",
             image: imageBase64
@@ -381,28 +482,117 @@
         alert(`Recorded successfully! (${actionLabel})`);
     }
 
+    function importCsvPrompt() {
+        document.getElementById('importCsvFile').click();
+    }
+
+    function importBrokerCsv(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split('\n');
+            let runningEquity = 0;
+            let equityPoints = [0];
+
+            // Auto-detect columns with profit/pnl or raw values
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',');
+                if (row.length > 1) {
+                    // Try parsing numerical profit/pnl from last column or standard position column
+                    let pnl = parseFloat(row[row.length - 1]) || parseFloat(row[row.length - 2]) || 0;
+                    runningEquity += pnl;
+                    equityPoints.push(runningEquity);
+                }
+            }
+
+            brokerEquity = equityPoints;
+            persistAndRefresh();
+            alert("Broker CSV trade records successfully uploaded and equity curve mapped!");
+        };
+        reader.readAsText(file);
+    }
+
+    function evaluateJudgement() {
+        const badge = document.getElementById('judgementBadge');
+        const desc = document.getElementById('judgementDesc');
+
+        const totalLogs = scores.length - 1;
+        const maxPossibleScore = totalLogs * 10;
+        const currentScore = scores[scores.length - 1];
+        const disciplinePct = maxPossibleScore > 0 ? (currentScore / maxPossibleScore) * 100 : 0;
+
+        const equityStart = brokerEquity[0] || 0;
+        const equityEnd = brokerEquity[brokerEquity.length - 1] || 0;
+        const equityGrowth = equityEnd - equityStart;
+
+        if (totalLogs === 0 && brokerEquity.length <= 1) {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "Awaiting Data";
+            desc.innerText = "Upload broker CSV trades and log execution records to generate assessment.";
+            return;
+        }
+
+        // Rule 1: Low discipline adherence -> GAMBLER
+        if (disciplinePct < 70) {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "GAMBLER";
+            desc.innerText = `Discipline adherence is low (${disciplinePct.toFixed(1)}%). Executions are inconsistent regardless of trade results.`;
+        } 
+        // Rule 2: High discipline adherence + declining equity curve -> SYSTEM DOES NOT HAVE AN EDGE
+        else if (disciplinePct >= 80 && equityGrowth < 0) {
+            badge.className = "judgement-badge badge-no-edge";
+            badge.innerText = "SYSTEM DOES NOT HAVE AN EDGE";
+            desc.innerText = `Execution was strictly followed (${disciplinePct.toFixed(1)}% discipline), but broker equity curve is declining. System lacks a statistical edge.`;
+        } 
+        // Rule 3: High discipline adherence + positive equity curve -> PROFITABLE EDGE
+        else if (disciplinePct >= 75 && equityGrowth >= 0) {
+            badge.className = "judgement-badge badge-edge";
+            badge.innerText = "PROFITABLE EDGE";
+            desc.innerText = `Excellent discipline adherence (${disciplinePct.toFixed(1)}%) paired with positive account equity growth. Retain current system parameters.`;
+        } 
+        else {
+            badge.className = "judgement-badge badge-gambler";
+            badge.innerText = "INSUFFICIENT DISCIPLINE / MIXED RESULTS";
+            desc.innerText = "Execution discipline needs tightening to render an accurate system edge diagnosis.";
+        }
+    }
+
     function persistAndRefresh() {
-        const stateBundle = { scores: scores, meta: tradeMeta };
+        const stateBundle = { 
+            scores: scores, 
+            meta: tradeMeta, 
+            brokerEquity: brokerEquity,
+            theme: currentTheme 
+        };
         localStorage.setItem('donchianFilteredState', JSON.stringify(stateBundle));
         
+        let maxLen = Math.max(scores.length, brokerEquity.length);
+        let labels = Array.from({length: maxLen}, (_, i) => i === 0 ? "Start" : `Trade ${i}`);
+
         chart.data.labels = labels;
         chart.data.datasets[0].data = scores;
+        chart.data.datasets[1].data = brokerEquity;
         chart.update();
+
         renderLogHistory();
+        evaluateJudgement();
     }
 
     function renderLogHistory() {
         const container = document.getElementById('tradeHistoryLog');
         if (tradeMeta.length === 0) {
-            container.innerHTML = `<div style="color: #666; font-size: 13px; text-align: center;">No records logged in this session yet.</div>`;
+            container.innerHTML = `<div style="color: var(--muted-text); font-size: 13px; text-align: center;">No records logged in this session yet.</div>`;
             return;
         }
         
         container.innerHTML = tradeMeta.map((item, index) => `
             <div class="log-item">
-                <strong style="color: ${item.type === 'pass' ? '#00cc66' : '#ef4444'};">${item.title} #${item.id}</strong> (${item.timestamp})<br>
-                <span style="color: #ccc;">Note:</span> ${item.note}
-                ${item.image ? `<br><a href="#" onclick="openModal('${index}'); return false;" style="color: #3b82f6; font-size: 12px; font-weight: 600;">🖼️ View Chart Screenshot</a>` : ''}
+                <strong style="color: ${item.type === 'pass' ? 'var(--accent-green)' : 'var(--accent-red)'};">${item.title} #${item.id}</strong> (${item.timestamp})<br>
+                <span style="color: var(--muted-text);">Note:</span> ${item.note}
+                ${item.image ? `<br><a href="#" onclick="openModal('${index}'); return false;" style="color: var(--accent-blue); font-size: 12px; font-weight: 600;">🖼️ View ${item.sampleTitle || 'Chart Screenshot'}</a>` : ''}
             </div>
         `).join('');
     }
@@ -410,6 +600,7 @@
     function openModal(index) {
         const item = tradeMeta[index];
         if (item && item.image) {
+            document.getElementById('modalTitle').innerText = item.sampleTitle || "Chart Screenshot";
             document.getElementById('modalImage').src = item.image;
             document.getElementById('imageModal').style.display = 'flex';
         }
@@ -420,7 +611,7 @@
     }
 
     function exportHistory() {
-        const stateBundle = { scores: scores, meta: tradeMeta };
+        const stateBundle = { scores: scores, meta: tradeMeta, brokerEquity: brokerEquity, theme: currentTheme };
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stateBundle));
         const downloadAnchor = document.createElement('a');
         downloadAnchor.setAttribute("href", dataStr);
@@ -444,11 +635,12 @@
                 if (imported && Array.isArray(imported.scores) && Array.isArray(imported.meta)) {
                     scores = imported.scores;
                     tradeMeta = imported.meta;
-                    labels = scores.map((_, i) => i === 0 ? "Start" : `Log ${i}`);
+                    brokerEquity = imported.brokerEquity || [0];
+                    currentTheme = imported.theme || 'dark';
                     persistAndRefresh();
-                    alert("Complete history, avoided setups, notes, and screenshots successfully imported!");
+                    alert("Complete history, state, and equity metrics imported successfully!");
                 } else {
-                    alert("Invalid history backup format.");
+                    alert("Invalid backup format.");
                 }
             } catch (err) {
                 alert("Error reading backup file.");
@@ -458,10 +650,10 @@
     }
 
     function resetChart() {
-        if(confirm("Reset all historical records, notes, and screenshots? This cannot be undone.")) {
+        if(confirm("Reset all historical records, broker equity, notes, and screenshots? This cannot be undone.")) {
             scores = [0];
             tradeMeta = [];
-            labels = ["Start"];
+            brokerEquity = [0];
             persistAndRefresh();
         }
     }
@@ -470,29 +662,56 @@
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
-            datasets: [{
-                label: 'Behavioral Discipline Score (%)',
-                data: scores,
-                borderColor: '#00cc66',
-                backgroundColor: 'rgba(0, 204, 102, 0.05)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.1
-            }]
+            labels: ["Start"],
+            datasets: [
+                {
+                    label: 'Discipline Score Points',
+                    data: scores,
+                    borderColor: '#00cc66',
+                    backgroundColor: 'rgba(0, 204, 102, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Broker Account Equity Curve ($)',
+                    data: brokerEquity,
+                    borderColor: '#2b5af0',
+                    backgroundColor: 'rgba(43, 90, 240, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1,
+                    yAxisID: 'y1'
+                }
+            ]
         },
         options: {
             responsive: true,
             scales: {
-                y: { grid: { color: '#2d2d2d' }, ticks: { color: '#aaa' }, min: 0 },
-                x: { grid: { color: '#2d2d2d' }, ticks: { color: '#aaa' } }
-            },
-            plugins: { legend: { labels: { color: '#fff' } } }
+                y: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: 'rgba(150, 150, 150, 0.15)' },
+                    title: { display: true, text: 'Discipline Score' }
+                },
+                y1: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { drawOnChartArea: false },
+                    title: { display: true, text: 'Broker Equity ($)' }
+                },
+                x: { grid: { color: 'rgba(150, 150, 150, 0.15)' } }
+            }
         }
     });
 
-    renderLogHistory();
+    persistAndRefresh();
 </script>
+</body>
+</html>
 
 </body>
 </html>
