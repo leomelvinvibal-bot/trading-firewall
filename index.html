@@ -1,3 +1,69 @@
+
+2 of 815
+(no subject)
+Inbox
+Summarize this email
+
+Leo Melvin Vibal
+Attachments
+8:56 PM (1 hour ago)
+to me
+
+
+
+
+Step 1: Upgrade the Web App Layout (UX & Functionality)
+Before sending paid traffic, your website needs to look like a professional, standalone software product rather than a simple code test.
+
+Add Clear Header Branding: Add a professional navigation bar at the top displaying your app name (e.g., Donchian System Firewall) and a tag line (e.g., Pre-Flight Execution Checklist for FX Traders).
+
+Ensure Mobile Responsiveness: Test the site on desktop and mobile screens to verify checkboxes, input fields, and trade-note text areas scale seamlessly.
+
+Refine the User Workflow: Keep your core functionality front and center (Checklist $\rightarrow$ Rule Validation $\rightarrow$ Trade Notes $\rightarrow$ Export/Save Log).
+
+Step 2: Essential Legal Pages for Google Ads Compliance
+Google Ads strictly monitors financial, trading, and investment-related tools. To pass Google's review process without your account getting flagged or disapproved, your website must include the following pages linked in the footer:
+
+Risk & Financial Disclaimer Page:
+
+Clearly state: "Trading foreign exchange, futures, and stocks carries high risk and may not be suitable for all investors. This software is a personal discipline and risk management tool, not financial advice or a signal service."
+
+Privacy Policy & Terms of Service:
+
+Disclose how user inputs or browser storage (localStorage) are handled.
+
+Contact / About Us Page:
+
+Include a valid contact email and business entity/support name to prove transparency.
+
+Step 3: Preparing Your Google Ads Campaign
+Trading software requires careful positioning on Google Ads to comply with financial advertising policies:
+
+Positioning (Do's & Don'ts):
+
+DO: Position it strictly as a "Trading Discipline Tool," "Risk Management Checklist," or "Execution Utility."
+
+DON'T: Use high-risk trigger words like "Guaranteed Profits," "Get Rich," "Trading Signals," or "Automated Win-Rate System". Google will suspend ad accounts making unverified financial earnings claims.
+
+Targeting High-Intent Keywords:
+
+Focus on search intent keywords like: day trading checklist tool, forex risk management app, trading journal checklist, or trading discipline software.
+
+Recommended Next Step
+Should we focus on updating your index.html code to add the professional header, footer, and required legal disclaimers first, or would you like to plan the Google Ads copy and landing page text?
+
+
+Data Privacy Notice
+
+Your Sensitive and Personal Information shall be processed, collected, stored, used, disclosed and transferred in accordance with our Data Privacy Policy which may be accessed at  https://www.pryce.com.ph/corporate-governance/companys-policies/pryce-corp/.
+
+DISCLAIMER: The information contained in this e-mail and/or attachments are confidential and privileged or otherwise protected by other legal rules. It is solely and exclusively intended for the use of the addressee or individual/s to whom it is addressed. Any views or opinions disclosed in this e-mail are directly and solely those of the author and do not represent or otherwise authorized by Pryce Group of Companies. 
+If you are not the intended recipient and received it by mistake, please notify the sender and delete the same immediately from your e-mail system. You are prohibited from using, disseminating, disclosing, forwarding, printing, or copying this e-mail.
+
+Pryce Group of Companies accepts no liability or damages for the information contained in this email, or for the consequent and necessary effects based on the information provided, including the virus that is possibly transmitted therein.
+
+ 2 Attachments
+  •  Scanned by Gmail
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,7 +145,7 @@
       </button>
       <div class="flex items-center gap-2 font-extrabold text-base tracking-tight text-slate-800 dark:text-slate-100">
         <span class="text-blue-600 dark:text-sky-400 text-lg">⚡</span>
-        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">MONITORING TRADE EXECUTUIONS</span>
+        <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-400 bg-clip-text text-transparent">TRADERWAVES</span>
         <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 font-mono ml-1">/ EG Platform</span>
       </div>
     </div>
@@ -87,14 +153,14 @@
     <!-- RIGHT HEADER TOOLS -->
     <div class="flex items-center gap-2 sm:gap-3">
       
-      <!-- New York Live Time Badge -->
+      <!-- New York Live Time Badge (KEPT) -->
       <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200 shadow-sm">
         <span class="text-slate-400">🌐</span>
         <span class="hidden xs:inline">New York ·</span>
         <span id="nyClock" class="font-mono font-bold text-blue-600 dark:text-sky-400">09:30:00 EST</span>
       </div>
 
-      <!-- CEO & Platform Notification Bell -->
+      <!-- CEO & Platform Notification Bell (KEPT & INTERACTIVE) -->
       <div class="relative">
         <button id="notifBellBtn" onclick="toggleNotifications()" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative" title="Platform Notifications & Updates">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -244,19 +310,13 @@
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cross-reference discipline scores against real broker CSV execution logs.</p>
         </div>
 
-        <!-- CSV Sync Button Trigger & Backup Controls -->
-        <div class="flex items-center gap-2 flex-wrap">
+        <!-- CSV Sync Button Trigger -->
+        <div class="flex items-center gap-2">
           <label class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs py-2.5 px-4 rounded-xl shadow-sm transition-all flex items-center gap-2 active:scale-95">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
             <span>Connect CSV / Broker File</span>
             <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCSVUpload(event)">
           </label>
-          <button onclick="exportHistory()" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs py-2.5 px-3 rounded-xl shadow-sm transition-all">💾 Export Backup</button>
-          <label class="cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs py-2.5 px-3 rounded-xl shadow-sm transition-all">
-            📂 Import
-            <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importHistory(event)">
-          </label>
-          <button onclick="clearData()" class="bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 font-semibold text-xs py-2.5 px-3 rounded-xl transition-all">Reset</button>
         </div>
       </div>
 
@@ -277,6 +337,51 @@
         <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3 rounded-xl text-center">
           <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-0.5">CSV Realized PnL</span>
           <span id="csvPnL" class="text-xl font-extrabold text-slate-400">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE GRAPH & DIAGNOSTICS ROW -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Chart Box (2 cols) -->
+      <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <span>📈</span> Equity Curve vs. Discipline Score
+            </h2>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Dual-axis correlation between rule adherence and broker profitability.</p>
+          </div>
+          <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono px-2 py-1 rounded">Live Dual Axis</span>
+        </div>
+        
+        <div class="relative w-full h-64 sm:h-72">
+          <canvas id="performanceChart"></canvas>
+        </div>
+      </div>
+
+      <!-- System Diagnostic Evaluator Box (1 col) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3.5">
+        <div class="border-b border-slate-100 dark:border-slate-800 pb-2.5">
+          <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <span>🔬</span> System Edge Evaluator
+          </h2>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Automated diagnosis of discipline impact.</p>
+        </div>
+
+        <div id="diagnosticOutput" class="space-y-2.5 text-xs">
+          <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
+            <span class="font-bold text-slate-700 dark:text-slate-200">Execution Status:</span>
+            <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Upload a broker CSV or log more disciplined trades to generate statistical feedback.</p>
+          </div>
+
+          <div class="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-900/40 text-blue-900 dark:text-blue-200 space-y-1">
+            <span class="font-bold">Golden Rule:</span>
+            <p class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed">
+              When compliance is high (>90%), losses are pure statistical cost of business. If compliance is low, losses are self-inflicted execution flaws.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -334,51 +439,6 @@
             <input type="checkbox" class="chk-avoid mt-0.5 rounded border-slate-300 text-red-600 focus:ring-red-500">
             <div><strong class="text-slate-800 dark:text-slate-200">FOMO Retest:</strong> Price already reached target before secondary entry trigger.</div>
           </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- PERFORMANCE GRAPH & DIAGNOSTICS ROW -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Chart Box (2 cols) -->
-      <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-              <span>📈</span> Equity Curve vs. Discipline Score
-            </h2>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Dual-axis correlation between rule adherence and broker profitability.</p>
-          </div>
-          <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono px-2 py-1 rounded">Live Dual Axis</span>
-        </div>
-        
-        <div class="relative w-full h-64 sm:h-72">
-          <canvas id="performanceChart"></canvas>
-        </div>
-      </div>
-
-      <!-- System Diagnostic Evaluator Box (1 col) -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm space-y-3.5">
-        <div class="border-b border-slate-100 dark:border-slate-800 pb-2.5">
-          <h2 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-            <span>🔬</span> System Edge Evaluator
-          </h2>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Automated diagnosis of discipline impact.</p>
-        </div>
-
-        <div id="diagnosticOutput" class="space-y-2.5 text-xs">
-          <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
-            <span class="font-bold text-slate-700 dark:text-slate-200">Execution Status:</span>
-            <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Upload a broker CSV or log more disciplined trades to generate statistical feedback.</p>
-          </div>
-
-          <div class="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-900/40 text-blue-900 dark:text-blue-200 space-y-1">
-            <span class="font-bold">Golden Rule:</span>
-            <p class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed">
-              When compliance is high (>90%), losses are pure statistical cost of business. If compliance is low, losses are self-inflicted execution flaws.
-            </p>
-          </div>
         </div>
       </div>
     </div>
@@ -441,14 +501,12 @@
   </main>
 
   <script>
+    // System State Variables
     let editsLeft = 2;
     let score = 10;
     let entries = 1;
     let compliantCount = 1;
     let csvTotalPnL = 0;
-    let historyRecords = [
-      { type: 'Compliant', notes: 'Initial system setup trade', img: null, pts: 10, time: 'Just now' }
-    ];
 
     let chartInstance = null;
     let chartDataPoints = {
@@ -457,26 +515,38 @@
       pnl: [0]
     };
 
+    // Initialize Page Clock & Chart on Load
     window.onload = function() {
       updateNYClock();
       setInterval(updateNYClock, 1000);
       initChart();
     };
 
+    // Live New York Time Clock
     function updateNYClock() {
-      const options = { timeZone: 'America/New_York', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const options = {
+        timeZone: 'America/New_York',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
       const nyTime = new Intl.DateTimeFormat('en-US', options).format(new Date());
       document.getElementById('nyClock').innerText = `${nyTime} EST`;
     }
 
+    // Toggle Notifications Dropdown
     function toggleNotifications() {
-      document.getElementById('notifDropdown').classList.toggle('hidden');
+      const dropdown = document.getElementById('notifDropdown');
+      dropdown.classList.toggle('hidden');
     }
 
+    // Sidebar Drawer Toggle
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('overlay');
       const isOpen = !sidebar.classList.contains('-translate-x-full');
+
       if (isOpen) {
         sidebar.classList.add('-translate-x-full');
         overlay.classList.add('opacity-0', 'pointer-events-none');
@@ -486,6 +556,7 @@
       }
     }
 
+    // Theme Switcher
     function toggleTheme() {
       const body = document.body;
       const isDark = body.classList.contains('dark');
@@ -499,17 +570,21 @@
       if (chartInstance) chartInstance.update();
     }
 
+    // Edit Checklist Criteria (Max 2 Limits)
     function editCriteria(type) {
       if (editsLeft <= 0) {
         alert("Edit limit reached! Rule editing is locked to prevent moving goalposts during strategy sample validation.");
         return;
       }
+      
       const newText = prompt("Enter replacement criterion description:");
       if (newText && newText.trim() !== "") {
         editsLeft--;
         document.getElementById('editsBadge').innerText = `${editsLeft} Edits Left`;
+        
         const targetList = type === 'preflight' ? 'preflightList' : 'avoidList';
         const colorClass = type === 'preflight' ? 'text-emerald-600 focus:ring-emerald-500' : 'text-red-600 focus:ring-red-500';
+        
         const container = document.getElementById(targetList);
         const newItem = document.createElement('label');
         newItem.className = 'flex items-start gap-2.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors';
@@ -521,132 +596,7 @@
       }
     }
 
-    function initChart() {
-      const ctx = document.getElementById('performanceChart').getContext('2d');
-      const isDark = document.body.classList.contains('dark');
-
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: chartDataPoints.labels,
-          datasets: [
-            {
-              label: 'Discipline Score',
-              data: chartDataPoints.discipline,
-              borderColor: '#2563eb',
-              backgroundColor: 'rgba(37, 99, 235, 0.08)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.2,
-              yAxisID: 'y'
-            },
-            {
-              label: 'Realized PnL ($)',
-              data: chartDataPoints.pnl,
-              borderColor: '#059669',
-              backgroundColor: 'transparent',
-              borderWidth: 2,
-              borderDash: [4, 4],
-              tension: 0.2,
-              yAxisID: 'y1'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              labels: {
-                color: isDark ? '#9ca3af' : '#64748b',
-                font: { family: 'Inter', size: 11 }
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
-              ticks: { color: isDark ? '#9ca3af' : '#64748b', font: { family: 'Inter', size: 10 } }
-            },
-            y: {
-              type: 'linear',
-              position: 'left',
-              title: { display: true, text: 'Discipline Score', color: '#2563eb', font: { size: 10 } },
-              grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)' },
-              ticks: { color: isDark ? '#9ca3af' : '#64748b' }
-            },
-            y1: {
-              type: 'linear',
-              position: 'right',
-              title: { display: true, text: 'PnL ($)', color: '#059669', font: { size: 10 } },
-              grid: { drawOnChartArea: false },
-              ticks: { color: isDark ? '#9ca3af' : '#64748b' }
-            }
-          }
-        }
-      });
-    }
-
-    function logTrade(type) {
-      const notes = document.getElementById('tradeNotes').value || (type === 'compliant' ? 'Compliant market execution' : 'Successfully filtered bad setup');
-      const fileInput = document.getElementById('chartScreenshot');
-      
-      const pts = type === 'compliant' ? 10 : 5;
-      score += pts;
-      entries++;
-      if (type === 'compliant') compliantCount++;
-
-      const compliance = Math.round((compliantCount / entries) * 100);
-      document.getElementById('complianceRate').innerText = `${compliance}%`;
-      document.getElementById('disciplineScore').innerText = `${score} PTS`;
-      document.getElementById('loggedEntries').innerText = entries;
-
-      chartDataPoints.labels.push(`Trade ${entries}`);
-      chartDataPoints.discipline.push(score);
-      chartDataPoints.pnl.push(csvTotalPnL);
-      chartInstance.update();
-
-      if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const imgBase64 = e.target.result;
-          historyRecords.push({ type: type === 'compliant' ? 'Compliant' : 'Avoided', notes, img: imgBase64, pts, time: 'Just now' });
-          appendTableRow(type, notes, imgBase64, pts);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        historyRecords.push({ type: type === 'compliant' ? 'Compliant' : 'Avoided', notes, img: null, pts, time: 'Just now' });
-        appendTableRow(type, notes, null, pts);
-      }
-
-      document.getElementById('tradeNotes').value = '';
-      fileInput.value = '';
-      updateDiagnostics(compliance);
-    }
-
-    function appendTableRow(type, notes, imgBase64, pts) {
-      const tbody = document.getElementById('historyBody');
-      const tr = document.createElement('tr');
-      tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors';
-      
-      const typeColor = type === 'compliant' ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-blue-600 dark:text-sky-400 font-bold';
-      const typeText = type === 'compliant' ? 'Compliant' : 'Avoided Setup';
-      
-      let imgCell = '<span class="text-slate-400">—</span>';
-      if (imgBase64) {
-        imgCell = `<button onclick="openModal('${imgBase64}')" class="text-xs font-semibold text-blue-600 dark:text-sky-400 underline hover:text-blue-700">View Chart</button>`;
-      }
-
-      tr.innerHTML = `
-        <td class="p-3"><span class="${typeColor}">${typeText}</span></td>
-        <td class="p-3 text-slate-700 dark:text-slate-300">${notes}</td>
-        <td class="p-3">${imgCell}</td>
-        <td class="p-3 font-mono text-emerald-600 dark:text-emerald-400">+${pts}</td>
-        <td class="p-3 text-slate-400 text-[11px]">Just now</td>
-      `;
-      tbody.prepend(tr);
-    }
-
+    // Modal Image Preview
     function openModal(imgSrc) {
       document.getElementById('modalImg').src = imgSrc;
       const modal = document.getElementById('imageModal');
@@ -658,6 +608,79 @@
       modal.classList.add('opacity-0', 'pointer-events-none');
     }
 
+    // Log Trade Action
+    function logTrade(type) {
+      const notes = document.getElementById('tradeNotes').value.trim() || "Routine strategy log";
+      const fileInput = document.getElementById('chartScreenshot');
+      const table = document.getElementById('historyBody');
+      const row = document.createElement('tr');
+      row.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors";
+
+      entries++;
+      let imgTdHtml = '<span class="text-slate-400">—</span>';
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const imgSrc = e.target.result;
+          const imgPreview = `<img src="${imgSrc}" class="w-10 h-7 object-cover rounded border border-slate-300 dark:border-slate-700 cursor-pointer hover:scale-105 transition-transform" onclick="openModal('${imgSrc}')" alt="Chart">`;
+          renderTradeRow(type, notes, imgPreview, table, row);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        renderTradeRow(type, notes, imgTdHtml, table, row);
+      }
+    }
+
+    function renderTradeRow(type, notes, imgHtml, table, row) {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (type === 'compliant') {
+        score += 10;
+        compliantCount++;
+        row.innerHTML = `
+          <td class="p-3"><span class="text-emerald-600 dark:text-emerald-400 font-bold">Compliant</span></td>
+          <td class="p-3 text-slate-700 dark:text-slate-300">${notes}</td>
+          <td class="p-3">${imgHtml}</td>
+          <td class="p-3 font-mono text-emerald-600 dark:text-emerald-400">+10</td>
+          <td class="p-3 text-slate-400 text-[11px]">${timeStr}</td>
+        `;
+      } else {
+        score += 5;
+        row.innerHTML = `
+          <td class="p-3"><span class="text-blue-600 dark:text-sky-400 font-bold">Avoided</span></td>
+          <td class="p-3 text-slate-700 dark:text-slate-300">${notes}</td>
+          <td class="p-3">${imgHtml}</td>
+          <td class="p-3 font-mono text-blue-600 dark:text-sky-400">+5</td>
+          <td class="p-3 text-slate-400 text-[11px]">${timeStr}</td>
+        `;
+      }
+
+      table.prepend(row);
+
+      // Reset form
+      document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      document.getElementById('tradeNotes').value = '';
+      document.getElementById('chartScreenshot').value = '';
+
+      // Update metrics
+      document.getElementById('disciplineScore').innerText = score + " PTS";
+      document.getElementById('loggedEntries').innerText = entries;
+      const rate = Math.round((compliantCount / entries) * 100);
+      document.getElementById('complianceRate').innerText = rate + "%";
+
+      // Push to Chart
+      chartDataPoints.labels.push(`Trade ${entries}`);
+      chartDataPoints.discipline.push(score);
+      chartDataPoints.pnl.push(csvTotalPnL);
+      chartInstance.update();
+
+      updateDiagnostics();
+    }
+
+    // CSV Parser for Realized Broker PnL
     function handleCSVUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -666,105 +689,111 @@
       reader.onload = function(e) {
         const text = e.target.result;
         const lines = text.split('\n');
-        let pnlSum = 0;
+        let parsedPnL = 0;
         let count = 0;
 
-        for (let i = 1; i < lines.length; i++) {
-          const line = lines[i].trim();
-          if (!line) continue;
+        lines.forEach(line => {
           const cols = line.split(',');
-          // Attempt to find a numeric column that looks like PnL / Profit
-          for (let j = 0; j < cols.length; j++) {
-            const val = parseFloat(cols[j].replace(/["$]/g, ''));
-            if (!isNaN(val) && (cols[j].includes('.') || cols[j].includes('-'))) {
-              // basic heuristic for broker profit columns
-              pnlSum += val;
+          cols.forEach(val => {
+            const num = parseFloat(val);
+            if (!isNaN(num) && Math.abs(num) > 0.01 && Math.abs(num) < 100000) {
+              parsedPnL += num;
               count++;
-              break;
+            }
+          });
+        });
+
+        csvTotalPnL = parseFloat(parsedPnL.toFixed(2));
+        const pnlElem = document.getElementById('csvPnL');
+        pnlElem.innerText = (csvTotalPnL >= 0 ? '+' : '') + '$' + csvTotalPnL.toLocaleString();
+        pnlElem.className = `text-xl font-extrabold ${csvTotalPnL >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
+
+        // Update last chart point PnL
+        chartDataPoints.pnl[chartDataPoints.pnl.length - 1] = csvTotalPnL;
+        chartInstance.update();
+        updateDiagnostics();
+      };
+      reader.readAsText(file);
+    }
+
+    // Chart.js Dual-Axis Setup
+    function initChart() {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartDataPoints.labels,
+          datasets: [
+            {
+              label: 'Discipline Score (PTS)',
+              data: chartDataPoints.discipline,
+              borderColor: '#0284c7',
+              backgroundColor: 'rgba(2, 132, 199, 0.1)',
+              yAxisID: 'yDiscipline',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Realized Broker PnL ($)',
+              data: chartDataPoints.pnl,
+              borderColor: '#10b981',
+              backgroundColor: 'transparent',
+              borderDash: [4, 4],
+              yAxisID: 'yPnL',
+              tension: 0.2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            x: {
+              grid: { display: false }
+            },
+            yDiscipline: {
+              type: 'linear',
+              position: 'left',
+              title: { display: true, text: 'Discipline Points' }
+            },
+            yPnL: {
+              type: 'linear',
+              position: 'right',
+              title: { display: true, text: 'Broker PnL ($)' },
+              grid: { drawOnChartArea: false }
             }
           }
         }
-
-        csvTotalPnL = pnlSum !== 0 ? pnlSum : 150.25; // fallback simulated value if simple csv parsing misses exact columns
-        document.getElementById('csvPnL.innerText` = `$${csvTotalPnL.toFixed(2)}`;
-        document.getElementById('csvPnL').className = `text-xl font-extrabold ${csvTotalPnL >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`;
-        
-        // Update last chart point with real PnL
-        if (chartDataPoints.pnl.length > 0) {
-          chartDataPoints.pnl[chartDataPoints.pnl.length - 1] = csvTotalPnL;
-          chartInstance.update();
-        }
-
-        alert(`Successfully parsed broker CSV log! Total Realized PnL detected: $${csvTotalPnL.toFixed(2)}`);
-      };
-      reader.readAsText(file);
+      });
     }
 
-    function updateDiagnostics(compliance) {
+    // Diagnostic System Analysis
+    function updateDiagnostics() {
+      const rate = Math.round((compliantCount / entries) * 100);
       const output = document.getElementById('diagnosticOutput');
-      let statusHtml = '';
-      if (compliance >= 80) {
-        statusHtml = `
-          <div class="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-200 space-y-1">
-            <span class="font-bold">Edge Status: Optimal</span>
-            <p class="text-[11px] leading-relaxed">High discipline compliance (${compliance}%). Your strategy's statistical probability is fully active.</p>
-          </div>`;
+
+      let statusMessage = "";
+      if (rate >= 85) {
+        statusMessage = `<div class="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-200 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-200">
+          <strong class="block mb-0.5">🟢 Excellent Process Adherence (${rate}%)</strong>
+          Your execution is consistent. Profits/losses now strictly reflect underlying edge math.
+        </div>`;
       } else {
-        statusHtml = `
-          <div class="p-3 bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-200 space-y-1">
-            <span class="font-bold">Edge Status: Compromised</span>
-            <p class="text-[11px] leading-relaxed">Compliance has dropped to ${compliance}%. Rule deviations are introducing unwanted variance.</p>
-          </div>`;
+        statusMessage = `<div class="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40 text-amber-900 dark:text-amber-200">
+          <strong class="block mb-0.5">⚠️ Rule Deviations Detected (${rate}%)</strong>
+          Low compliance increases risk of unexpected drawdown. Focus on passing bad setups.
+        </div>`;
       }
-      output.children[0].outerHTML = statusHtml;
-    }
 
-    function exportHistory() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(historyRecords));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "traderwaves_execution_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    }
-
-    function importHistory(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported)) {
-            historyRecords = imported;
-            const tbody = document.getElementById('historyBody');
-            tbody.innerHTML = '';
-            entries = historyRecords.length;
-            compliantCount = historyRecords.filter(r => r.type === 'Compliant').length;
-            score = historyRecords.reduce((acc, r) => acc + r.pts, 0);
-
-            document.getElementById('complianceRate').innerText = `${Math.round((compliantCount / entries) * 100)}%`;
-            document.getElementById('disciplineScore').innerText = `${score} PTS`;
-            document.getElementById('loggedEntries').innerText = entries;
-
-            historyRecords.forEach(rec => {
-              appendTableRow(rec.type.toLowerCase(), rec.notes, rec.img, rec.pts);
-            });
-            alert("History successfully imported from backup file!");
-          }
-        } catch (err) {
-          alert("Invalid backup file format.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function clearData() {
-      if (confirm("Are you sure you want to clear current session memory? Make sure you exported your backup first!")) {
-        localStorage.clear();
-        location.reload();
-      }
+      output.innerHTML = statusMessage + `
+        <div class="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-200 dark:border-blue-900/40 text-blue-900 dark:text-blue-200 space-y-1">
+          <span class="font-bold">Golden Rule:</span>
+          <p class="text-[11px] leading-relaxed">
+            When compliance is high (>90%), losses are pure statistical cost of business. If compliance is low, losses are self-inflicted execution flaws.
+          </p>
+        </div>
+      `;
     }
   </script>
 </body>
