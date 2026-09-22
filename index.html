@@ -4,305 +4,264 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TraderWellPower / Edge Builder Platform</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        darkBg: '#0b0f19',
-                        cardBg: '#131b2e',
-                        cardBorder: '#1e293b',
+                        brand: { 50: '#eff6ff', 500: '#2563eb', 600: '#1d4ed8', 900: '#1e3a8a' }
                     }
                 }
             }
         }
     </script>
-    <style>
-        :root {
-            --accent-color: #2563eb;
-            --accent-hover: #1d4ed8;
-            --accent-glow: rgba(37, 99, 235, 0.3);
-        }
-        .dynamic-accent { color: var(--accent-color) !important; }
-        .dynamic-bg { background-color: var(--accent-color) !important; }
-        .dynamic-bg:hover { background-color: var(--accent-hover) !important; }
-        .dynamic-border { border-color: var(--accent-color) !important; }
-        .dynamic-shadow { box-shadow: 0 10px 25px -5px var(--accent-glow) !important; }
-        .dynamic-ring:focus { --tw-ring-color: var(--accent-color) !important; }
-    </style>
+    <!-- FontAwesome & Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-slate-50 dark:bg-darkBg text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between antialiased transition-colors duration-300">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
-    <header class="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-[#0e1422]/80 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-slate-800 bg-[#0a0e17] sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <button class="text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
-                    <i class="fa-solid fa-bars text-lg"></i>
-                </button>
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-lg dynamic-bg flex items-center justify-center shadow-lg dynamic-shadow">
-                        <i class="fa-solid fa-bolt text-white text-sm font-bold"></i>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-bold tracking-wider text-slate-900 dark:text-white text-base">TRADERWELLPOWER</span>
-                        <span class="text-slate-400 font-light">/</span>
-                        <span class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700/50">Edge Builder</span>
-                    </div>
+                <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xl">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">TraderWellPower <span class="text-blue-500 text-xs px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 ml-1">Edge Builder</span></h1>
+                    <p class="text-xs text-slate-400">System Discipline & Anti-Curve Fitting Platform</p>
                 </div>
             </div>
-
             <div class="flex items-center space-x-3">
-                <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 shadow-inner">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-medium" id="live-clock">11:47 PM EST</span>
-                </div>
-                
-                <button id="darkModeToggle" onclick="toggleDarkMode()" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <button onclick="openCtraderModal()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-blue-500 text-xs font-semibold flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-plug text-blue-400"></i>
+                    <span class="hidden sm:inline">Connect cTrader</span>
+                </button>
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition">
                     <i id="themeIcon" class="fa-solid fa-sun"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Workspace -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
-        
-        <!-- Top Metrics & Edge Diagnostic Verdict Banner -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Checklist Compliance Rate</span>
-                <div class="text-3xl font-extrabold text-emerald-500 mt-2" id="stat-compliance">100%</div>
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-grow w-full">
+
+        <!-- Top Metrics Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">System Score</div>
+                <div class="text-3xl font-extrabold text-white mt-1" id="stat-score">0</div>
+                <div class="text-xs text-emerald-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> Accumulated Edge Points</div>
             </div>
-            <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Execution Discipline Score</span>
-                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2"><span id="stat-score">0</span> <span class="text-sm font-normal text-slate-400">PTS</span></div>
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Discipline Streak</div>
+                <div class="text-3xl font-extrabold text-blue-400 mt-1" id="stat-streak">0</div>
+                <div class="text-xs text-slate-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-fire text-amber-400"></i> <span id="streakMultiplierText">1.0x Multiplier Active</span></div>
             </div>
-            <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Broker Equity Balance</span>
-                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="stat-equity">$10,000.00</div>
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Checklist Compliance</div>
+                <div class="text-3xl font-extrabold text-white mt-1" id="stat-compliance">100%</div>
+                <div class="text-xs text-slate-400 mt-2">Active session average</div>
             </div>
-            <div class="bg-gradient-to-br from-blue-900/40 to-slate-900 border border-blue-500/40 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-blue-400">System Edge Verdict</span>
-                <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-white mt-2 flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-                    <span id="verdictText">Awaiting System Data...</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Execution Checklist & Builder Interface -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Left Column: Pre-Flight Checklist -> Equity Curve -> Setup to Avoid -->
-            <div class="space-y-6">
-                <!-- Pre-Flight Execution Checklist -->
-                <div class="bg-white dark:bg-[#131b2e] border border-blue-500/40 rounded-2xl p-6 shadow-sm space-y-3 relative">
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-bold text-sm uppercase tracking-wider text-blue-400">Pre-Flight Execution Checklist (Compliant Entry)</h4>
-                        <button onclick="openCustomizeChecklistModal()" class="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 font-semibold px-3 py-1 rounded-lg transition">
-                            <i class="fa-solid fa-sliders mr-1"></i> Edit Rules (<span id="editCountBadge">2</span> left)
-                        </button>
-                    </div>
-                    <p class="text-xs text-slate-400 mb-3">System criteria is strictly locked after 2 edits to prevent curve-fitting false edges.</p>
-                    
-                    <div id="checklistContainer" class="space-y-3">
-                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                            <input type="checkbox" name="chk" value="Take Profit Target" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Take Profit Target:</strong> Area is explicitly mapped out on the chart.</span>
-                        </label>
-
-                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                            <input type="checkbox" name="chk" value="Donchian Crossover" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</span>
-                        </label>
-
-                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                            <input type="checkbox" name="chk" value="Execution Style" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</span>
-                        </label>
-
-                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                            <input type="checkbox" name="chk" value="Timing Gateway" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Broker Equity & Performance Curve -->
-                <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
-                                <i class="fa-solid fa-chart-line dynamic-accent"></i> Broker Equity & Performance Curve
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Connect cTrader Open API or upload broker CSV to test account growth trajectory.</p>
-                        </div>
-                        <div class="flex items-center space-x-2 flex-wrap gap-y-2">
-                            <button onclick="openCtraderModal()" class="cursor-pointer inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2.5 rounded-xl shadow transition">
-                                <i class="fa-solid fa-plug"></i>
-                                <span>Connect cTrader</span>
-                            </button>
-                            <label class="cursor-pointer inline-flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition">
-                                <i class="fa-solid fa-file-arrow-up dynamic-accent"></i>
-                                <span>CSV</span>
-                                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="h-72 w-full relative">
-                        <canvas id="equityChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Setup to Avoid -->
-                <div class="bg-white dark:bg-[#131b2e] border border-rose-500/40 rounded-2xl p-6 shadow-sm space-y-3">
-                    <h4 class="font-bold text-sm uppercase tracking-wider text-rose-400 mb-2">Setup to Avoid (Filtered Out / Patient Pass)</h4>
-                    
-                    <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-rose-500 transition">
-                        <input type="checkbox" id="failedTrigger" class="mt-0.5 w-4 h-4 rounded text-rose-600 focus:ring-rose-500 bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700">
-                        <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Failed Trigger Criteria:</strong> Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure).</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Right Column: Notes, Screenshot Attachment & System Logging -->
-            <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Trade Setup Note / Execution Context:</label>
-                        <textarea id="tradeNoteInput" rows="4" placeholder="Enter market context, asset pair, or reason for taking/avoiding the setup..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Attach Chart Screenshot:</label>
-                        <input type="file" id="screenshotInput" accept="image/*" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200 cursor-pointer">
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button onclick="logSession('compliant')" class="py-3 px-4 rounded-xl text-xs sm:text-sm font-bold dynamic-bg text-white shadow-lg dynamic-shadow transition transform hover:-translate-y-0.5">
-                        Log Compliant Entry (+10)
-                    </button>
-                    <button onclick="logSession('avoided')" class="py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-slate-700 hover:bg-slate-600 text-white shadow-md transition transform hover:-translate-y-0.5">
-                        Log Patient Pass (+5)
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="exportHistoryFile()" class="py-2.5 px-4 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-file-export mr-1"></i> Export System State
-                    </button>
-                    <label class="py-2.5 px-4 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition cursor-pointer text-center">
-                        <i class="fa-solid fa-file-import mr-1"></i> Import System State
-                        <input type="file" accept=".json" class="hidden" onchange="importHistoryFile(event)">
-                    </label>
-                </div>
+            <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Broker Equity</div>
+                <div class="text-3xl font-extrabold text-emerald-400 mt-1" id="stat-equity">$10,060</div>
+                <div class="text-xs text-slate-400 mt-2">Synced via Open API / CSV</div>
             </div>
         </div>
 
-        <!-- Logged System Iteration Feed -->
-        <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="font-bold text-slate-900 dark:text-white text-base mb-4 flex items-center justify-between">
-                <span>System Iteration History & Discipline Audit Log</span>
-                <span id="record-count-badge" class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">0 executions logged</span>
-            </h3>
-            
-            <div id="recordsContainer" class="space-y-4">
-                <div class="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 text-sm">
-                    No executions logged in this system session yet. Complete checklists to evaluate edge correlation.
+        <!-- System Verdict Panel -->
+        <div class="bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 border border-blue-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md">Edge Validation Status</span>
+                <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-blue-300 mt-2 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-notch animate-spin"></i> <span id="verdictText">INITIALIZING SYSTEM DIAGNOSTICS...</span>
                 </div>
             </div>
-
-            <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
-                <button onclick="clearAllData()" class="text-xs text-rose-500 hover:text-rose-600 font-semibold px-4 py-2 rounded-lg border border-rose-500/30 hover:bg-rose-500/10 transition">
-                    Reset System Data
+            <div class="flex items-center gap-3">
+                <label class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl cursor-pointer transition border border-slate-700">
+                    <i class="fa-solid fa-file-csv mr-1.5 text-blue-400"></i> Import Broker CSV
+                    <input type="file" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
+                </label>
+                <button onclick="exportHistoryFile()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/20">
+                    <i class="fa-solid fa-download mr-1.5"></i> Export State
                 </button>
             </div>
         </div>
 
+        <!-- Main Workspace Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left 2 Cols: Checklist & Equity Chart -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Pre-flight Execution Checklist -->
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-base text-white">Pre-Flight Execution Rules</h2>
+                            <p class="text-xs text-slate-400">Enforce rigid rules to prevent heuristic adaptation and curve fitting.</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-lg">
+                                Edits Left: <strong id="editCountBadge">2</strong>
+                            </span>
+                            <button onclick="openCustomizeChecklistModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="checklistContainer" class="space-y-3">
+                        <!-- Dynamically populated checklist items -->
+                    </div>
+                </div>
+
+                <!-- Equity Curve Chart -->
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-base text-white">System Equity Growth Tracking</h2>
+                            <p class="text-xs text-slate-400">Correlation mapping between checklist discipline and actual account equity.</p>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">Broker Sync: Active</span>
+                    </div>
+                    <div class="h-64 w-full">
+                        <canvas id="equityChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Col: Execution Logger -->
+            <div class="space-y-6">
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-5">
+                    <div>
+                        <h2 class="font-bold text-base text-white">Log Trade Execution</h2>
+                        <p class="text-xs text-slate-400">Record a system entry or deviation to update streak multipliers and scores.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Execution Notes / Context</label>
+                            <textarea id="tradeNoteInput" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Describe setup parameters, market context, or deviation reasons..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Chart Screenshot (Optional)</label>
+                            <input type="file" id="screenshotInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-blue-400 hover:file:bg-slate-700 cursor-pointer">
+                        </div>
+
+                        <div class="pt-2 grid grid-cols-2 gap-3">
+                            <button onclick="logSession('compliant')" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Compliant Entry</span>
+                            </button>
+                            <button onclick="logSession('deviated')" class="w-full py-3 px-4 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-amber-600/20 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span>Rule Deviation</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Log History -->
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-bold text-base text-white">Execution Ledger</h2>
+                        <span id="record-count-badge" class="text-xs text-slate-400">0 executions logged</span>
+                    </div>
+                    <div id="recordsContainer" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </main>
 
-    <!-- cTrader Connection Modal -->
-    <div id="ctraderModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-white text-base flex items-center gap-2">
-                    <i class="fa-solid fa-plug text-blue-500"></i> Connect cTrader Open API
-                </h3>
-                <button onclick="closeCtraderModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- Modals -->
+    <!-- Customize Checklist Modal -->
+    <div id="checklistModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-lg text-white">Customize Edge Criteria</h3>
+                <button onclick="closeChecklistModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-slate-400">Link your cTrader account to automatically stream live account equity and trade execution metrics into your Edge Builder.</p>
-            
+            <p class="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
+                <i class="fa-solid fa-lock mr-1"></i> Anti-Curve Fitting Protection: You only have 2 rule edits available before a strict 3-month system modification lock is enforced.
+            </p>
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Environment</label>
-                    <select id="ctraderEnv" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
-                        <option value="demo">cTrader Demo (Sandbox)</option>
-                        <option value="live">cTrader Live (Production)</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Rule 1</label>
+                    <input type="text" id="rule1" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">cTrader Account ID / Number</label>
-                    <input type="text" id="ctraderAccId" placeholder="e.g. 19283746" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Rule 2</label>
+                    <input type="text" id="rule2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Open API Access Token / Secret</label>
-                    <input type="password" id="ctraderToken" placeholder="Paste your cTrader API token..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Rule 3</label>
+                    <input type="text" id="rule3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Rule 4</label>
+                    <input type="text" id="rule4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
                 </div>
             </div>
-
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeCtraderModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
-                <button onclick="simulateCtraderConnect()" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow">Authorize & Connect</button>
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="simulateResubscription()" class="text-xs text-blue-400 hover:underline">Simulate Subscription Reset</button>
+                <div class="space-x-2">
+                    <button onclick="closeChecklistModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                    <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Customize Checklist Modal (Edit Rules / Anti-Curve Fitting Lockout) -->
-    <div id="checklistModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-white text-base flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-blue-500"></i> Customize Pre-Flight Criteria
-                </h3>
-                <button onclick="closeChecklistModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- cTrader Connect Modal -->
+    <div id="ctraderModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-lg text-white">Connect cTrader Open API</h3>
+                <button onclick="closeCtraderModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div id="checklistModalBody" class="space-y-3">
-                <p class="text-xs text-slate-400">Modify your 4 system checklist criteria below. Saving will deduct 1 edit quota.</p>
-                <input type="text" id="rule1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Take Profit Target: Area is explicitly mapped out on the chart.">
-                <input type="text" id="rule2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Donchian Crossover: 3 consecutive candles have closed crossing the middle band.">
-                <input type="text" id="rule3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Execution Style: Order is an exact Limit or Stop Pending Position (No Market Orders).">
-                <input type="text" id="rule4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Timing Gateway: Order is placed precisely 8 to 10 minutes before the crossing candle closes.">
-            </div>
-            <div class="flex justify-between items-center pt-2">
-                <button onclick="simulateResubscription()" class="text-xs text-blue-400 hover:underline">Resubscribe / Reset Lock ($)</button>
-                <div class="space-x-2">
-                    <button onclick="closeChecklistModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
-                    <button onclick="saveChecklistRules()" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow">Save Rules</button>
+            <p class="text-xs text-slate-400">Sync live account balances, trades, and equity points directly into your edge verification matrix.</p>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">cTrader Account ID</label>
+                    <input type="text" id="ctraderAccId" placeholder="e.g. 4839201" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
                 </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">API Access Token</label>
+                    <input type="password" id="ctraderToken" placeholder="cb_live_token_..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCtraderModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Authorize & Sync</button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors duration-300">
+    <footer class="border-t border-slate-800 bg-[#0a0e17] py-6 text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p>&copy; 2026 TraderWellPower / Edge Builder Platform. All rights reserved.</p>
             <div class="flex space-x-6">
-                <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Terms of Service</a>
+                <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-300 transition">Terms of Service</a>
             </div>
         </div>
     </footer>
 
-    <!-- App Builder Logic Script -->
+    <!-- App Logic Script -->
     <script>
         let sessionData = JSON.parse(localStorage.getItem('twp_edge_session_data')) || [];
         let checklistState = JSON.parse(localStorage.getItem('twp_checklist_state')) || {
@@ -316,6 +275,7 @@
             ]
         };
 
+        let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 0;
         let equityChartInstance = null;
         let brokerEquityPoints = [10000, 10020, 10010, 10040, 10030, 10060];
 
@@ -362,15 +322,14 @@
             document.getElementById('editCountBadge').innerText = checklistState.editsRemaining;
             const container = document.getElementById('checklistContainer');
             container.innerHTML = checklistState.rules.map((rule, idx) => `
-                <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                    <input type="checkbox" name="chk" value="Rule ${idx+1}" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                    <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">${rule}</span>
+                <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                    <input type="checkbox" name="chk" value="Rule ${idx+1}" class="mt-0.5 w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-blue-500" onchange="recalculateEdgeState()">
+                    <span class="text-xs sm:text-sm font-medium text-slate-200">${rule}</span>
                 </label>
             `).join('');
         }
 
         function openCustomizeChecklistModal() {
-            // Check if locked due to 3-month timer or 0 edits remaining
             const now = new Date().getTime();
             if (checklistState.lockUntil && now < checklistState.lockUntil) {
                 const daysLeft = Math.ceil((checklistState.lockUntil - now) / (1000 * 60 * 60 * 24));
@@ -401,7 +360,6 @@
             
             checklistState.editsRemaining -= 1;
             if (checklistState.editsRemaining <= 0) {
-                // Lock for 3 months (approx 90 days)
                 checklistState.lockUntil = new Date().getTime() + (90 * 24 * 60 * 60 * 1000);
             }
 
@@ -438,7 +396,6 @@
                 return;
             }
 
-            // Simulate pulling live balance and equity points from cTrader Open API
             brokerEquityPoints = [10000, 10040, 10090, 10150, 10210, 10300];
             initChart(brokerEquityPoints);
             document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
@@ -520,13 +477,26 @@
                 screenshotUrl = URL.createObjectURL(fileInput.files[0]);
             }
 
+            // Discipline Multiplier & Streak Logic
+            if (type === 'compliant' && currentCompliance === 100) {
+                disciplineStreak += 1;
+            } else {
+                disciplineStreak = 0;
+            }
+            localStorage.setItem('twp_discipline_streak', disciplineStreak);
+
+            let basePoints = type === 'compliant' ? 10 : 2;
+            let multiplier = 1.0 + (disciplineStreak * 0.1); // +10% per consecutive compliant execution
+            let finalPointsAdded = Math.round(basePoints * multiplier);
+
             const record = {
                 id: Date.now(),
                 type: type,
                 compliance: currentCompliance,
                 note: note || 'No checklist notes provided.',
                 screenshot: screenshotUrl,
-                scoreAdded: type === 'compliant' ? 10 : 5,
+                scoreAdded: finalPointsAdded,
+                streak: disciplineStreak,
                 timestamp: new Date().toLocaleString()
             };
 
@@ -535,7 +505,6 @@
 
             document.getElementById('tradeNoteInput').value = '';
             document.getElementById('screenshotInput').value = '';
-            document.getElementById('failedTrigger').checked = false;
             checkboxes.forEach(el => el.checked = false);
 
             renderRecords();
@@ -548,25 +517,25 @@
             document.getElementById('record-count-badge').innerText = `${sessionData.length} executions logged`;
 
             if (sessionData.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 text-sm">No executions logged in this system session yet. Complete checklists to evaluate edge correlation.</div>`;
+                container.innerHTML = `<div class="p-6 text-center border border-dashed border-slate-800 rounded-xl text-slate-500 text-xs">No executions logged in this session yet.</div>`;
                 return;
             }
 
             container.innerHTML = sessionData.map(r => `
-                <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between gap-4">
-                    <div class="space-y-2 flex-grow">
+                <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 flex flex-col sm:flex-row justify-between gap-3">
+                    <div class="space-y-1.5 flex-grow">
                         <div class="flex items-center space-x-2">
-                            <span class="px-2.5 py-0.5 rounded text-xs font-bold ${r.type === 'compliant' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.type === 'compliant' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
                                 ${r.type.toUpperCase()} (+${r.scoreAdded} PTS) | Checklist: ${r.compliance}%
                             </span>
-                            <span class="text-xs text-slate-400">${r.timestamp}</span>
+                            <span class="text-[10px] text-slate-500">${r.timestamp}</span>
                         </div>
-                        <p class="text-sm text-slate-800 dark:text-slate-200 font-medium">${r.note}</p>
+                        <p class="text-xs text-slate-300 font-medium">${r.note}</p>
                     </div>
                     ${r.screenshot ? `
                         <div class="flex-shrink-0">
                             <a href="${r.screenshot}" target="_blank">
-                                <img src="${r.screenshot}" alt="Screenshot" class="w-24 h-16 object-cover rounded-lg border border-slate-700 hover:opacity-80 transition">
+                                <img src="${r.screenshot}" alt="Screenshot" class="w-20 h-14 object-cover rounded-lg border border-slate-800 hover:opacity-80 transition">
                             </a>
                         </div>
                     ` : ''}
@@ -577,6 +546,10 @@
         function updateStats() {
             const totalScore = sessionData.reduce((acc, curr) => acc + curr.scoreAdded, 0);
             document.getElementById('stat-score').innerText = totalScore;
+            document.getElementById('stat-streak').innerText = disciplineStreak;
+            
+            let currentMultiplier = (1.0 + (disciplineStreak * 0.1)).toFixed(1);
+            document.getElementById('streakMultiplierText').innerText = `${currentMultiplier}x Multiplier Active`;
         }
 
         function exportHistoryFile() {
@@ -587,38 +560,6 @@
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-        }
-
-        function importHistoryFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        sessionData = imported;
-                        localStorage.setItem('twp_edge_session_data', JSON.stringify(sessionData));
-                        renderRecords();
-                        updateStats();
-                        recalculateEdgeState();
-                        alert('System state successfully imported!');
-                    }
-                } catch (err) {
-                    alert('Invalid JSON file format.');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function clearAllData() {
-            if (confirm('Are you sure you want to reset all logged system data?')) {
-                sessionData = [];
-                localStorage.removeItem('twp_edge_session_data');
-                renderRecords();
-                updateStats();
-                recalculateEdgeState();
-            }
         }
 
         function toggleDarkMode() {
