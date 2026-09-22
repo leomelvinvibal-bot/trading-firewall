@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWellPower / EG Platform</title>
+    <title>TraderWellPower / Edge Builder Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -53,7 +53,7 @@
                     <div class="flex items-center space-x-2">
                         <span class="font-bold tracking-wider text-slate-900 dark:text-white text-base">TRADERWELLPOWER</span>
                         <span class="text-slate-400 font-light">/</span>
-                        <span class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700/50">EG Platform</span>
+                        <span class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700/50">Edge Builder</span>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
 
                 <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-medium" id="live-clock">10:49:28 EST</span>
+                    <span class="font-medium" id="live-clock">11:32 PM EST</span>
                 </div>
                 
                 <button id="darkModeToggle" onclick="toggleDarkMode()" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -84,27 +84,30 @@
     <!-- Main Content Workspace -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
         
-        <!-- Top Metrics Overview -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Top Metrics & Edge Diagnostic Verdict Banner -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Compliance</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Checklist Compliance Rate</span>
                 <div class="text-3xl font-extrabold text-emerald-500 mt-2" id="stat-compliance">100%</div>
             </div>
             <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Discipline Score</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Execution Discipline Score</span>
                 <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2"><span id="stat-score">0</span> <span class="text-sm font-normal text-slate-400">PTS</span></div>
-            </div>
-            <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Logged Records</span>
-                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="stat-records">0</div>
             </div>
             <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
                 <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Broker Equity Balance</span>
                 <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2" id="stat-equity">$10,000.00</div>
             </div>
+            <div class="bg-gradient-to-br from-blue-900/40 to-slate-900 border border-blue-500/40 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-400">System Edge Verdict</span>
+                <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-white mt-2 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                    <span id="verdictText">Awaiting System Data...</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Execution Checklist & Note Logging System -->
+        <!-- Execution Checklist & Builder Interface -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Left Column: Pre-Flight Checklist -> Equity Curve -> Setup to Avoid -->
             <div class="space-y-6">
@@ -113,34 +116,34 @@
                     <h4 class="font-bold text-sm uppercase tracking-wider text-blue-400 mb-2">Pre-Flight Execution Checklist (Compliant Entry)</h4>
                     
                     <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Take Profit Target" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700">
+                        <input type="checkbox" name="chk" value="Take Profit Target" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
                         <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Take Profit Target:</strong> Area is explicitly mapped out on the chart.</span>
                     </label>
 
                     <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Donchian Crossover" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700">
+                        <input type="checkbox" name="chk" value="Donchian Crossover" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
                         <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</span>
                     </label>
 
                     <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Execution Style" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700">
+                        <input type="checkbox" name="chk" value="Execution Style" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
                         <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</span>
                     </label>
 
                     <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Timing Gateway" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700">
+                        <input type="checkbox" name="chk" value="Timing Gateway" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
                         <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</span>
                     </label>
                 </div>
 
-                <!-- Broker Equity & Performance Curve (Directly under Checklist) -->
+                <!-- Broker Equity & Performance Curve -->
                 <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
                                 <i class="fa-solid fa-chart-line dynamic-accent"></i> Broker Equity & Performance Curve
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Import broker execution CSV files to dynamically map actual account equity against logged discipline checkpoints.</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Upload broker trade history CSV to test account growth trajectory against checklist execution.</p>
                         </div>
                         <div class="flex items-center space-x-3">
                             <label class="cursor-pointer inline-flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition">
@@ -166,11 +169,11 @@
                 </div>
             </div>
 
-            <!-- Right Column: Notes, Screenshot Attachment & Action Logging -->
+            <!-- Right Column: Notes, Screenshot Attachment & System Logging -->
             <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between space-y-6">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Trade Note / Reason for Action:</label>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Trade Setup Note / Execution Context:</label>
                         <textarea id="tradeNoteInput" rows="4" placeholder="Enter market context, asset pair, or reason for taking/avoiding the setup..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
 
@@ -183,41 +186,41 @@
                 <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-3 pt-2">
                     <button onclick="logSession('compliant')" class="py-3 px-4 rounded-xl text-xs sm:text-sm font-bold dynamic-bg text-white shadow-lg dynamic-shadow transition transform hover:-translate-y-0.5">
-                        Log Compliant (+10)
+                        Log Compliant Entry (+10)
                     </button>
                     <button onclick="logSession('avoided')" class="py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-slate-700 hover:bg-slate-600 text-white shadow-md transition transform hover:-translate-y-0.5">
-                        Log Avoided (Discipline +5)
+                        Log Patient Pass (+5)
                     </button>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="exportHistoryFile()" class="py-2.5 px-4 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">
-                        <i class="fa-solid fa-file-export mr-1"></i> Export History File
+                        <i class="fa-solid fa-file-export mr-1"></i> Export System State
                     </button>
                     <label class="py-2.5 px-4 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition cursor-pointer text-center">
-                        <i class="fa-solid fa-file-import mr-1"></i> Import History File
+                        <i class="fa-solid fa-file-import mr-1"></i> Import System State
                         <input type="file" accept=".json" class="hidden" onchange="importHistoryFile(event)">
                     </label>
                 </div>
             </div>
         </div>
 
-        <!-- Logged Records Feed & Details -->
+        <!-- Logged System Iteration Feed -->
         <div class="bg-white dark:bg-[#131b2e] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
             <h3 class="font-bold text-slate-900 dark:text-white text-base mb-4 flex items-center justify-between">
-                <span>Recorded Session History & Attachments</span>
-                <span id="record-count-badge" class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">0 entries logged</span>
+                <span>System Iteration History & Discipline Audit Log</span>
+                <span id="record-count-badge" class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full">0 executions logged</span>
             </h3>
             
             <div id="recordsContainer" class="space-y-4">
                 <div class="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 text-sm">
-                    No records logged in this session yet.
+                    No executions logged in this system session yet. Complete checklists to evaluate edge correlation.
                 </div>
             </div>
 
             <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end">
                 <button onclick="clearAllData()" class="text-xs text-rose-500 hover:text-rose-600 font-semibold px-4 py-2 rounded-lg border border-rose-500/30 hover:bg-rose-500/10 transition">
-                    Clear Data & Reset Graph
+                    Reset System Data
                 </button>
             </div>
         </div>
@@ -227,7 +230,7 @@
     <!-- Footer -->
     <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; 2026 TraderWellPower / EG Platform. All rights reserved. Personal discipline tool only.</p>
+            <p>&copy; 2026 TraderWellPower / Edge Builder Platform. All rights reserved.</p>
             <div class="flex space-x-6">
                 <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Privacy Policy</a>
                 <a href="#" class="hover:text-slate-800 dark:hover:text-slate-400 transition">Terms of Service</a>
@@ -235,16 +238,17 @@
         </div>
     </footer>
 
-    <!-- App Logic Script -->
+    <!-- App Builder Logic Script -->
     <script>
-        let sessionData = JSON.parse(localStorage.getItem('twp_session_data')) || [];
+        let sessionData = JSON.parse(localStorage.getItem('twp_edge_session_data')) || [];
         let equityChartInstance = null;
-        let brokerEquityPoints = [10000, 10050, 10020, 10110, 10150, 10200]; // Default baseline curve
+        let brokerEquityPoints = [10000, 10020, 10010, 10040, 10030, 10060]; // Baseline curve
 
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
             renderRecords();
             updateStats();
+            recalculateEdgeState();
         });
 
         function initChart(dataPoints = brokerEquityPoints) {
@@ -301,7 +305,8 @@
                     brokerEquityPoints = parsedEquity;
                     initChart(brokerEquityPoints);
                     document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
-                    alert('Broker CSV equity curve successfully loaded and mapped!');
+                    recalculateEdgeState();
+                    alert('Broker CSV successfully loaded and correlated with system edge rules!');
                 } else {
                     alert('Could not automatically parse equity numbers from CSV format. Please ensure valid balance/equity columns.');
                 }
@@ -309,10 +314,44 @@
             reader.readAsText(file);
         }
 
+        function recalculateEdgeState() {
+            // Calculate checklist compliance rate based on checkboxes checked
+            const checkboxes = document.querySelectorAll('input[name="chk"]');
+            const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
+            const compliancePct = Math.round((checkedCount / checkboxes.length) * 100);
+            document.getElementById('stat-compliance').innerText = `${compliancePct}%`;
+
+            // Determine Equity Trend (Upward vs Downward based on start and end values)
+            let isEquityGrowing = false;
+            if (brokerEquityPoints.length >= 2) {
+                isEquityGrowing = brokerEquityPoints[brokerEquityPoints.length - 1] >= brokerEquityPoints[0];
+            }
+
+            // Core Edge Diagnosis Logic matching user requirements
+            const verdictEl = document.getElementById('verdictText');
+            const badgeContainer = document.getElementById('edgeVerdictBadge');
+
+            if (compliancePct >= 75 && isEquityGrowing) {
+                verdictEl.innerText = "TRUE STRONG EDGE SYSTEM (Compliant Growth)";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-emerald-400 mt-2 flex items-center gap-2";
+            } else if (compliancePct < 50 && isEquityGrowing) {
+                verdictEl.innerText = "GAMBLER / PROFITABLE UNDISCIPLINED (Flawed Process)";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-amber-400 mt-2 flex items-center gap-2";
+            } else if (compliancePct >= 75 && !isEquityGrowing) {
+                verdictEl.innerText = "SYSTEM IS NOT PROFITABLE (Flawed Edge / Drawdown)";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-rose-400 mt-2 flex items-center gap-2";
+            } else {
+                verdictEl.innerText = "DEVELOPING / UNVERIFIED SYSTEM STATE";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-blue-300 mt-2 flex items-center gap-2";
+            }
+        }
+
         function logSession(type) {
             const note = document.getElementById('tradeNoteInput').value;
             const fileInput = document.getElementById('screenshotInput');
-            const isFailed = document.getElementById('failedTrigger').checked;
+            const checkboxes = document.querySelectorAll('input[name="chk"]');
+            const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
+            const currentCompliance = Math.round((checkedCount / checkboxes.length) * 100);
 
             let screenshotUrl = '';
             if (fileInput.files && fileInput.files[0]) {
@@ -322,30 +361,32 @@
             const record = {
                 id: Date.now(),
                 type: type,
-                note: note || 'No notes provided.',
+                compliance: currentCompliance,
+                note: note || 'No checklist notes provided.',
                 screenshot: screenshotUrl,
                 scoreAdded: type === 'compliant' ? 10 : 5,
                 timestamp: new Date().toLocaleString()
             };
 
             sessionData.unshift(record);
-            localStorage.setItem('twp_session_data', JSON.stringify(sessionData));
+            localStorage.setItem('twp_edge_session_data', JSON.stringify(sessionData));
 
             document.getElementById('tradeNoteInput').value = '';
             document.getElementById('screenshotInput').value = '';
             document.getElementById('failedTrigger').checked = false;
-            document.querySelectorAll('input[name="chk"]').forEach(el => el.checked = false);
+            checkboxes.forEach(el => el.checked = false);
 
             renderRecords();
             updateStats();
+            recalculateEdgeState();
         }
 
         function renderRecords() {
             const container = document.getElementById('recordsContainer');
-            document.getElementById('record-count-badge').innerText = `${sessionData.length} entries logged`;
+            document.getElementById('record-count-badge').innerText = `${sessionData.length} executions logged`;
 
             if (sessionData.length === 0) {
-                container.innerHTML = `<div class="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 text-sm">No records logged in this session yet.</div>`;
+                container.innerHTML = `<div class="p-8 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-slate-400 text-sm">No executions logged in this system session yet. Complete checklists to evaluate edge correlation.</div>`;
                 return;
             }
 
@@ -354,7 +395,7 @@
                     <div class="space-y-2 flex-grow">
                         <div class="flex items-center space-x-2">
                             <span class="px-2.5 py-0.5 rounded text-xs font-bold ${r.type === 'compliant' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border border-amber-500/20'}">
-                                ${r.type.toUpperCase()} (+${r.scoreAdded} PTS)
+                                ${r.type.toUpperCase()} (+${r.scoreAdded} PTS) | Checklist: ${r.compliance}%
                             </span>
                             <span class="text-xs text-slate-400">${r.timestamp}</span>
                         </div>
@@ -374,14 +415,13 @@
         function updateStats() {
             const totalScore = sessionData.reduce((acc, curr) => acc + curr.scoreAdded, 0);
             document.getElementById('stat-score').innerText = totalScore;
-            document.getElementById('stat-records').innerText = sessionData.length;
         }
 
         function exportHistoryFile() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessionData));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "traderwellpower_session_history.json");
+            downloadAnchor.setAttribute("download", "traderwellpower_edge_system_state.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
@@ -396,10 +436,11 @@
                     const imported = JSON.parse(e.target.result);
                     if (Array.isArray(imported)) {
                         sessionData = imported;
-                        localStorage.setItem('twp_session_data', JSON.stringify(sessionData));
+                        localStorage.setItem('twp_edge_session_data', JSON.stringify(sessionData));
                         renderRecords();
                         updateStats();
-                        alert('Session history successfully imported!');
+                        recalculateEdgeState();
+                        alert('System state successfully imported!');
                     }
                 } catch (err) {
                     alert('Invalid JSON file format.');
@@ -409,11 +450,12 @@
         }
 
         function clearAllData() {
-            if (confirm('Are you sure you want to clear all recorded sessions and reset data?')) {
+            if (confirm('Are you sure you want to reset all logged system data?')) {
                 sessionData = [];
-                localStorage.removeItem('twp_session_data');
+                localStorage.removeItem('twp_edge_session_data');
                 renderRecords();
                 updateStats();
+                recalculateEdgeState();
             }
         }
 
