@@ -307,7 +307,6 @@
         .log-item { padding: 10px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .log-item:last-child { border-bottom: none; }
 
-        /* Judgement Box Styling with Target Sample Setting */
         .judgement-box { margin-top: 24px; padding: 20px; border-radius: 12px; background: var(--box-bg); border: 1px solid var(--border-color); text-align: center; }
         .sample-setting-bar { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 12px; color: var(--muted-text); }
         .sample-input { background: var(--box-inner); border: 1px solid var(--border-color); color: var(--text-color); font-weight: 700; width: 60px; text-align: center; padding: 4px; border-radius: 6px; }
@@ -438,7 +437,11 @@
         { title: "Failed Trigger Criteria", desc: "Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure)." }
     ];
 
-    let appData = JSON.parse(localStorage.getItem('donchianFilteredState')) || {
+    let db;
+    const DB_NAME = "ExecutionGuidanceDB";
+    const STORE_NAME = "appState";
+
+    let appData = {
         scores: [0],
         meta: [],
         brokerEquity: [0],
@@ -452,26 +455,130 @@
 
     let scores = appData.scores;
     let tradeMeta = appData.meta;
-    let brokerEquity = appData.brokerEquity || [0];
-    let currentTheme = appData.theme || 'dark';
-    let bgImage = appData.bgImage || null;
-    let editsRemaining = appData.editsRemaining !== undefined ? appData.editsRemaining : 2;
-    let targetSampleSize = appData.targetSampleSize || 30;
-    let passCriteria = appData.passCriteria || DEFAULT_PASS_CRITERIA;
-    let avoidCriteria = appData.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+    let brokerEquity = appData.brokerEquity;
+    let currentTheme = appData.theme;
+    let bgImage = appData.bgImage;
+    let editsRemaining = appData.editsRemaining;
+    let targetSampleSize = appData.targetSampleSize;
+    let passCriteria = appData.passCriteria;
+    let avoidCriteria = appData.avoidCriteria;
 
     let isEditingPass = false;
     let isEditingAvoid = false;
+    let chart;
 
-    document.getElementById('targetSampleInput').value = targetSampleSize;
-
-    if (currentTheme === 'light') {
-        document.body.classList.add('light-mode');
-        document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+    // --- IndexedDB Operations ---
+    function initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, 1);
+            request.onupgradeneeded = function(e) {
+                const dbInstance = e.target.result;
+                if (!dbInstance.objectStoreNames.contains(STORE_NAME)) {
+                    dbInstance.createObjectStore(STORE_NAME);
+                }
+            };
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                resolve(db);
+            };
+            request.onerror = function(e) {
+                console.error("IndexedDB initialization error:", e);
+                reject(e);
+            };
+        });
     }
 
-    if (bgImage) {
-        document.body.style.backgroundImage = `url(${bgImage})`;
+    function loadStateFromDB() {
+        return new Promise((resolve, reject) => {
+            if (!db) return resolve(null);
+            const tx = db.transaction(STORE_NAME, "readonly");
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.get("stateBundle");
+            request.onsuccess = function(e) {
+                resolve(e.target.result || null);
+            };
+            request.onerror = function(e) {
+                reject(e);
+            };
+        });
+    }
+
+    function saveStateToDB(data) {
+        return new Promise((resolve, reject) => {
+            if (!db) return resolve();
+            const tx = db.transaction(STORE_NAME, "readwrite");
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.put(data, "stateBundle");
+            request.onsuccess = function() { resolve(); };
+            request.onerror = function(e) { reject(e); };
+        });
+    }
+
+    function clearDB() {
+        return new Promise((resolve, reject) => {
+            if (!db) return resolve();
+            const tx = db.transaction(STORE_NAME, "readwrite");
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.delete("stateBundle");
+            request.onsuccess = function() { resolve(); };
+            request.onerror = function(e) { reject(e); };
+        });
+    }
+
+    // --- Core Application Logic ---
+    async function startApp() {
+        initChart();
+        try {
+            await initDB();
+            const savedState = await loadStateFromDB();
+
+            // Migration fallback from localStorage if present
+            if (!savedState && localStorage.getItem('donchianFilteredState')) {
+                try {
+                    const localLegacy = JSON.parse(localStorage.getItem('donchianFilteredState'));
+                    if (localLegacy) {
+                        applyState(localLegacy);
+                        await saveStateToDB(localLegacy);
+                        localStorage.removeItem('donchianFilteredState');
+                    }
+                } catch(err) {
+                    console.error("Migration from localStorage failed:", err);
+                }
+            } else if (savedState) {
+                applyState(savedState);
+            }
+        } catch(e) {
+            console.warn("IndexedDB unavailable, proceeding with default state.");
+        }
+        refreshUI();
+    }
+
+    function applyState(data) {
+        scores = data.scores || [0];
+        tradeMeta = data.meta || [];
+        brokerEquity = data.brokerEquity || [0];
+        currentTheme = data.theme || 'dark';
+        bgImage = data.bgImage || null;
+        editsRemaining = data.editsRemaining !== undefined ? data.editsRemaining : 2;
+        targetSampleSize = data.targetSampleSize || 30;
+        passCriteria = data.passCriteria || DEFAULT_PASS_CRITERIA;
+        avoidCriteria = data.avoidCriteria || DEFAULT_AVOID_CRITERIA;
+
+        document.getElementById('targetSampleInput').value = targetSampleSize;
+
+        if (currentTheme === 'light') {
+            document.body.classList.add('light-mode');
+            document.getElementById('themeBtn').innerText = '🌙 Dark Mode';
+        } else {
+            document.body.classList.remove('light-mode');
+            document.getElementById('themeBtn').innerText = '☀️ Light Mode';
+        }
+
+        if (bgImage) {
+            document.body.style.backgroundImage = `url(${bgImage})`;
+        } else {
+            document.body.style.backgroundImage = 'none';
+        }
     }
 
     function promptBgUpload() {
@@ -507,7 +614,7 @@
     function updateKpis() {
         const totalLogs = tradeMeta.length;
         const compliantLogs = tradeMeta.filter(m => m.type === 'pass').length;
-        const currentScore = scores[scores.length - 1];
+        const currentScore = scores[scores.length - 1] || 0;
 
         const compRate = totalLogs > 0 ? ((compliantLogs / totalLogs) * 100).toFixed(0) + '%' : '100%';
         
@@ -524,6 +631,11 @@
             badge.style.color = '#fff';
             document.getElementById('editBtnCompliant').disabled = true;
             document.getElementById('editBtnAvoid').disabled = true;
+        } else {
+            badge.style.background = 'var(--accent-yellow)';
+            badge.style.color = '#0b0f17';
+            document.getElementById('editBtnCompliant').disabled = false;
+            document.getElementById('editBtnAvoid').disabled = false;
         }
     }
 
@@ -668,14 +780,14 @@
     }
 
     function saveRecord(type, note, imageBase64) {
-        let currentScore = scores[scores.length - 1];
+        let currentScore = scores[scores.length - 1] || 0;
         let pointsAdded = type === 'pass' ? 10 : 5;
         let actionLabel = type === 'pass' ? 'Compliant Position' : 'Avoided Setup';
 
         scores.push(currentScore + pointsAdded);
         
         let sampleNum = tradeMeta.filter(m => m.image).length + (imageBase64 ? 1 : 0);
-        let sampleTitle = imageBase64 ? `Sample size #${Math.min(sampleNum, 50)}` : null;
+        let sampleTitle = imageBase64 ? `Sample size #${sampleNum}` : null;
 
         tradeMeta.push({
             id: scores.length - 1,
@@ -735,7 +847,6 @@
         const totalCsvTrades = Math.max(0, brokerEquity.length - 1);
         const currentSample = Math.max(totalLogged, totalCsvTrades);
 
-        // Check if required target sample size has been achieved
         if (currentSample < targetSampleSize) {
             badge.className = "judgement-badge badge-pending";
             badge.innerText = "NO RESULT YET (INSUFFICIENT SAMPLE)";
@@ -744,7 +855,7 @@
         }
 
         const maxPossibleScore = totalLogged * 10;
-        const currentScore = scores[scores.length - 1];
+        const currentScore = scores[scores.length - 1] || 0;
         const disciplinePct = maxPossibleScore > 0 ? (currentScore / maxPossibleScore) * 100 : 0;
 
         const equityStart = brokerEquity[0] || 0;
@@ -773,7 +884,24 @@
         }
     }
 
-    function persistAndRefresh() {
+    function refreshUI() {
+        let maxLen = Math.max(scores.length, brokerEquity.length);
+        let labels = Array.from({length: maxLen}, (_, i) => i === 0 ? "Start" : `Trade ${i}`);
+
+        if (chart) {
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = scores;
+            chart.data.datasets[1].data = brokerEquity;
+            chart.update();
+        }
+
+        updateKpis();
+        renderChecklists();
+        renderLogHistory();
+        evaluateJudgement();
+    }
+
+    async function persistAndRefresh() {
         const stateBundle = { 
             scores: scores, 
             meta: tradeMeta, 
@@ -785,20 +913,9 @@
             passCriteria: passCriteria,
             avoidCriteria: avoidCriteria
         };
-        localStorage.setItem('donchianFilteredState', JSON.stringify(stateBundle));
-        
-        let maxLen = Math.max(scores.length, brokerEquity.length);
-        let labels = Array.from({length: maxLen}, (_, i) => i === 0 ? "Start" : `Trade ${i}`);
 
-        chart.data.labels = labels;
-        chart.data.datasets[0].data = scores;
-        chart.data.datasets[1].data = brokerEquity;
-        chart.update();
-
-        updateKpis();
-        renderChecklists();
-        renderLogHistory();
-        evaluateJudgement();
+        await saveStateToDB(stateBundle);
+        refreshUI();
     }
 
     function renderLogHistory() {
@@ -859,23 +976,12 @@
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             try {
                 const imported = JSON.parse(e.target.result);
                 if (imported && Array.isArray(imported.scores) && Array.isArray(imported.meta)) {
-                    scores = imported.scores;
-                    tradeMeta = imported.meta;
-                    brokerEquity = imported.brokerEquity || [0];
-                    currentTheme = imported.theme || 'dark';
-                    bgImage = imported.bgImage || null;
-                    editsRemaining = imported.editsRemaining !== undefined ? imported.editsRemaining : 2;
-                    targetSampleSize = imported.targetSampleSize || 30;
-                    passCriteria = imported.passCriteria || DEFAULT_PASS_CRITERIA;
-                    avoidCriteria = imported.avoidCriteria || DEFAULT_AVOID_CRITERIA;
-                    document.getElementById('targetSampleInput').value = targetSampleSize;
-                    if (bgImage) document.body.style.backgroundImage = `url(${bgImage})`;
-                    else document.body.style.backgroundImage = 'none';
-                    persistAndRefresh();
+                    applyState(imported);
+                    await persistAndRefresh();
                     alert("Imported successfully!");
                 }
             } catch (err) {
@@ -885,7 +991,7 @@
         reader.readAsText(file);
     }
 
-    function resetChart() {
+    async function resetChart() {
         if(confirm("Reset all historical records and settings?")) {
             scores = [0];
             tradeMeta = [];
@@ -897,61 +1003,65 @@
             document.getElementById('targetSampleInput').value = 30;
             passCriteria = DEFAULT_PASS_CRITERIA;
             avoidCriteria = DEFAULT_AVOID_CRITERIA;
-            persistAndRefresh();
+
+            await clearDB();
+            await persistAndRefresh();
         }
     }
 
-    const ctx = document.getElementById('disciplineChart').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ["Start"],
-            datasets: [
-                {
-                    label: 'Discipline Score Points',
-                    data: scores,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.2,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Broker Account Equity ($)',
-                    data: brokerEquity,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.08)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.2,
-                    yAxisID: 'y1'
+    function initChart() {
+        const ctx = document.getElementById('disciplineChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["Start"],
+                datasets: [
+                    {
+                        label: 'Discipline Score Points',
+                        data: scores,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.2,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Broker Account Equity ($)',
+                        data: brokerEquity,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.2,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { 
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: 'rgba(150, 150, 150, 0.1)' },
+                        title: { display: true, text: 'Discipline Score' }
+                    },
+                    y1: { 
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        title: { display: true, text: 'Equity ($)' }
+                    },
+                    x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { 
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    grid: { color: 'rgba(150, 150, 150, 0.1)' },
-                    title: { display: true, text: 'Discipline Score' }
-                },
-                y1: { 
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    grid: { drawOnChartArea: false },
-                    title: { display: true, text: 'Equity ($)' }
-                },
-                x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
             }
-        }
-    });
+        });
+    }
 
-    persistAndRefresh();
+    window.addEventListener('DOMContentLoaded', startApp);
 </script>
 </body>
 </html>
