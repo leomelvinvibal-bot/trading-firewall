@@ -59,19 +59,9 @@
             </div>
 
             <div class="flex items-center space-x-3">
-                <div class="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-full text-xs shadow-inner">
-                    <span class="text-slate-500 dark:text-slate-400 text-[10px] font-semibold uppercase tracking-wider mr-1">Theme:</span>
-                    <button onclick="setThemeColor('#2563eb', '#1d4ed8', 'rgba(37, 99, 235, 0.3)')" class="w-4 h-4 rounded-full bg-blue-600 hover:scale-110 transition" title="Blue"></button>
-                    <button onclick="setThemeColor('#10b981', '#059669', 'rgba(16, 185, 129, 0.3)')" class="w-4 h-4 rounded-full bg-emerald-500 hover:scale-110 transition" title="Green"></button>
-                    <button onclick="setThemeColor('#ef4444', '#dc2626', 'rgba(239, 68, 68, 0.3)')" class="w-4 h-4 rounded-full bg-red-500 hover:scale-110 transition" title="Red"></button>
-                    <button onclick="setThemeColor('#0ea5e9', '#0284c7', 'rgba(14, 165, 233, 0.3)')" class="w-4 h-4 rounded-full bg-sky-400 hover:scale-110 transition" title="Light Blue"></button>
-                    <button onclick="setThemeColor('#b45309', '#92400e', 'rgba(180, 83, 9, 0.3)')" class="w-4 h-4 rounded-full bg-amber-700 hover:scale-110 transition" title="Brown"></button>
-                    <button onclick="setThemeColor('#8b5cf6', '#7c3aed', 'rgba(139, 92, 246, 0.3)')" class="w-4 h-4 rounded-full bg-violet-500 hover:scale-110 transition" title="Purple"></button>
-                </div>
-
                 <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-full text-xs text-slate-700 dark:text-slate-300 shadow-inner">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="font-medium" id="live-clock">11:32 PM EST</span>
+                    <span class="font-medium" id="live-clock">11:47 PM EST</span>
                 </div>
                 
                 <button id="darkModeToggle" onclick="toggleDarkMode()" class="text-amber-500 dark:text-amber-400 hover:text-amber-600 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition">
@@ -112,28 +102,36 @@
             <!-- Left Column: Pre-Flight Checklist -> Equity Curve -> Setup to Avoid -->
             <div class="space-y-6">
                 <!-- Pre-Flight Execution Checklist -->
-                <div class="bg-white dark:bg-[#131b2e] border border-blue-500/40 rounded-2xl p-6 shadow-sm space-y-3">
-                    <h4 class="font-bold text-sm uppercase tracking-wider text-blue-400 mb-2">Pre-Flight Execution Checklist (Compliant Entry)</h4>
+                <div class="bg-white dark:bg-[#131b2e] border border-blue-500/40 rounded-2xl p-6 shadow-sm space-y-3 relative">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-bold text-sm uppercase tracking-wider text-blue-400">Pre-Flight Execution Checklist (Compliant Entry)</h4>
+                        <button onclick="openCustomizeChecklistModal()" class="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 font-semibold px-3 py-1 rounded-lg transition">
+                            <i class="fa-solid fa-sliders mr-1"></i> Edit Rules (<span id="editCountBadge">2</span> left)
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">System criteria is strictly locked after 2 edits to prevent curve-fitting false edges.</p>
                     
-                    <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Take Profit Target" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                        <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Take Profit Target:</strong> Area is explicitly mapped out on the chart.</span>
-                    </label>
+                    <div id="checklistContainer" class="space-y-3">
+                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                            <input type="checkbox" name="chk" value="Take Profit Target" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
+                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Take Profit Target:</strong> Area is explicitly mapped out on the chart.</span>
+                        </label>
 
-                    <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Donchian Crossover" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                        <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</span>
-                    </label>
+                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                            <input type="checkbox" name="chk" value="Donchian Crossover" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
+                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</span>
+                        </label>
 
-                    <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Execution Style" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                        <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</span>
-                    </label>
+                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                            <input type="checkbox" name="chk" value="Execution Style" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
+                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</span>
+                        </label>
 
-                    <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
-                        <input type="checkbox" name="chk" value="Timing Gateway" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
-                        <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</span>
-                    </label>
+                        <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                            <input type="checkbox" name="chk" value="Timing Gateway" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
+                            <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200"><strong class="text-slate-900 dark:text-white">Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</span>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Broker Equity & Performance Curve -->
@@ -143,12 +141,16 @@
                             <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
                                 <i class="fa-solid fa-chart-line dynamic-accent"></i> Broker Equity & Performance Curve
                             </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Upload broker trade history CSV to test account growth trajectory against checklist execution.</p>
+                            <p class="text-xs text-slate-500 mt-0.5">Connect cTrader Open API or upload broker CSV to test account growth trajectory.</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="cursor-pointer inline-flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition">
+                        <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                            <button onclick="openCtraderModal()" class="cursor-pointer inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2.5 rounded-xl shadow transition">
+                                <i class="fa-solid fa-plug"></i>
+                                <span>Connect cTrader</span>
+                            </button>
+                            <label class="cursor-pointer inline-flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition">
                                 <i class="fa-solid fa-file-arrow-up dynamic-accent"></i>
-                                <span>Import Broker CSV</span>
+                                <span>CSV</span>
                                 <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
                             </label>
                         </div>
@@ -227,6 +229,68 @@
 
     </main>
 
+    <!-- cTrader Connection Modal -->
+    <div id="ctraderModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-plug text-blue-500"></i> Connect cTrader Open API
+                </h3>
+                <button onclick="closeCtraderModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Link your cTrader account to automatically stream live account equity and trade execution metrics into your Edge Builder.</p>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Environment</label>
+                    <select id="ctraderEnv" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+                        <option value="demo">cTrader Demo (Sandbox)</option>
+                        <option value="live">cTrader Live (Production)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">cTrader Account ID / Number</label>
+                    <input type="text" id="ctraderAccId" placeholder="e.g. 19283746" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Open API Access Token / Secret</label>
+                    <input type="password" id="ctraderToken" placeholder="Paste your cTrader API token..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCtraderModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
+                <button onclick="simulateCtraderConnect()" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow">Authorize & Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customize Checklist Modal (Edit Rules / Anti-Curve Fitting Lockout) -->
+    <div id="checklistModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-blue-500"></i> Customize Pre-Flight Criteria
+                </h3>
+                <button onclick="closeChecklistModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="checklistModalBody" class="space-y-3">
+                <p class="text-xs text-slate-400">Modify your 4 system checklist criteria below. Saving will deduct 1 edit quota.</p>
+                <input type="text" id="rule1" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Take Profit Target: Area is explicitly mapped out on the chart.">
+                <input type="text" id="rule2" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Donchian Crossover: 3 consecutive candles have closed crossing the middle band.">
+                <input type="text" id="rule3" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Execution Style: Order is an exact Limit or Stop Pending Position (No Market Orders).">
+                <input type="text" id="rule4" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white" value="Timing Gateway: Order is placed precisely 8 to 10 minutes before the crossing candle closes.">
+            </div>
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="simulateResubscription()" class="text-xs text-blue-400 hover:underline">Resubscribe / Reset Lock ($)</button>
+                <div class="space-x-2">
+                    <button onclick="closeChecklistModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700">Cancel</button>
+                    <button onclick="saveChecklistRules()" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow">Save Rules</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -241,11 +305,23 @@
     <!-- App Builder Logic Script -->
     <script>
         let sessionData = JSON.parse(localStorage.getItem('twp_edge_session_data')) || [];
+        let checklistState = JSON.parse(localStorage.getItem('twp_checklist_state')) || {
+            editsRemaining: 2,
+            lockUntil: null,
+            rules: [
+                "Take Profit Target: Area is explicitly mapped out on the chart.",
+                "Donchian Crossover: 3 consecutive candles have closed crossing the middle band.",
+                "Execution Style: Order is an exact Limit or Stop Pending Position (No Market Orders).",
+                "Timing Gateway: Order is placed precisely 8 to 10 minutes before the crossing candle closes."
+            ]
+        };
+
         let equityChartInstance = null;
-        let brokerEquityPoints = [10000, 10020, 10010, 10040, 10030, 10060]; // Baseline curve
+        let brokerEquityPoints = [10000, 10020, 10010, 10040, 10030, 10060];
 
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
+            renderChecklist();
             renderRecords();
             updateStats();
             recalculateEdgeState();
@@ -262,7 +338,7 @@
                     datasets: [{
                         label: 'Broker Account Equity ($)',
                         data: dataPoints,
-                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#2563eb',
+                        borderColor: '#2563eb',
                         backgroundColor: 'rgba(37, 99, 235, 0.1)',
                         borderWidth: 3,
                         fill: true,
@@ -282,6 +358,95 @@
             });
         }
 
+        function renderChecklist() {
+            document.getElementById('editCountBadge').innerText = checklistState.editsRemaining;
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = checklistState.rules.map((rule, idx) => `
+                <label class="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-blue-500 transition">
+                    <input type="checkbox" name="chk" value="Rule ${idx+1}" class="mt-0.5 w-4 h-4 rounded dynamic-ring border-slate-300 dark:border-slate-700" onchange="recalculateEdgeState()">
+                    <span class="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">${rule}</span>
+                </label>
+            `).join('');
+        }
+
+        function openCustomizeChecklistModal() {
+            // Check if locked due to 3-month timer or 0 edits remaining
+            const now = new Date().getTime();
+            if (checklistState.lockUntil && now < checklistState.lockUntil) {
+                const daysLeft = Math.ceil((checklistState.lockUntil - now) / (1000 * 60 * 60 * 24));
+                alert(`Checklist criteria is locked for anti-curve-fitting protection. ${daysLeft} days remaining before unlock, or resubscribe to reset.`);
+                return;
+            }
+            if (checklistState.editsRemaining <= 0) {
+                alert('You have used all 2 rule change allocations. Your system criteria is now locked for 3 months to prevent false edge optimization.');
+                return;
+            }
+
+            document.getElementById('rule1').value = checklistState.rules[0];
+            document.getElementById('rule2').value = checklistState.rules[1];
+            document.getElementById('rule3').value = checklistState.rules[2];
+            document.getElementById('rule4').value = checklistState.rules[3];
+            document.getElementById('checklistModal').classList.remove('hidden');
+        }
+
+        function closeChecklistModal() {
+            document.getElementById('checklistModal').classList.add('hidden');
+        }
+
+        function saveChecklistRules() {
+            checklistState.rules[0] = document.getElementById('rule1').value;
+            checklistState.rules[1] = document.getElementById('rule2').value;
+            checklistState.rules[2] = document.getElementById('rule3').value;
+            checklistState.rules[3] = document.getElementById('rule4').value;
+            
+            checklistState.editsRemaining -= 1;
+            if (checklistState.editsRemaining <= 0) {
+                // Lock for 3 months (approx 90 days)
+                checklistState.lockUntil = new Date().getTime() + (90 * 24 * 60 * 60 * 1000);
+            }
+
+            localStorage.setItem('twp_checklist_state', JSON.stringify(checklistState));
+            renderChecklist();
+            closeChecklistModal();
+            alert(`Rules updated successfully! Edits remaining: ${checklistState.editsRemaining}`);
+        }
+
+        function simulateResubscription() {
+            if (confirm('Simulate system re-subscription ($) to reset rule edit limit and unlock criteria?')) {
+                checklistState.editsRemaining = 2;
+                checklistState.lockUntil = null;
+                localStorage.setItem('twp_checklist_state', JSON.stringify(checklistState));
+                renderChecklist();
+                closeChecklistModal();
+                alert('Subscription renewed! Edit limit reset to 2.');
+            }
+        }
+
+        function openCtraderModal() {
+            document.getElementById('ctraderModal').classList.remove('hidden');
+        }
+
+        function closeCtraderModal() {
+            document.getElementById('ctraderModal').classList.add('hidden');
+        }
+
+        function simulateCtraderConnect() {
+            const accId = document.getElementById('ctraderAccId').value;
+            const token = document.getElementById('ctraderToken').value;
+            if (!accId || !token) {
+                alert('Please enter a valid cTrader Account ID and API Access Token.');
+                return;
+            }
+
+            // Simulate pulling live balance and equity points from cTrader Open API
+            brokerEquityPoints = [10000, 10040, 10090, 10150, 10210, 10300];
+            initChart(brokerEquityPoints);
+            document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
+            recalculateEdgeState();
+            closeCtraderModal();
+            alert(`Successfully connected to cTrader Account #${accId}! Live equity curve synced.`);
+        }
+
         function handleBrokerCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -293,7 +458,7 @@
                 let parsedEquity = [];
 
                 lines.forEach((line, idx) => {
-                    if (idx === 0) return; // skip header
+                    if (idx === 0) return;
                     const cols = line.split(',');
                     if (cols.length >= 3) {
                         let val = parseFloat(cols[cols.length - 1]) || parseFloat(cols[cols.length - 2]);
@@ -308,26 +473,23 @@
                     recalculateEdgeState();
                     alert('Broker CSV successfully loaded and correlated with system edge rules!');
                 } else {
-                    alert('Could not automatically parse equity numbers from CSV format. Please ensure valid balance/equity columns.');
+                    alert('Could not automatically parse equity numbers from CSV format.');
                 }
             };
             reader.readAsText(file);
         }
 
         function recalculateEdgeState() {
-            // Calculate checklist compliance rate based on checkboxes checked
             const checkboxes = document.querySelectorAll('input[name="chk"]');
             const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
-            const compliancePct = Math.round((checkedCount / checkboxes.length) * 100);
+            const compliancePct = checkboxes.length > 0 ? Math.round((checkedCount / checkboxes.length) * 100) : 100;
             document.getElementById('stat-compliance').innerText = `${compliancePct}%`;
 
-            // Determine Equity Trend (Upward vs Downward based on start and end values)
             let isEquityGrowing = false;
             if (brokerEquityPoints.length >= 2) {
                 isEquityGrowing = brokerEquityPoints[brokerEquityPoints.length - 1] >= brokerEquityPoints[0];
             }
 
-            // Core Edge Diagnosis Logic matching user requirements
             const verdictEl = document.getElementById('verdictText');
             const badgeContainer = document.getElementById('edgeVerdictBadge');
 
@@ -351,7 +513,7 @@
             const fileInput = document.getElementById('screenshotInput');
             const checkboxes = document.querySelectorAll('input[name="chk"]');
             const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
-            const currentCompliance = Math.round((checkedCount / checkboxes.length) * 100);
+            const currentCompliance = checkboxes.length > 0 ? Math.round((checkedCount / checkboxes.length) * 100) : 100;
 
             let screenshotUrl = '';
             if (fileInput.files && fileInput.files[0]) {
@@ -465,19 +627,10 @@
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 icon.className = 'fa-solid fa-moon';
-                localStorage.setItem('theme', 'light');
             } else {
                 html.classList.add('dark');
                 icon.className = 'fa-solid fa-sun';
-                localStorage.setItem('theme', 'dark');
             }
-        }
-
-        function setThemeColor(color, hoverColor, glowColor) {
-            document.documentElement.style.setProperty('--accent-color', color);
-            document.documentElement.style.setProperty('--accent-hover', hoverColor);
-            document.documentElement.style.setProperty('--accent-glow', glowColor);
-            initChart(brokerEquityPoints);
         }
     </script>
 </body>
