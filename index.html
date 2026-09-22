@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Execution Guidance (EG)</title>
+  <!-- Chart.js CDN for Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --bg-color: #0d131f;
@@ -235,34 +237,11 @@
       background: #0369a1;
     }
 
-    .pdf-link {
-      display: inline-block;
-      margin-top: 0.5rem;
-      color: var(--accent-blue);
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .pdf-link:hover {
-      text-decoration: underline;
-    }
-
-    .quote-box {
-      border-left: 3px solid var(--accent-amber);
-      background: rgba(245, 158, 11, 0.1);
-      padding: 0.75rem;
-      font-style: italic;
-      font-size: 0.85rem;
-      line-height: 1.4;
-      margin-top: 0.5rem;
-    }
-
-    .quote-author {
-      text-align: right;
-      font-style: normal;
-      font-weight: bold;
-      margin-top: 0.5rem;
-      color: var(--accent-amber);
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      margin-top: 1rem;
     }
 
     main {
@@ -528,29 +507,32 @@
       <button class="close-btn" onclick="toggleSidebar()">&times;</button>
     </div>
 
-    <!-- Broker Information Section -->
+    <!-- Broker Information Section with Graph -->
     <div class="sidebar-section highlighted">
       <h3 style="color: var(--accent-amber);">⚠️ CFD Brokers: Market Maker vs. ECN</h3>
       <p><strong>Why Market Makers (B-Book) Are NOT Recommended:</strong></p>
       <ul>
-        <li><strong>Conflict of Interest:</strong> Market Makers take the opposite side of your trade. If you win, they lose money. This creates an inherent incentive for them to manipulate spreads, induce slippage, or re-quote orders during critical moments.</li>
-        <li><strong>Artificial Spreads:</strong> They control price feeds internally rather than connecting directly to the interbank market.</li>
+        <li><strong>Conflict of Interest:</strong> Market Makers profit directly from trader losses, incentivizing artificial slippage and wider spreads during volatile market conditions.</li>
       </ul>
       
-      <p style="margin-top: 0.75rem;"><strong>Why ECN Brokers Are Recommended:</strong></p>
+      <p style="margin-top: 0.5rem;"><strong>Why ECN Brokers Are Recommended:</strong></p>
       <ul>
-        <li><strong>Direct Market Access:</strong> ECN (Electronic Communication Network) brokers route your orders straight to Tier-1 banks and liquidity providers.</li>
-        <li><strong>No Conflict:</strong> They make money exclusively on a transparent fixed commission or tight spread, meaning they benefit when you trade effectively.</li>
+        <li><strong>Direct Access:</strong> Orders pass straight to liquidity providers with zero dealing desk intervention.</li>
       </ul>
 
-      <p style="margin-top: 1rem; font-weight: bold; color: var(--text-main);">Recommended Execution Brokers:</p>
+      <!-- Broker Comparison Chart -->
+      <div class="chart-container">
+        <canvas id="brokerComparisonChart"></canvas>
+      </div>
+
+      <p style="margin-top: 1rem; font-weight: bold; color: var(--text-main);">Recommended Execution Platforms:</p>
 
       <!-- IC Markets Referral Link -->
       <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" rel="noopener" class="affiliate-btn">
         📈 Trade Forex & CFDs on IC Markets
       </a>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-        <em>Benefits: True Raw ECN Spreads from 0.0 pips, institutional liquidity, fast order execution.</em>
+        <em>Benefits: Raw ECN Spreads from 0.0 pips, fast institutional order routing.</em>
       </p>
 
       <!-- MEXC Referral Link -->
@@ -558,7 +540,7 @@
         🚀 Trade Crypto on MEXC (Code: 44wXf)
       </a>
       <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-        <em>Benefits: Industry-leading lowest fees, deep crypto altcoin market depth, and up to $140+ in signup rewards.</em>
+        <em>Benefits: Lowest maker/taker fees, altcoin liquidity, up to $140+ welcome bonus.</em>
       </p>
     </div>
 
@@ -586,28 +568,6 @@
         Wins: 3 x +$300 = <strong>+$900</strong><br>
         Net Profit: <strong>+$200</strong>
       </p>
-    </div>
-
-    <!-- Core Trading Concepts -->
-    <div class="sidebar-section">
-      <h3>Core Trading Concepts</h3>
-      <br>
-      <p><strong>What is Sample Size?</strong></p>
-      <p>A set of consecutive trades (e.g., 20–100 trades) evaluated under fixed rules without changing strategy mid-way. Single trades are random noise; only large samples prove an edge.</p>
-      <br>
-      <p><strong>What is an Edge?</strong></p>
-      <p>A statistical advantage over the market that produces a positive expected value (EV) across a large sample size of trades.</p>
-      <br>
-      <p><strong>Impact of Execution:</strong></p>
-      <p>Even the best edge fails if execution is poor. Disciplined execution bridges strategy to long-term profitability.</p>
-    </div>
-
-    <!-- Mission Quote -->
-    <div class="sidebar-section">
-      <div class="quote-box">
-        "A profitable trading system is easy to find, but hard to follow. Most traders fail not because the strategy is wrong, but because they lack patience to stick with it. Consistent profits come from discipline, patience, and trusting the process."
-        <div class="quote-author">- EG Mission Statement</div>
-      </div>
     </div>
   </aside>
 
@@ -696,6 +656,16 @@
       </div>
     </div>
 
+    <!-- Dynamic Execution Graph -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Execution Discipline Trend Graph</span>
+      </div>
+      <div style="height: 250px; position: relative;">
+        <canvas id="executionGraph"></canvas>
+      </div>
+    </div>
+
     <div class="section-card">
       <div class="section-header">
         <span class="section-title">Trade History Journal</span>
@@ -735,6 +705,67 @@
       'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1600&q=80'
     ];
     let bgIndex = 0;
+
+    // Execution Trend Chart Setup
+    let graphLabels = ['Start'];
+    let scoreData = [10];
+    const ctxGraph = document.getElementById('executionGraph').getContext('2d');
+    const executionChart = new Chart(ctxGraph, {
+      type: 'line',
+      data: {
+        labels: graphLabels,
+        datasets: [{
+          label: 'Discipline Points',
+          data: scoreData,
+          borderColor: '#38bdf8',
+          backgroundColor: 'rgba(56, 189, 248, 0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' }, beginAtZero: true }
+        }
+      }
+    });
+
+    // Sidebar Broker Comparison Chart Setup
+    const ctxBroker = document.getElementById('brokerComparisonChart').getContext('2d');
+    new Chart(ctxBroker, {
+      type: 'bar',
+      data: {
+        labels: ['Avg Spread (Pips)', 'Slippage Risk (%)'],
+        datasets: [
+          {
+            label: 'Market Maker (B-Book)',
+            data: [1.8, 85],
+            backgroundColor: '#ef4444'
+          },
+          {
+            label: 'ECN Broker (IC Markets)',
+            data: [0.1, 5],
+            backgroundColor: '#22c55e'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#f1f5f9', font: { size: 10 } } }
+        },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: '#2a3a52' }, beginAtZero: true }
+        }
+      }
+    });
 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('active');
@@ -812,6 +843,7 @@
     }
 
     function renderRow(type, notes, imgHtml, table, row) {
+      const timeStr = new Date().toLocaleTimeString();
       if (type === 'compliant') {
         score += 10;
         compliantCount++;
@@ -820,7 +852,7 @@
           <td>${notes}</td>
           <td>${imgHtml}</td>
           <td>+10</td>
-          <td>${new Date().toLocaleTimeString()}</td>
+          <td>${timeStr}</td>
         `;
       } else {
         score += 5;
@@ -829,12 +861,17 @@
           <td>${notes}</td>
           <td>${imgHtml}</td>
           <td>+5</td>
-          <td>${new Date().toLocaleTimeString()}</td>
+          <td>${timeStr}</td>
         `;
       }
 
       table.prepend(row);
       
+      // Update Graph
+      executionChart.data.labels.push(`Entry #${entries}`);
+      executionChart.data.datasets[0].data.push(score);
+      executionChart.update();
+
       document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
       document.getElementById('tradeNotes').value = '';
       document.getElementById('chartScreenshot').value = '';
