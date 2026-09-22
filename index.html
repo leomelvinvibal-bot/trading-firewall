@@ -69,9 +69,14 @@
                 <div class="text-xs text-slate-400 mt-2">Active session average</div>
             </div>
             <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
-                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Broker Equity</div>
+                <div class="flex items-center justify-between">
+                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Broker Equity</div>
+                    <button onclick="openCapitalModal()" class="text-slate-400 hover:text-blue-400 transition p-1" title="Edit Starting Capital">
+                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                    </button>
+                </div>
                 <div class="text-3xl font-extrabold text-emerald-400 mt-1" id="stat-equity">$10,060</div>
-                <div class="text-xs text-slate-400 mt-2">Synced via Open API / CSV</div>
+                <div class="text-xs text-slate-400 mt-2">Manual Base / Updated via CSV</div>
             </div>
         </div>
 
@@ -187,6 +192,25 @@
     </main>
 
     <!-- Modals -->
+    <!-- Edit Starting Capital Modal -->
+    <div id="capitalModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-lg text-white">Set Starting Capital</h3>
+                <button onclick="closeCapitalModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Manually align your baseline capital to match your live broker account before importing CSV history.</p>
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Starting Capital ($)</label>
+                <input type="number" id="manualCapitalInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200" placeholder="10000">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCapitalModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
+                <button onclick="saveManualCapital()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Save & Update</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Customize Checklist Modal -->
     <div id="checklistModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5">
@@ -277,7 +301,7 @@
 
         let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 0;
         let equityChartInstance = null;
-        let brokerEquityPoints = [10000, 10020, 10010, 10040, 10030, 10060];
+        let brokerEquityPoints = JSON.parse(localStorage.getItem('twp_broker_equity_points')) || [10000, 10020, 10010, 10040, 10030, 10060];
 
         window.addEventListener('DOMContentLoaded', () => {
             initChart();
@@ -316,6 +340,30 @@
                     }
                 }
             });
+        }
+
+        function openCapitalModal() {
+            document.getElementById('manualCapitalInput').value = brokerEquityPoints[brokerEquityPoints.length - 1] || 10000;
+            document.getElementById('capitalModal').classList.remove('hidden');
+        }
+
+        function closeCapitalModal() {
+            document.getElementById('capitalModal').classList.add('hidden');
+        }
+
+        function saveManualCapital() {
+            const val = parseFloat(document.getElementById('manualCapitalInput').value);
+            if (isNaN(val) || val <= 0) {
+                alert('Please enter a valid starting capital amount.');
+                return;
+            }
+            brokerEquityPoints = [val];
+            localStorage.setItem('twp_broker_equity_points', JSON.stringify(brokerEquityPoints));
+            initChart(brokerEquityPoints);
+            document.getElementById('stat-equity').innerText = `$${val.toLocaleString()}`;
+            recalculateEdgeState();
+            closeCapitalModal();
+            alert(`Starting capital successfully set to $${val.toLocaleString()}! Ready for CSV imports.`);
         }
 
         function renderChecklist() {
@@ -397,6 +445,7 @@
             }
 
             brokerEquityPoints = [10000, 10040, 10090, 10150, 10210, 10300];
+            localStorage.setItem('twp_broker_equity_points', JSON.stringify(brokerEquityPoints));
             initChart(brokerEquityPoints);
             document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
             recalculateEdgeState();
@@ -425,6 +474,7 @@
 
                 if (parsedEquity.length > 0) {
                     brokerEquityPoints = parsedEquity;
+                    localStorage.setItem('twp_broker_equity_points', JSON.stringify(brokerEquityPoints));
                     initChart(brokerEquityPoints);
                     document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
                     recalculateEdgeState();
@@ -477,7 +527,6 @@
                 screenshotUrl = URL.createObjectURL(fileInput.files[0]);
             }
 
-            // Discipline Multiplier & Streak Logic
             if (type === 'compliant' && currentCompliance === 100) {
                 disciplineStreak += 1;
             } else {
@@ -486,7 +535,7 @@
             localStorage.setItem('twp_discipline_streak', disciplineStreak);
 
             let basePoints = type === 'compliant' ? 10 : 2;
-            let multiplier = 1.0 + (disciplineStreak * 0.1); // +10% per consecutive compliant execution
+            let multiplier = 1.0 + (disciplineStreak * 0.1);
             let finalPointsAdded = Math.round(basePoints * multiplier);
 
             const record = {
@@ -550,6 +599,10 @@
             
             let currentMultiplier = (1.0 + (disciplineStreak * 0.1)).toFixed(1);
             document.getElementById('streakMultiplierText').innerText = `${currentMultiplier}x Multiplier Active`;
+            
+            if (brokerEquityPoints.length > 0) {
+                document.getElementById('stat-equity').innerText = `$${brokerEquityPoints[brokerEquityPoints.length - 1].toLocaleString()}`;
+            }
         }
 
         function exportHistoryFile() {
