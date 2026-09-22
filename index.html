@@ -1,155 +1,720 @@
-<!-- Hamburger Menu Icon (Top-Left) -->
-<div class="menu-toggle" onclick="toggleMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Execution Guidance (EG)</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-amber: #f59e0b;
+      --sidebar-bg: #1e293b;
+    }
 
-<!-- Slide-Out Sidebar -->
-<aside id="sidebar" class="sidebar">
-  <button class="close-btn" onclick="toggleMenu()">&times;</button>
-  
-  <div class="sidebar-content">
-    <h2>Trading Knowledge Base</h2>
-    
-    <!-- Recommended Reading -->
-    <section class="menu-section">
-      <h3>Essential Reading</h3>
-      <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" rel="noopener noreferrer" class="resource-link">
-        📖 Trading in the Zone (Mark Douglas PDF)
-      </a>
-    </section>
+    body.light-mode {
+      --bg-color: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --sidebar-bg: #ffffff;
+    }
 
-    <!-- Mathematical Edge & R:R -->
-    <section class="menu-section">
-      <h3>The Math of Risk-to-Reward (1:3 R:R)</h3>
-      <p>In a <strong>1:3 Risk-to-Reward ratio</strong>, your potential profit is 3x your potential loss per trade.</p>
-      <ul>
-        <li><strong>Sample Size:</strong> 10 Trades</li>
-        <li><strong>Risk per trade:</strong> $100</li>
-        <li><strong>Reward per trade:</strong> $300</li>
-        <li><strong>Win Rate:</strong> 30% (3 Wins, 7 Losses)</li>
-      </ul>
-      <div class="math-box">
-        <p>Losses: 7 trades × -$100 = <strong>-$700</strong></p>
-        <p>Wins: 3 trades × +$300 = <strong>+$900</strong></p>
-        <p>Net Profit: +$900 - $700 = <strong>+$200</strong></p>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s, color 0.3s;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* Top Navigation Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .hamburger:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    .brand-logo span {
+      color: var(--accent-red);
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Sidebar Drawer */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -400px;
+      width: 380px;
+      height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--card-border);
+      z-index: 201;
+      overflow-y: auto;
+      transition: left 0.3s ease-in-out;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .sidebar-section {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--card-border);
+    }
+
+    .sidebar-section h3 {
+      font-size: 1rem;
+      color: var(--accent-blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar-section p, .sidebar-section ul {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .sidebar-section ul {
+      margin-left: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .pdf-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .pdf-link:hover {
+      text-decoration: underline;
+    }
+
+    .quote-box {
+      border-left: 3px solid var(--accent-amber);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 0.75rem;
+      font-style: italic;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-top: 0.5rem;
+    }
+
+    .quote-author {
+      text-align: right;
+      font-style: normal;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      color: var(--accent-amber);
+    }
+
+    /* Main Container Layout */
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .title-banner {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .title-banner h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Scoreboard */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .metric-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    /* Notice Banner */
+    .notice-banner {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--accent-amber);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .edits-badge {
+      background: var(--accent-amber);
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+
+    /* Section Forms */
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+    }
+
+    .section-title.avoid {
+      color: var(--accent-red);
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: rgba(0,0,0,0.1);
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      margin-top: 0.2rem;
+      cursor: pointer;
+    }
+
+    /* Form Field */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      color: var(--text-main);
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* Action Buttons */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .btn-action {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+
+    .btn-compliant {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .btn-avoided {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    /* Log Output Table */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .history-table th, .history-table td {
+      border: 1px solid var(--card-border);
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .history-table th {
+      background: rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="brand-logo">
+        <span>🛡️</span> Execution Guidance (EG)
       </div>
-      <p class="insight-text">You only need to be right 3 out of 10 times to remain net profitable.</p>
-    </section>
+    </div>
+    <div class="header-controls">
+      <button class="btn-secondary" onclick="changeBackground()">🖼️ BG Image</button>
+      <button class="btn-secondary" onclick="toggleTheme()">🌙 Theme</button>
+    </div>
+  </header>
 
-    <!-- Core Trading Concepts -->
-    <section class="menu-section">
-      <h3>Core Concepts</h3>
-      
-      <h4>What is Sample Size?</h4>
-      <p>A statistical sample size (e.g., 20 to 100 executed trades) is required to test a system. A outcome from 1 or 2 trades is random noise; consistency can only be measured over a significant set of trades without altering rules mid-way.</p>
-
-      <h4>What is an Edge?</h4>
-      <p>An edge is a statistical advantage that produces a positive expected value (EV) over a large sample size. It comes from a combination of win rate, risk-to-reward ratio, and disciplined execution.</p>
-
-      <h4>How Execution Affects a System</h4>
-      <p>A system with a high theoretical edge will fail if poor execution introduces slippage, emotional entries, early exits, or missed setups. Perfect execution turns a statistical edge into real-world profit.</p>
-    </section>
-
-    <!-- Quote & Mission -->
-    <section class="menu-section mission-box">
-      <blockquote>
-        "A profitable trading system is easy to find, but hard to follow. Most traders fail not because the strategy is wrong, but because they lack patience to stick with it. Quick profits lead to overtrading and revenge trades. Consistent profits come from discipline, patience, and trusting the process."
-      </blockquote>
-      <p class="mission-statement">This site was built to guide and protect traders.</p>
-    </section>
-  </div>
-</aside>
-
-<!-- Styles -->
-<style>
-  /* Toggle Icon */
-  .menu-toggle {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    cursor: pointer;
-    z-index: 1000;
-  }
-  .menu-toggle span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    margin: 5px 0;
-    background-color: #333;
-    transition: 0.3s;
-  }
-
-  /* Sidebar */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -350px;
-    width: 320px;
-    height: 100%;
-    background-color: #1a1e29;
-    color: #e0e6ed;
-    overflow-y: auto;
-    transition: 0.3s ease-in-out;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-    z-index: 999;
-    padding: 20px;
-  }
-  .sidebar.active {
-    left: 0;
-  }
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-  }
+  <!-- Sidebar Overlay & Sidebar -->
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
   
-  /* Section Styles */
-  .menu-section {
-    margin-bottom: 25px;
-    border-bottom: 1px solid #2d3446;
-    padding-bottom: 15px;
-  }
-  .resource-link {
-    color: #4da6ff;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  .math-box {
-    background: #0d1117;
-    padding: 10px;
-    border-left: 3px solid #00c853;
-    margin: 10px 0;
-  }
-  .mission-box {
-    background: rgba(255, 193, 7, 0.1);
-    border: 1px solid #ffc107;
-    border-radius: 6px;
-    padding: 12px;
-  }
-  blockquote {
-    font-style: italic;
-    margin: 0 0 10px 0;
-    font-size: 0.9em;
-    line-height: 1.4;
-  }
-  .mission-statement {
-    font-weight: bold;
-    color: #ffc107;
-    font-size: 0.85em;
-    text-transform: uppercase;
-  }
-</style>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>Trading Knowledge Base</h2>
+      <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+    </div>
 
-<!-- Toggle Script -->
-<script>
-  function toggleMenu() {
-    document.getElementById('sidebar').classList.toggle('active');
-  }
-</script>
+    <!-- Recommended Reading -->
+    <div class="sidebar-section">
+      <h3>Recommended Reading</h3>
+      <p>Master the psychological foundation of market expectations.</p>
+      <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" class="pdf-link">
+        📖 Read Trading in the Zone (PDF)
+      </a>
+    </div>
+
+    <!-- Math of Risk to Reward -->
+    <div class="sidebar-section">
+      <h3>Math of Risk to Reward (1:3 R:R)</h3>
+      <p>You do not need a high win rate to be profitable. With a 1:3 ratio:</p>
+      <ul>
+        <li><strong>Sample size:</strong> 10 Trades</li>
+        <li><strong>Risk:</strong> $100 per trade</li>
+        <li><strong>Reward:</strong> $300 per trade</li>
+        <li><strong>Win Rate required:</strong> 30% (3 wins out of 10)</li>
+      </ul>
+      <p style="margin-top: 0.5rem;">
+        Losses: 7 x -$100 = <strong>-$700</strong><br>
+        Wins: 3 x +$300 = <strong>+$900</strong><br>
+        Net Profit: <strong>+$200</strong>
+      </p>
+    </div>
+
+    <!-- Trading Concepts -->
+    <div class="sidebar-section">
+      <h3>Core Trading Concepts</h3>
+      <br>
+      <p><strong>What is Sample Size?</strong></p>
+      <p>A set of consecutive trades (e.g., 20–100 trades) evaluated under fixed rules without changing strategy mid-way. Single trades are random noise; only large samples prove an edge.</p>
+      <br>
+      <p><strong>What is an Edge?</strong></p>
+      <p>A statistical advantage over the market that produces a positive expected value (EV) across a large sample size of trades.</p>
+      <br>
+      <p><strong>Impact of Execution:</strong></p>
+      <p>Even the best edge fails if execution is poor (e.g., chasing trades, early exits, emotional entries). Perfect execution bridges strategy to profitability.</p>
+    </div>
+
+    <!-- Mission Quote -->
+    <div class="sidebar-section">
+      <div class="quote-box">
+        "A profitable trading system is easy to find, but hard to follow. Most traders fail not because the strategy is wrong, but because they lack patience to stick with it. Quick profits lead to overtrading and revenge trades. Consistent profits come from discipline, patience, and trusting the process."
+        <div class="quote-author">- EG Mission Statement</div>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+        That is why this site is built: to guide and protect traders.
+      </p>
+    </div>
+  </aside>
+
+  <!-- Main Workstation -->
+  <main>
+    <div class="title-banner">
+      <h1>Execution Guidance (EG)</h1>
+      <p style="color: var(--text-muted); font-size: 0.875rem;">Disciplined Execution & System Validation Dashboard</p>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Compliance Rate</div>
+        <div class="metric-value" id="complianceRate">100%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Discipline Score</div>
+        <div class="metric-value" id="disciplineScore">10 PTS</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Logged Entries</div>
+        <div class="metric-value" id="loggedEntries">1</div>
+      </div>
+    </div>
+
+    <!-- Notice Banner -->
+    <div class="notice-banner">
+      <span>⚠️ <strong>Notice:</strong> Criteria edits are limited to 2 times max to prevent moving goalposts and preserve statistical edge sample validity.</span>
+      <span class="edits-badge" id="editsBadge">2 Edits Left</span>
+    </div>
+
+    <!-- Pre-Flight Checklist -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Pre-Flight Execution Checklist (Compliant Entry)</span>
+        <button class="btn-edit" onclick="editCriteria('preflight')">✏️ Edit Criteria</button>
+      </div>
+      <div class="checklist" id="preflightList">
+        <label class="checklist-item">
+          <input type="checkbox" class="chk-preflight">
+          <div><strong>Take Profit Target:</strong> Area is explicitly mapped out on the chart.</div>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="chk-preflight">
+          <div><strong>Donchian Crossover:</strong> 3 consecutive candles have closed crossing the middle band.</div>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="chk-preflight">
+          <div><strong>Execution Style:</strong> Order is an exact Limit or Stop Pending Position (No Market Orders).</div>
+        </label>
+        <label class="checklist-item">
+          <input type="checkbox" class="chk-preflight">
+          <div><strong>Timing Gateway:</strong> Order is placed precisely 8 to 10 minutes before the crossing candle closes.</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Setups to Avoid -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title avoid">Setup to Avoid (Filtered Out / Patient Pass)</span>
+        <button class="btn-edit" onclick="editCriteria('avoid')">✏️ Edit Criteria</button>
+      </div>
+      <div class="checklist" id="avoidList">
+        <label class="checklist-item">
+          <input type="checkbox" class="chk-avoid">
+          <div><strong>Failed Trigger Criteria:</strong> Setup appeared but failed key rules (e.g., poor spread, wrong timing, messy structure).</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Notes & Attachments -->
+    <div class="section-card">
+      <div class="form-group">
+        <label for="tradeNotes">Trade Note / Reason for Action:</label>
+        <textarea id="tradeNotes" placeholder="Enter market context, asset pair, or reason for taking/avoiding the setup..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="chartScreenshot">Attach Chart Screenshot:</label>
+        <input type="file" id="chartScreenshot" accept="image/*">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-grid">
+        <button class="btn-action btn-compliant" onclick="logTrade('compliant')">Log Compliant (+10)</button>
+        <button class="btn-action btn-avoided" onclick="logTrade('avoided')">Log Avoided (Discipline +5)</button>
+      </div>
+    </div>
+
+    <!-- History Log Table -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">Trade History Journal</span>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Notes</th>
+            <th>Points</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr>
+            <td><span style="color: var(--accent-green); font-weight: bold;">Compliant</span></td>
+            <td>Initial setup test</td>
+            <td>+10</td>
+            <td>Just now</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    let editsLeft = 2;
+    let score = 10;
+    let entries = 1;
+    let compliantCount = 1;
+
+    const bgList = [
+      '',
+      'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1600&q=80'
+    ];
+    let bgIndex = 0;
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('overlay').classList.toggle('active');
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function changeBackground() {
+      bgIndex = (bgIndex + 1) % bgList.length;
+      if (bgList[bgIndex]) {
+        document.body.style.backgroundImage = `url('${bgList[bgIndex]}')`;
+      } else {
+        document.body.style.backgroundImage = 'none';
+      }
+    }
+
+    function editCriteria(type) {
+      if (editsLeft <= 0) {
+        alert("Edit limit reached! You cannot modify criteria to prevent moving goalposts.");
+        return;
+      }
+      
+      const newText = prompt("Enter new criterion description:");
+      if (newText) {
+        editsLeft--;
+        document.getElementById('editsBadge').innerText = `${editsLeft} Edits Left`;
+        
+        const targetList = type === 'preflight' ? 'preflightList' : 'avoidList';
+        const itemClass = type === 'preflight' ? 'chk-preflight' : 'chk-avoid';
+        
+        const container = document.getElementById(targetList);
+        const newItem = document.createElement('label');
+        newItem.className = 'checklist-item';
+        newItem.innerHTML = `
+          <input type="checkbox" class="${itemClass}">
+          <div><strong>Custom Criteria:</strong> ${newText}</div>
+        `;
+        container.appendChild(newItem);
+      }
+    }
+
+    function logTrade(type) {
+      const notes = document.getElementById('tradeNotes').value || "No notes provided";
+      const table = document.getElementById('historyBody');
+      const row = document.createElement('tr');
+
+      entries++;
+      if (type === 'compliant') {
+        score += 10;
+        compliantCount++;
+        row.innerHTML = `
+          <td><span style="color: var(--accent-green); font-weight: bold;">Compliant</span></td>
+          <td>${notes}</td>
+          <td>+10</td>
+          <td>${new Date().toLocaleTimeString()}</td>
+        `;
+      } else {
+        score += 5;
+        row.innerHTML = `
+          <td><span style="color: var(--accent-blue); font-weight: bold;">Avoided</span></td>
+          <td>${notes}</td>
+          <td>+5</td>
+          <td>${new Date().toLocaleTimeString()}</td>
+        `;
+      }
+
+      table.prepend(row);
+      
+      // Reset checkboxes & inputs
+      document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      document.getElementById('tradeNotes').value = '';
+      
+      // Update Metrics
+      document.getElementById('disciplineScore').innerText = score + " PTS";
+      document.getElementById('loggedEntries').innerText = entries;
+      const rate = Math.round((compliantCount / entries) * 100);
+      document.getElementById('complianceRate').innerText = rate + "%";
+    }
+  </script>
+</body>
+</html>
