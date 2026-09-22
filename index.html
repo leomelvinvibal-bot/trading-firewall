@@ -21,27 +21,51 @@
     <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --accent-glow: rgba(37, 99, 235, 0.2);
+        }
+        .accent-blue { color: #3b82f6; }
+        .accent-emerald { color: #10b981; }
+        .accent-purple { color: #8b5cf6; }
+        .accent-amber { color: #f59e0b; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col justify-between">
+<body id="appBody" class="bg-slate-950 text-slate-100 font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
     <header class="border-b border-slate-800 bg-[#0a0e17] sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xl">
+                <div id="brandLogoBox" class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xl transition-colors">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">TraderWellPower <span class="text-blue-500 text-xs px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 ml-1">Edge Builder</span></h1>
+                    <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">TraderWellPower <span id="brandBadge" class="text-blue-500 text-xs px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 ml-1 transition-colors">Edge Builder</span></h1>
                     <p class="text-xs text-slate-400">System Discipline & Anti-Curve Fitting Platform</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
+                <!-- Knowledge Base Trigger -->
+                <button onclick="openKnowledgeBase()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-blue-500 text-xs font-semibold flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-book-open text-blue-400" id="kbIcon"></i>
+                    <span class="hidden sm:inline">Knowledge Base</span>
+                </button>
                 <button onclick="openCtraderModal()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-blue-500 text-xs font-semibold flex items-center space-x-2 transition">
                     <i class="fa-solid fa-plug text-blue-400"></i>
                     <span class="hidden sm:inline">Connect cTrader</span>
                 </button>
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition">
+                <!-- Highlight Color Customizer Dropdown -->
+                <div class="relative">
+                    <select id="accentColorSelector" onchange="changeAccentColor(this.value)" class="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-lg px-2 py-2 focus:outline-none focus:border-blue-500 cursor-pointer">
+                        <option value="blue">Highlight: Blue</option>
+                        <option value="emerald">Highlight: Emerald</option>
+                        <option value="purple">Highlight: Purple</option>
+                        <option value="amber">Highlight: Amber</option>
+                    </select>
+                </div>
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition" title="Toggle Light/Dark Theme">
                     <i id="themeIcon" class="fa-solid fa-sun"></i>
                 </button>
             </div>
@@ -60,7 +84,7 @@
             </div>
             <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
                 <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Discipline Streak</div>
-                <div class="text-3xl font-extrabold text-blue-400 mt-1" id="stat-streak">0</div>
+                <div class="text-3xl font-extrabold text-blue-400 mt-1 dynamic-accent-text" id="stat-streak">0</div>
                 <div class="text-xs text-slate-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-fire text-amber-400"></i> <span id="streakMultiplierText">1.0x Multiplier Active</span></div>
             </div>
             <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative overflow-hidden">
@@ -83,7 +107,7 @@
         <!-- System Verdict Panel -->
         <div class="bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 border border-blue-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md">Edge Validation Status</span>
+                <span id="verdictTag" class="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md transition-colors">Edge Validation Status</span>
                 <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-blue-300 mt-2 flex items-center gap-2">
                     <i class="fa-solid fa-circle-notch animate-spin"></i> <span id="verdictText">INITIALIZING SYSTEM DIAGNOSTICS...</span>
                 </div>
@@ -93,7 +117,7 @@
                     <i class="fa-solid fa-file-csv mr-1.5 text-blue-400"></i> Import Broker CSV
                     <input type="file" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
                 </label>
-                <button onclick="exportHistoryFile()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/20">
+                <button onclick="exportHistoryFile()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/25 dynamic-btn">
                     <i class="fa-solid fa-download mr-1.5"></i> Export State
                 </button>
             </div>
@@ -191,6 +215,67 @@
 
     </main>
 
+    <!-- Knowledge Base Drawer / Modal -->
+    <div id="kbDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeKnowledgeBase()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div class="flex items-center space-x-2 text-white font-bold text-base">
+                            <i class="fa-solid fa-book-open text-blue-400"></i>
+                            <span>Knowledge Base</span>
+                        </div>
+                        <button onclick="closeKnowledgeBase()" class="text-slate-400 hover:text-white p-1">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Broker Model Card -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center space-x-2 text-amber-400 font-semibold text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Brokers & Execution Model</span>
+                        </div>
+                        <p class="text-xs text-slate-300"><strong class="text-white">Market Maker (B-Book) vs. ECN/STP Broker:</strong></p>
+                        <ul class="text-xs text-slate-400 space-y-1.5 list-disc pl-4">
+                            <li><strong class="text-rose-400">Market Maker (B-Book):</strong> Trades against you, creating conflicts of interest, spread widenings, and slippage.</li>
+                            <li><strong class="text-emerald-400">ECN Broker (DMA):</strong> Direct connection to liquidity providers with raw spreads and fixed commissions.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Verified Broker Partner with Affiliate Link -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Verified Broker Partner</div>
+                        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3.5 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-sm text-white">IC Markets (Raw ECN)</span>
+                                <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded">Forex / Metals</span>
+                            </div>
+                            <p class="text-xs text-slate-400">0.0 Pip Raw Spreads with institutional DMA latency.</p>
+                            <div class="pt-1">
+                                <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" class="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-xs text-center transition shadow-md">
+                                    Open Raw ECN Account <i class="fa-solid fa-external-link-alt ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Mindset Book -->
+                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recommended Mindset Book</div>
+                        <p class="text-xs text-slate-400">Eliminate emotional error and execute purely on probability.</p>
+                        <a href="#" class="text-xs font-semibold text-blue-400 hover:underline inline-block pt-1">Download "Trading in the Zone" (PDF)</a>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-800 text-center text-xs text-slate-500">
+                    TraderWellPower Education Module v2.6
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modals -->
     <!-- Edit Starting Capital Modal -->
     <div id="capitalModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
@@ -206,7 +291,7 @@
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeCapitalModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                <button onclick="saveManualCapital()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Save & Update</button>
+                <button onclick="saveManualCapital()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl dynamic-btn">Save & Update</button>
             </div>
         </div>
     </div>
@@ -240,10 +325,10 @@
                 </div>
             </div>
             <div class="flex justify-between items-center pt-2">
-                <button onclick="simulateResubscription()" class="text-xs text-blue-400 hover:underline">Simulate Subscription Reset</button>
+                <button onclick="simulateResubscription()" class="text-xs text-blue-400 hover:underline dynamic-accent-text">Simulate Subscription Reset</button>
                 <div class="space-x-2">
                     <button onclick="closeChecklistModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                    <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Save Changes</button>
+                    <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl dynamic-btn">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -269,7 +354,7 @@
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeCtraderModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl">Authorize & Sync</button>
+                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-semibold rounded-xl dynamic-btn">Authorize & Sync</button>
             </div>
         </div>
     </div>
@@ -279,6 +364,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p>&copy; 2026 TraderWellPower / Edge Builder Platform. All rights reserved.</p>
             <div class="flex space-x-6">
+                <a href="https://ic.com/?camp=85679" target="_blank" class="hover:text-slate-300 transition">IC Markets Partner</a>
                 <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
                 <a href="#" class="hover:text-slate-300 transition">Terms of Service</a>
             </div>
@@ -302,8 +388,23 @@
         let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 0;
         let equityChartInstance = null;
         let brokerEquityPoints = JSON.parse(localStorage.getItem('twp_broker_equity_points')) || [10000, 10020, 10010, 10040, 10030, 10060];
+        let currentAccent = localStorage.getItem('twp_accent_color') || 'blue';
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Restore theme state
+            const savedTheme = localStorage.getItem('twp_theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            } else {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            }
+
+            // Restore accent color
+            document.getElementById('accentColorSelector').value = currentAccent;
+            applyAccentColor(currentAccent);
+
             initChart();
             renderChecklist();
             renderRecords();
@@ -311,9 +412,61 @@
             recalculateEdgeState();
         });
 
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
+            localStorage.setItem('twp_theme', isDark ? 'dark' : 'light');
+            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        }
+
+        function changeAccentColor(color) {
+            currentAccent = color;
+            localStorage.setItem('twp_accent_color', color);
+            applyAccentColor(color);
+        }
+
+        function applyAccentColor(color) {
+            const mapColors = {
+                blue: { hex: '#2563eb', textClass: 'text-blue-400', bgClass: 'bg-blue-600' },
+                emerald: { hex: '#10b981', textClass: 'text-emerald-400', bgClass: 'bg-emerald-600' },
+                purple: { hex: '#8b5cf6', textClass: 'text-purple-400', bgClass: 'bg-purple-600' },
+                amber: { hex: '#f59e0b', textClass: 'text-amber-400', bgClass: 'bg-amber-600' }
+            };
+
+            const cfg = mapColors[color] || mapColors.blue;
+            
+            // Update dynamic text and buttons
+            document.querySelectorAll('.dynamic-accent-text').forEach(el => {
+                el.className = el.className.replace(/text-(blue|emerald|purple|amber)-400/g, cfg.textClass);
+            });
+            document.querySelectorAll('.dynamic-btn').forEach(el => {
+                el.style.backgroundColor = cfg.hex;
+            });
+            document.getElementById('brandLogoBox').style.borderColor = cfg.hex;
+            document.getElementById('brandBadge').className = `${cfg.textClass} text-xs px-2 py-0.5 rounded bg-slate-800 border border-slate-700 ml-1`;
+
+            if (equityChartInstance) {
+                equityChartInstance.data.datasets[0].borderColor = cfg.hex;
+                equityChartInstance.update();
+            }
+        }
+
+        function openKnowledgeBase() {
+            document.getElementById('kbDrawer').classList.remove('hidden');
+        }
+
+        function closeKnowledgeBase() {
+            document.getElementById('kbDrawer').classList.add('hidden');
+        }
+
         function initChart(dataPoints = brokerEquityPoints) {
             const ctx = document.getElementById('equityChart').getContext('2d');
             if (equityChartInstance) equityChartInstance.destroy();
+
+            const mapHex = { blue: '#2563eb', emerald: '#10b981', purple: '#8b5cf6', amber: '#f59e0b' };
+            const activeHex = mapHex[currentAccent] || '#2563eb';
 
             equityChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -322,7 +475,7 @@
                     datasets: [{
                         label: 'Broker Account Equity ($)',
                         data: dataPoints,
-                        borderColor: '#2563eb',
+                        borderColor: activeHex,
                         backgroundColor: 'rgba(37, 99, 235, 0.1)',
                         borderWidth: 3,
                         fill: true,
@@ -613,18 +766,6 @@
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
-        }
-
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon';
-            } else {
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
-            }
         }
     </script>
 </body>
