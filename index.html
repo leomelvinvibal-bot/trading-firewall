@@ -136,76 +136,67 @@
 
                 <!-- HOME & CALENDAR TAB -->
                 <section id="tab-home" class="tab-content space-y-6">
-                    <!-- Calendar View -->
-                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
-                            <div class="flex items-center space-x-3">
-                                <button onclick="changeMonth(-1)" class="p-2 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300"><i class="fa-solid fa-chevron-left"></i></button>
-                                <h3 id="calendarMonthTitle" class="text-xl font-black text-gray-900 dark:text-white tracking-tight">September 2026</h3>
-                                <button onclick="changeMonth(1)" class="p-2 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300"><i class="fa-solid fa-chevron-right"></i></button>
-                            </div>
-                            <div class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl px-4 py-2.5 flex items-center gap-6">
-                                <div><span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium block">Trades</span><span id="statTrades" class="text-sm font-bold text-emerald-900 dark:text-emerald-200">24</span></div>
-                                <div class="border-r border-emerald-200 dark:border-emerald-800 h-6"></div>
-                                <div><span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium block">Wins</span><span id="statWins" class="text-sm font-bold text-emerald-900 dark:text-emerald-200">14</span></div>
-                                <div class="border-r border-emerald-200 dark:border-emerald-800 h-6"></div>
-                                <div><span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium block">Net P&L</span><span id="statPnL" class="text-sm font-bold text-emerald-900 dark:text-emerald-200">$77.12</span></div>
-                                <div class="border-r border-emerald-200 dark:border-emerald-800 h-6"></div>
-                                <div><span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium block">Percent</span><span id="statPercent" class="text-sm font-bold text-emerald-900 dark:text-emerald-200">+0.30%</span></div>
-                            </div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <div class="min-w-[800px]">
-                                <div class="grid grid-cols-8 gap-2 text-center text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 px-1">
-                                    <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-                                    <div class="text-emerald-700 dark:text-emerald-400">Total</div>
+                    
+                    <!-- Grid layout: Anti-FOMO Guard on the LEFT, Calendar view on the RIGHT -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        
+                        <!-- LEFT SIDE: Anti-FOMO Guard & Execution Guidance -->
+                        <div class="lg:col-span-4 bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-indigo-500/10 dark:from-amber-950/20 dark:via-emerald-950/20 dark:to-slate-900 border-2 border-amber-500/40 rounded-2xl p-5 shadow-sm space-y-4">
+                            <div class="border-b border-amber-500/20 pb-3 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 bg-amber-500 text-white rounded-md shadow-sm">Anti-FOMO Guard</span>
+                                    <span id="edgeLockBadge" class="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-lg shadow">Locked (2x Annual)</span>
                                 </div>
-                                <div id="calendarGridBody" class="space-y-2"></div>
+                                <h3 class="text-base font-black text-gray-900 dark:text-white">Pre-Trade Guidance</h3>
+                                <p class="text-[11px] text-gray-600 dark:text-gray-300">Mark all rules below to unlock your trade ticket and protect your trading edge.</p>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- REQUESTED: Execution Trade Guidance & Anti-FOMO Lock widget -->
-                    <div class="bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-indigo-500/10 dark:from-amber-950/20 dark:via-emerald-950/20 dark:to-slate-900 border-2 border-amber-500/40 rounded-2xl p-6 shadow-sm space-y-4">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-amber-500/20 pb-4">
-                            <div>
-                                <span class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 bg-amber-500 text-white rounded-md shadow-sm">Anti-FOMO Guard</span>
-                                <h3 class="text-lg font-black text-gray-900 dark:text-white mt-1">Pre-Trade Execution Guidance & Criteria Approval</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-300">Mark all system criteria below. Your trading edge is locked and requires a 2x annual renewal cycle to prevent strategy pollution.</p>
+                            <!-- Fully Editable & Clickable Criteria List Container -->
+                            <div id="criteriaListContainer" class="space-y-2 max-h-[360px] overflow-y-auto pr-1 custom-scrollbar">
+                                <!-- Dynamic criteria injected via JS -->
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span id="edgeLockBadge" class="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">Edge Status: LOCKED (2x Annual Renewal Active)</span>
-                            </div>
-                        </div>
 
-                        <div id="criteriaListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <label class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer shadow-sm hover:border-emerald-500 transition">
-                                <input type="checkbox" class="criteria-chk w-4 h-4 text-emerald-600 rounded">
-                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200">1. Target Level & Liquidity Sweep Defined</span>
-                            </label>
-                            <label class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer shadow-sm hover:border-emerald-500 transition">
-                                <input type="checkbox" class="criteria-chk w-4 h-4 text-emerald-600 rounded">
-                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200">2. Defined Stop Loss & Max Risk Verified</span>
-                            </label>
-                            <label class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer shadow-sm hover:border-emerald-500 transition">
-                                <input type="checkbox" class="criteria-chk w-4 h-4 text-emerald-600 rounded">
-                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200">3. ECN Spread & Slippage Within Threshold</span>
-                            </label>
-                            <label class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer shadow-sm hover:border-emerald-500 transition">
-                                <input type="checkbox" class="criteria-chk w-4 h-4 text-emerald-600 rounded">
-                                <span class="text-xs font-bold text-gray-800 dark:text-gray-200">4. Higher Timeframe Alignment Checked</span>
-                            </label>
+                            <!-- Add New Custom Rule Control -->
+                            <div class="pt-2 border-t border-amber-500/20 space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <input type="text" id="newCriteriaInput" placeholder="Add custom criteria rule..." class="px-3 py-2 text-xs rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white flex-1">
+                                    <button onclick="addNewCriteria()" class="px-3 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold rounded-xl shadow hover:bg-slate-700 transition">Add</button>
+                                </div>
+                                <button onclick="verifyExecutionApproval()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl shadow-md transition">
+                                    Verify & Unlock Ticket
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                            <div class="flex items-center space-x-2 w-full sm:w-auto">
-                                <input type="text" id="newCriteriaInput" placeholder="Add custom criteria rule..." class="px-3 py-2 text-xs rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white flex-1">
-                                <button onclick="addNewCriteria()" class="px-4 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold rounded-xl shadow hover:bg-slate-700 transition">Add Rule</button>
+                        <!-- RIGHT SIDE: Calendar View -->
+                        <div class="lg:col-span-8 bg-white dark:bg-slate-800 rounded-2xl p-5 border border-gray-200 dark:border-slate-700 shadow-sm space-y-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div class="flex items-center space-x-3">
+                                    <button onclick="changeMonth(-1)" class="p-2 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300"><i class="fa-solid fa-chevron-left"></i></button>
+                                    <h3 id="calendarMonthTitle" class="text-lg font-black text-gray-900 dark:text-white tracking-tight">September 2026</h3>
+                                    <button onclick="changeMonth(1)" class="p-2 border border-gray-200 dark:border-slate-700 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300"><i class="fa-solid fa-chevron-right"></i></button>
+                                </div>
+                                <div class="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl px-3 py-2 flex items-center gap-4 text-xs">
+                                    <div><span class="text-[9px] text-emerald-700 dark:text-emerald-400 font-medium block">Trades</span><span id="statTrades" class="font-bold text-emerald-900 dark:text-emerald-200">24</span></div>
+                                    <div class="border-r border-emerald-200 dark:border-emerald-800 h-5"></div>
+                                    <div><span class="text-[9px] text-emerald-700 dark:text-emerald-400 font-medium block">Wins</span><span id="statWins" class="font-bold text-emerald-900 dark:text-emerald-200">14</span></div>
+                                    <div class="border-r border-emerald-200 dark:border-emerald-800 h-5"></div>
+                                    <div><span class="text-[9px] text-emerald-700 dark:text-emerald-400 font-medium block">Net P&L</span><span id="statPnL" class="font-bold text-emerald-900 dark:text-emerald-200">$77.12</span></div>
+                                    <div class="border-r border-emerald-200 dark:border-emerald-800 h-5"></div>
+                                    <div><span class="text-[9px] text-emerald-700 dark:text-emerald-400 font-medium block">Percent</span><span id="statPercent" class="font-bold text-emerald-900 dark:text-emerald-200">+0.30%</span></div>
+                                </div>
                             </div>
-                            <button onclick="verifyExecutionApproval()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl shadow-md transition">
-                                Verify & Unlock Entry Ticket
-                            </button>
+                            <div class="overflow-x-auto">
+                                <div class="min-w-[650px]">
+                                    <div class="grid grid-cols-8 gap-2 text-center text-xs font-bold text-gray-600 dark:text-gray-400 mb-2 px-1">
+                                        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+                                        <div class="text-emerald-700 dark:text-emerald-400">Total</div>
+                                    </div>
+                                    <div id="calendarGridBody" class="space-y-2"></div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </section>
 
@@ -336,7 +327,7 @@
         </main>
     </div>
 
-    <!-- REQUESTED: Floating Owner Chat Button & Drawer -->
+    <!-- Floating Owner Chat Button & Drawer -->
     <div class="fixed bottom-6 right-6 z-50">
         <button onclick="toggleOwnerChat()" class="bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition hover:scale-105">
             <i class="fa-solid fa-comments text-xl"></i>
@@ -422,10 +413,19 @@
         let currentYear = 2026;
         const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+        // State for editable criteria list
+        let criteriaList = [
+            { id: 1, text: "Target Level & Liquidity Sweep Defined", checked: false },
+            { id: 2, text: "Defined Stop Loss & Max Risk Verified", checked: false },
+            { id: 3, text: "ECN Spread & Slippage Within Threshold", checked: false },
+            { id: 4, text: "Higher Timeframe Alignment Checked", checked: false }
+        ];
+
         window.onload = function() {
             initEquityChart();
             checkThemePreference();
             renderCalendar();
+            renderCriteriaList();
         };
 
         function toggleTheme() {
@@ -480,36 +480,82 @@
             document.getElementById('calendarMonthTitle').innerText = `${monthsNames[currentMonthIndex]} ${currentYear}`;
             document.getElementById('calendarGridBody').innerHTML = `
                 <div class="grid grid-cols-8 gap-2 mb-2">
-                    <div class="h-24 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-xs text-gray-400">1</span><div class="text-sm font-bold text-emerald-600">+$157.89</div></div>
-                    <div class="h-24 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-xs text-gray-400">2</span><div class="text-sm font-bold text-emerald-600">+$125.28</div></div>
-                    <div class="h-24 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-xs text-gray-400">3</span><div class="text-sm font-bold text-red-500">-$45.20</div></div>
-                    <div class="h-24 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-xs text-gray-400">4</span></div>
-                    <div class="h-24 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-xs text-gray-400">5</span><div class="text-sm font-bold text-emerald-600">+$89.10</div></div>
-                    <div class="h-24 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-xs text-gray-400">6</span></div>
-                    <div class="h-24 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-xs text-gray-400">7</span></div>
-                    <div class="h-24 bg-emerald-50/90 dark:bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 flex flex-col justify-center items-center"><div class="text-sm font-extrabold text-emerald-700">$327.07</div><div class="text-xs font-semibold text-emerald-600">+1.25%</div></div>
+                    <div class="h-20 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-[10px] text-gray-400">1</span><div class="text-xs font-bold text-emerald-600">+$157.89</div></div>
+                    <div class="h-20 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-[10px] text-gray-400">2</span><div class="text-xs font-bold text-emerald-600">+$125.28</div></div>
+                    <div class="h-20 bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-[10px] text-gray-400">3</span><div class="text-xs font-bold text-red-500">-$45.20</div></div>
+                    <div class="h-20 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-[10px] text-gray-400">4</span></div>
+                    <div class="h-20 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-2 flex flex-col justify-between"><span class="text-[10px] text-gray-400">5</span><div class="text-xs font-bold text-emerald-600">+$89.10</div></div>
+                    <div class="h-20 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-[10px] text-gray-400">6</span></div>
+                    <div class="h-20 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2"><span class="text-[10px] text-gray-400">7</span></div>
+                    <div class="h-20 bg-emerald-50/90 dark:bg-emerald-900/40 border-2 border-emerald-500 rounded-xl p-2 flex flex-col justify-center items-center"><div class="text-xs font-extrabold text-emerald-700">$327.07</div><div class="text-[10px] font-semibold text-emerald-600">+1.25%</div></div>
                 </div>
             `;
+        }
+
+        // Render editable criteria items
+        function renderCriteriaList() {
+            const container = document.getElementById('criteriaListContainer');
+            container.innerHTML = '';
+            
+            criteriaList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 rounded-xl border ${item.checked ? 'border-emerald-500 bg-emerald-50/20' : 'border-gray-200 dark:border-slate-700'} shadow-sm transition`;
+                
+                div.innerHTML = `
+                    <div class="flex items-center space-x-2.5 flex-1 cursor-pointer select-none" onclick="toggleCriteriaCheck(${item.id})">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded pointer-events-none">
+                        <span class="text-xs font-bold text-gray-800 dark:text-gray-200 flex-1">${index + 1}. ${item.text}</span>
+                    </div>
+                    <div class="flex items-center space-x-1 pl-2 border-l border-gray-100 dark:border-slate-700">
+                        <button onclick="editCriteria(${item.id})" class="p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Edit Rule"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteCriteria(${item.id})" class="p-1.5 text-gray-400 hover:text-red-500 transition" title="Delete Rule"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleCriteriaCheck(id) {
+            const item = criteriaList.find(c => c.id === id);
+            if (item) {
+                item.checked = !item.checked;
+                renderCriteriaList();
+            }
         }
 
         function addNewCriteria() {
             const input = document.getElementById('newCriteriaInput');
             const val = input.value.trim();
             if (!val) return;
-            const container = document.getElementById('criteriaListContainer');
-            const newLabel = document.createElement('label');
-            newLabel.className = 'flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-amber-300 dark:border-amber-700 cursor-pointer shadow-sm';
-            newLabel.innerHTML = `<input type="checkbox" class="criteria-chk w-4 h-4 text-emerald-600 rounded"><span class="text-xs font-bold text-gray-800 dark:text-gray-200">${val}</span>`;
-            container.appendChild(newLabel);
+            const newId = criteriaList.length > 0 ? Math.max(...criteriaList.map(c => c.id)) + 1 : 1;
+            criteriaList.push({ id: newId, text: val, checked: false });
             input.value = '';
+            renderCriteriaList();
+        }
+
+        function editCriteria(id) {
+            const item = criteriaList.find(c => c.id === id);
+            if (!item) return;
+            const newText = prompt("Edit your trading criteria rule:", item.text);
+            if (newText !== null && newText.trim() !== "") {
+                item.text = newText.trim();
+                renderCriteriaList();
+            }
+        }
+
+        function deleteCriteria(id) {
+            criteriaList = criteriaList.filter(c => c.id !== id);
+            renderCriteriaList();
         }
 
         function verifyExecutionApproval() {
-            const checkboxes = document.querySelectorAll('.criteria-chk');
-            let checkedCount = 0;
-            checkboxes.forEach(chk => { if (chk.checked) checkedCount++; });
-            if (checkedCount < checkboxes.length) {
-                alert('FOMO GUARD ACTIVE: You must verify and check off all system execution criteria before entering a trade!');
+            if (criteriaList.length === 0) {
+                alert('Please add at least one criteria rule before verifying.');
+                return;
+            }
+            const allChecked = criteriaList.every(c => c.checked);
+            if (!allChecked) {
+                alert('FOMO GUARD ACTIVE: You must check off all system execution criteria before entering a trade!');
             } else {
                 alert('All criteria verified! Setup approved for mechanical execution.');
                 openTradeModal();
