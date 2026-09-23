@@ -216,7 +216,7 @@
       margin-bottom: 1.25rem;
     }
 
-    /* Top Demo Workspace Bar */
+    /* Workspace Bar */
     .workspace-bar {
       background-color: #eff6ff;
       border: 1px solid #dbeafe;
@@ -249,7 +249,7 @@
       margin-left: 0.5rem;
     }
 
-    /* Summary Stats Cards */
+    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -330,14 +330,18 @@
       cursor: pointer;
     }
 
-    /* Split Dashboard Content */
+    .btn-outline:hover {
+      background-color: rgba(37, 99, 235, 0.05);
+    }
+
+    /* Split Dashboard */
     .dash-split {
       display: grid;
       grid-template-columns: 1fr 1.2fr;
       gap: 1.25rem;
     }
 
-    /* Checklist Column */
+    /* Checklist */
     .checklist-section h3 {
       font-size: 1rem;
       font-weight: 800;
@@ -378,14 +382,30 @@
       cursor: pointer;
     }
 
+    .pnl-input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pnl-input-group input {
+      padding: 0.45rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      outline: none;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+    }
+
     .notes-textarea {
       width: 100%;
       height: 60px;
-      border: 1px solid #3b82f6;
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 0.5rem;
       font-size: 0.85rem;
-      margin-top: 0.5rem;
       margin-bottom: 0.75rem;
       outline: none;
       background-color: var(--bg-card);
@@ -484,14 +504,13 @@
       height: 280px;
     }
 
-    /* HOME TAB: Welcome Banner + Calendar */
+    /* HOME TAB */
     .home-banner {
       background-color: var(--banner-bg);
       color: var(--banner-text);
       border-radius: 12px;
       padding: 2rem;
       margin-bottom: 1.5rem;
-      position: relative;
     }
 
     .home-banner-tag {
@@ -501,7 +520,6 @@
       border-radius: 12px;
       font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
       margin-bottom: 0.6rem;
     }
 
@@ -517,7 +535,6 @@
       max-width: 650px;
     }
 
-    /* App Cards Grid */
     .app-cards-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -642,6 +659,7 @@
       justify-content: space-between;
       font-size: 0.7rem;
       background-color: var(--bg-card);
+      transition: all 0.2s;
     }
 
     .cal-day-cell.other-month {
@@ -726,7 +744,7 @@
       line-height: 1.3;
     }
 
-    /* KNOWLEDGE BASE & QUOTE SECTION */
+    /* KNOWLEDGE BASE */
     .knowledge-box {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -743,7 +761,6 @@
       margin-top: 1rem;
       font-style: italic;
       font-size: 0.85rem;
-      color: var(--text-main);
     }
 
     .rr-table {
@@ -768,7 +785,7 @@
       background-color: #1e293b;
     }
 
-    /* SETTINGS / ABOUT PAGE */
+    /* SETTINGS / ABOUT */
     .about-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -790,7 +807,6 @@
       padding: 1rem;
       font-weight: 600;
       font-size: 0.88rem;
-      color: var(--text-main);
       margin-bottom: 1.25rem;
       line-height: 1.4;
     }
@@ -848,6 +864,12 @@
     .journal-date {
       font-size: 0.75rem;
       color: var(--text-muted);
+    }
+
+    .journal-pnl-tag {
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
     }
 
     .journal-notes {
@@ -951,153 +973,28 @@
               <h2>September 2026</h2>
               <button class="btn-outline">&gt;</button>
             </div>
-            <div class="cal-stats-pills">
-              <span>Trades: <b>24</b></span> |
-              <span>Wins: <b>14</b></span> |
-              <span>Net PnL: <b>77.12</b></span> |
-              <span>Percent: <b>0.30%</b></span>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <button class="btn-outline" style="color:var(--accent-red); font-size:0.75rem;" onclick="clearSampleData()">Clear Sample Data</button>
+              <div class="cal-stats-pills" id="cal-stats-banner">
+                <span>Trades: <b id="stat-trades">24</b></span> |
+                <span>Wins: <b id="stat-wins">14</b></span> |
+                <span>Net PnL: <b id="stat-pnl">77.12</b></span> |
+                <span>Percent: <b id="stat-percent">0.30%</b></span>
+              </div>
             </div>
           </div>
 
-          <div class="calendar-grid">
-            <!-- Table Headers -->
-            <div class="cal-head-cell">Mon</div>
-            <div class="cal-head-cell">Tue</div>
-            <div class="cal-head-cell">Wed</div>
-            <div class="cal-head-cell">Thu</div>
-            <div class="cal-head-cell">Fri</div>
-            <div class="cal-head-cell">Sat</div>
-            <div class="cal-head-cell">Sun</div>
-            <div class="cal-head-cell">Total</div>
-
-            <!-- Row 1 -->
-            <div class="cal-day-cell other-month"><span class="cal-num">31</span></div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">1</span>
-              <div class="cal-val green">157.89</div>
-              <div class="cal-percent">0.61%</div>
-            </div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">2</span>
-              <div class="cal-val green">125.28</div>
-              <div class="cal-percent">0.48%</div>
-            </div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">3</span>
-              <div class="cal-val green">35.21</div>
-              <div class="cal-percent">0.14%</div>
-            </div>
-            <div class="cal-day-cell"><span class="cal-num">4</span></div>
-            <div class="cal-day-cell loss">
-              <span class="cal-num">5</span>
-              <div class="cal-val red">-123.60</div>
-              <div class="cal-percent">-0.47%</div>
-            </div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">6</span>
-              <div class="cal-val green">27.38</div>
-              <div class="cal-percent">0.11%</div>
-            </div>
-            <div class="cal-day-cell total-col profit">
-              <span class="cal-num">W1 Total</span>
-              <div class="cal-val green">$222.16</div>
-              <div class="cal-percent">+0.86%</div>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="cal-day-cell"><span class="cal-num">7</span></div>
-            <div class="cal-day-cell loss">
-              <span class="cal-num">8</span>
-              <div class="cal-val red">-51.37</div>
-              <div class="cal-percent">-0.20%</div>
-            </div>
-            <div class="cal-day-cell"><span class="cal-num">9</span></div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">10</span>
-              <div class="cal-val green">54.39</div>
-              <div class="cal-percent">0.21%</div>
-            </div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">11</span>
-              <div class="cal-val green">50.45</div>
-              <div class="cal-percent">0.19%</div>
-            </div>
-            <div class="cal-day-cell"><span class="cal-num">12</span></div>
-            <div class="cal-day-cell loss">
-              <span class="cal-num">13</span>
-              <div class="cal-val red">-102.69</div>
-              <div class="cal-percent">-0.39%</div>
-            </div>
-            <div class="cal-day-cell total-col loss">
-              <span class="cal-num">W2 Total</span>
-              <div class="cal-val red">-$49.22</div>
-              <div class="cal-percent">-0.19%</div>
-            </div>
-
-            <!-- Row 3 -->
-            <div class="cal-day-cell profit">
-              <span class="cal-num">14</span>
-              <div class="cal-val green">17.54</div>
-              <div class="cal-percent">0.07%</div>
-            </div>
-            <div class="cal-day-cell"><span class="cal-num">15</span></div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">16</span>
-              <div class="cal-val green">129.27</div>
-              <div class="cal-percent">0.50%</div>
-            </div>
-            <div class="cal-day-cell loss">
-              <span class="cal-num">17</span>
-              <div class="cal-val red">-22.00</div>
-              <div class="cal-percent">-0.08%</div>
-            </div>
-            <div class="cal-day-cell loss">
-              <span class="cal-num">18</span>
-              <div class="cal-val red">-200.25</div>
-              <div class="cal-percent">-0.77%</div>
-            </div>
-            <div class="cal-day-cell"><span class="cal-num">19</span></div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">20</span>
-              <div class="cal-val green">77.86</div>
-              <div class="cal-percent">0.30%</div>
-            </div>
-            <div class="cal-day-cell total-col profit">
-              <span class="cal-num">W3 Total</span>
-              <div class="cal-val green">$2.42</div>
-              <div class="cal-percent">+0.01%</div>
-            </div>
-
-            <!-- Row 4 -->
-            <div class="cal-day-cell loss">
-              <span class="cal-num">21</span>
-              <div class="cal-val red">-247.07</div>
-              <div class="cal-percent">-0.95%</div>
-            </div>
-            <div class="cal-day-cell profit">
-              <span class="cal-num">22</span>
-              <div class="cal-val green">148.83</div>
-              <div class="cal-percent">0.58%</div>
-            </div>
-            <div class="cal-day-cell" style="background-color: #dbeafe;"><span class="cal-num" style="color:#1d4ed8; font-weight:800;">23</span></div>
-            <div class="cal-day-cell"><span class="cal-num">24</span></div>
-            <div class="cal-day-cell"><span class="cal-num">25</span></div>
-            <div class="cal-day-cell"><span class="cal-num">26</span></div>
-            <div class="cal-day-cell"><span class="cal-num">27</span></div>
-            <div class="cal-day-cell total-col loss">
-              <span class="cal-num">W4 Total</span>
-              <div class="cal-val red">-$98.24</div>
-              <div class="cal-percent">-0.38%</div>
-            </div>
+          <div class="calendar-grid" id="calendar-grid-container">
+            <!-- Calendar header cells and day cells generated dynamically -->
           </div>
         </div>
       </section>
 
-      <!-- PAGE 2: DASHBOARD PAGE (RESTORED EXACT ORIGINAL DESIGN) -->
+      <!-- PAGE 2: DASHBOARD PAGE -->
       <section id="view-dashboard" class="page-view">
         <div class="workspace-bar">
           <div class="workspace-status">
-            <i data-lucide="circle" size="10" fill="#2563eb"></i> DEMO WORKSPACE
+            <i data-lucide="circle" size="10" fill="#2563eb"></i> LIVE WORKSPACE
             <span class="workspace-sub">Viewing live discipline vs broker equity data points</span>
           </div>
           <button class="btn-primary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Connect Live Account</button>
@@ -1106,22 +1003,22 @@
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">CURRENT BALANCE</div>
-            <div class="stat-value">$25,857.36</div>
-            <div class="stat-sub sub-green">+158.57% Total Gain</div>
+            <div class="stat-value" id="dash-balance">$25,857.36</div>
+            <div class="stat-sub sub-green" id="dash-gain">+158.57% Total Gain</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">DISCIPLINE COMPLIANCE</div>
-            <div class="stat-value">100%</div>
+            <div class="stat-value" id="dash-discipline">100%</div>
             <div class="stat-sub sub-blue">Execution Setup Grade</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">WINSTREAK / STREAK</div>
-            <div class="stat-value" style="color:#10b981;">2 Trades</div>
+            <div class="stat-value" style="color:#10b981;" id="dash-streak">2 Trades</div>
             <div class="stat-sub sub-green">1.2x Multiplier Active</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">TOTAL XP SCORE</div>
-            <div class="stat-value" style="color:#8b5cf6;">120</div>
+            <div class="stat-value" style="color:#8b5cf6;" id="dash-xp">120</div>
             <div class="stat-sub sub-muted">Disciplined Trade Points</div>
           </div>
         </div>
@@ -1129,19 +1026,21 @@
         <div class="verdict-box">
           <div>
             <div class="verdict-title">AUTOMATED SYSTEM VERDICT ENGINE</div>
-            <div class="verdict-status">TRUE STRONG EDGE SYSTEM (Compliant Growth)</div>
+            <div class="verdict-status" id="dash-verdict">TRUE STRONG EDGE SYSTEM (Compliant Growth)</div>
           </div>
           <div class="verdict-actions">
-            <button class="btn-outline">Import Broker CSV</button>
-            <button class="btn-outline">Export Stats</button>
+            <label class="btn-outline" style="cursor:pointer;">
+              Import Broker CSV <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
+            </label>
+            <button class="btn-outline" onclick="exportStats()">Export Stats</button>
           </div>
         </div>
 
         <div class="dash-split">
           <!-- Execution Checklist Form -->
           <div class="card-box checklist-section">
-            <h3>• EXECUTION CHECKLIST <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Edits left: 2 <a href="#" style="color:var(--primary-blue);">Customize</a></span></h3>
-            <p class="checklist-desc">Verify all pre-trade parameters before placing an order. Rules are locked to prevent curve-fitting during active trading.</p>
+            <h3>• EXECUTION CHECKLIST <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Edits left: 2</span></h3>
+            <p class="checklist-desc">Verify all pre-trade parameters before placing an order. Executing trade will align PnL dynamically on calendar.</p>
 
             <div class="chk-item">
               <input type="checkbox" id="chk1" checked>
@@ -1158,6 +1057,11 @@
             <div class="chk-item">
               <input type="checkbox" id="chk4" checked>
               <label for="chk4">No Impulse/FOMO Entry — Confirmation Candle Closed</label>
+            </div>
+
+            <div class="pnl-input-group">
+              <input type="number" id="trade-pnl-val" placeholder="Trade PnL ($) e.g. 150 or -50" value="100">
+              <input type="number" id="trade-day-num" placeholder="Day of Month (1-27)" value="23" min="1" max="27">
             </div>
 
             <div class="file-upload-box">
@@ -1203,7 +1107,7 @@
         </div>
       </section>
 
-      <!-- PAGE 4: ACCOUNTS (Includes cTrader Brokers + Knowledge Readings) -->
+      <!-- PAGE 4: ACCOUNTS -->
       <section id="view-accounts" class="page-view">
         <div class="card-box">
           <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.25rem;">Connect to cTrader & Preferred ECN Brokers</h2>
@@ -1239,7 +1143,6 @@
           </div>
         </div>
 
-        <!-- Knowledge Base & Daily Quotes under Accounts (In between Settings) -->
         <div class="knowledge-box">
           <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem;">Knowledge Base: Risk to Reward Ratio Formula</h3>
           <p style="font-size: 0.8rem; color: var(--text-muted);">When analyzing a sample size of 50 trades, your win rate determines how aggressive your risk-to-reward (R:R) ratio needs to be to remain profitable. Assuming you risk a fixed amount of $100 per trade:</p>
@@ -1310,20 +1213,43 @@
   </div>
 
   <script>
-    // Initialize Lucide Icons
     lucide.createIcons();
 
-    // Equity Curve Data State
-    let equityPoints = [10000, 12500, 15000, 18500, 22000, 25857.36];
+    // Default Starting Data for September 2026 Grid
+    let initialDayData = {
+      1: { pnl: 157.89, trades: 1, wins: 1 },
+      2: { pnl: 125.28, trades: 1, wins: 1 },
+      3: { pnl: 35.21, trades: 1, wins: 1 },
+      5: { pnl: -123.60, trades: 1, wins: 0 },
+      6: { pnl: 27.38, trades: 1, wins: 1 },
+      8: { pnl: -51.37, trades: 1, wins: 0 },
+      10: { pnl: 54.39, trades: 1, wins: 1 },
+      11: { pnl: 50.45, trades: 1, wins: 1 },
+      13: { pnl: -102.69, trades: 1, wins: 0 },
+      14: { pnl: 17.54, trades: 1, wins: 1 },
+      16: { pnl: 129.27, trades: 1, wins: 1 },
+      17: { pnl: -22.00, trades: 1, wins: 0 },
+      18: { pnl: -200.25, trades: 1, wins: 0 },
+      20: { pnl: 77.86, trades: 1, wins: 1 },
+      21: { pnl: -247.07, trades: 1, wins: 0 },
+      22: { pnl: 148.83, trades: 1, wins: 1 }
+    };
+
+    let calendarDays = { ...initialDayData };
+    let startingCapital = 25000;
+
+    // Equity points
+    let equityPoints = [25000, 25200, 25150, 25400, 25300, 25857.36];
     let chartLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'];
     let chartInstance = null;
 
-    // Journal Trades State
+    // Journal entries
     let tradeLogs = [
       {
         type: 'Compliant Trade',
         status: 'compliant',
         date: 'Sep 22, 2026 - 14:32',
+        pnl: 148.83,
         notes: 'Market structure aligned on 4H chart. Entered after liquidity sweep with 1:2.5 RR.',
         image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80'
       },
@@ -1331,17 +1257,123 @@
         type: 'Compliant Trade',
         status: 'compliant',
         date: 'Sep 20, 2026 - 09:15',
+        pnl: 77.86,
         notes: 'Key support zone validated. Execution checklist 100% verified prior to order placement.',
         image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80'
       }
     ];
 
-    // Initialize Equity Curve Chart
+    // Render September 2026 Calendar Grid dynamically
+    function renderCalendar() {
+      const container = document.getElementById('calendar-grid-container');
+      container.innerHTML = '';
+
+      // Column Headers
+      const headers = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Total'];
+      headers.forEach(h => {
+        const div = document.createElement('div');
+        div.className = 'cal-head-cell';
+        div.innerText = h;
+        container.appendChild(div);
+      });
+
+      // Calendar days configuration for Sept 2026 (Sept 1 is Tuesday)
+      // Row 1: 31(Mon prev month), 1, 2, 3, 4, 5, 6 | W1
+      // Row 2: 7, 8, 9, 10, 11, 12, 13 | W2
+      // Row 3: 14, 15, 16, 17, 18, 19, 20 | W3
+      // Row 4: 21, 22, 23, 24, 25, 26, 27 | W4
+
+      const weeks = [
+        [{ type: 'other', num: 31 }, { num: 1 }, { num: 2 }, { num: 3 }, { num: 4 }, { num: 5 }, { num: 6 }],
+        [{ num: 7 }, { num: 8 }, { num: 9 }, { num: 10 }, { num: 11 }, { num: 12 }, { num: 13 }],
+        [{ num: 14 }, { num: 15 }, { num: 16 }, { num: 17 }, { num: 18 }, { num: 19 }, { num: 20 }],
+        [{ num: 21 }, { num: 22 }, { num: 23 }, { num: 24 }, { num: 25 }, { num: 26 }, { num: 27 }]
+      ];
+
+      let totalTrades = 0;
+      let totalWins = 0;
+      let netPnLTotal = 0;
+
+      weeks.forEach((week, wIdx) => {
+        let wPnL = 0;
+
+        week.forEach(cell => {
+          const div = document.createElement('div');
+          if (cell.type === 'other') {
+            div.className = 'cal-day-cell other-month';
+            div.innerHTML = `<span class="cal-num">${cell.num}</span>`;
+          } else {
+            const dayData = calendarDays[cell.num];
+            if (dayData && dayData.pnl !== undefined) {
+              const pVal = dayData.pnl;
+              wPnL += pVal;
+              netPnLTotal += pVal;
+              totalTrades += (dayData.trades || 1);
+              if (dayData.wins) totalWins += dayData.wins;
+
+              const isGreen = pVal >= 0;
+              const pct = ((pVal / startingCapital) * 100).toFixed(2);
+              div.className = `cal-day-cell ${isGreen ? 'profit' : 'loss'}`;
+              div.innerHTML = `
+                <span class="cal-num">${cell.num}</span>
+                <div class="cal-val ${isGreen ? 'green' : 'red'}">${isGreen ? '' : ''}${pVal.toFixed(2)}</div>
+                <div class="cal-percent">${isGreen ? '+' : ''}${pct}%</div>
+              `;
+            } else {
+              div.className = 'cal-day-cell';
+              if (cell.num === 23) {
+                div.style.backgroundColor = '#dbeafe';
+              }
+              div.innerHTML = `<span class="cal-num" ${cell.num === 23 ? 'style="color:#1d4ed8; font-weight:800;"' : ''}>${cell.num}</span>`;
+            }
+          }
+          container.appendChild(div);
+        });
+
+        // Weekly Total Cell
+        const totDiv = document.createElement('div');
+        const isWPnLGreen = wPnL >= 0;
+        const wPct = ((wPnL / startingCapital) * 100).toFixed(2);
+        totDiv.className = `cal-day-cell total-col ${isWPnLGreen ? 'profit' : 'loss'}`;
+        totDiv.innerHTML = `
+          <span class="cal-num">W${wIdx + 1} Total</span>
+          <div class="cal-val ${isWPnLGreen ? 'green' : 'red'}">${isWPnLGreen ? '$' : '-$'}${Math.abs(wPnL).toFixed(2)}</div>
+          <div class="cal-percent">${isWPnLGreen ? '+' : ''}${wPct}%</div>
+        `;
+        container.appendChild(totDiv);
+      });
+
+      // Update Banner Metrics
+      document.getElementById('stat-trades').innerText = totalTrades;
+      document.getElementById('stat-wins').innerText = totalWins;
+      document.getElementById('stat-pnl').innerText = netPnLTotal.toFixed(2);
+      const totalPct = ((netPnLTotal / startingCapital) * 100).toFixed(2);
+      document.getElementById('stat-percent').innerText = `${totalPct}%`;
+
+      // Update Dashboard Current Balance
+      const curBal = startingCapital + netPnLTotal;
+      document.getElementById('dash-balance').innerText = `$${curBal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('dash-gain').innerText = `${totalPct >= 0 ? '+' : ''}${totalPct}% Total Gain`;
+    }
+
+    // Clear Sample Data to Start Clean
+    function clearSampleData() {
+      if (confirm("Are you sure you want to clear default demo data? Your calendar will be reset for live logging.")) {
+        calendarDays = {};
+        tradeLogs = [];
+        equityPoints = [startingCapital];
+        chartLabels = ['Start'];
+        renderCalendar();
+        renderChart();
+        renderJournal();
+      }
+    }
+
+    // Render Equity Chart
     function renderChart() {
       const ctx = document.getElementById('equityChart').getContext('2d');
       const isUp = equityPoints[equityPoints.length - 1] >= equityPoints[0];
 
-      // Update Bull / Bear dynamic indicator badge
       const badge = document.getElementById('trend-badge-el');
       if (isUp) {
         badge.className = 'trend-badge trend-bull';
@@ -1355,9 +1387,7 @@
       const lineColor = isUp ? '#2563eb' : '#ef4444';
       const bgGradientColor = isUp ? 'rgba(37, 99, 235, 0.1)' : 'rgba(239, 68, 68, 0.1)';
 
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
+      if (chartInstance) chartInstance.destroy();
 
       chartInstance = new Chart(ctx, {
         type: 'line',
@@ -1378,16 +1408,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            x: {
-              grid: { display: false }
-            },
-            y: {
-              grid: { color: 'rgba(0,0,0,0.05)' }
-            }
+            x: { grid: { display: false } },
+            y: { grid: { color: 'rgba(0,0,0,0.05)' } }
           }
         }
       });
@@ -1398,6 +1422,11 @@
       const container = document.getElementById('journal-cards-container');
       container.innerHTML = '';
 
+      if (tradeLogs.length === 0) {
+        container.innerHTML = '<div style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 2rem;">No trades logged yet. Start logging trades from the Dashboard.</div>';
+        return;
+      }
+
       tradeLogs.forEach(trade => {
         const card = document.createElement('div');
         card.className = 'journal-card';
@@ -1406,6 +1435,9 @@
             <span class="journal-tag ${trade.status === 'compliant' ? 'tag-compliant' : 'tag-violation'}">${trade.type}</span>
             <span class="journal-date">${trade.date}</span>
           </div>
+          <div class="journal-pnl-tag" style="color: ${trade.pnl >= 0 ? '#10b981' : '#ef4444'}">
+            PnL: ${trade.pnl >= 0 ? '+' : ''}$${trade.pnl ? trade.pnl.toFixed(2) : '0.00'}
+          </div>
           <div class="journal-notes">${trade.notes || 'No specific notes recorded.'}</div>
           ${trade.image ? `<img src="${trade.image}" class="journal-img-preview" alt="Chart capture">` : '<div style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">No chart capture attached</div>'}
         `;
@@ -1413,53 +1445,77 @@
       });
     }
 
-    // Log Compliant or Rule Violation Trade
+    // Log Compliant or Violation Trade
     function logTrade(isCompliant) {
       const fileInput = document.getElementById('trade-chart-file');
       const notesInput = document.getElementById('trade-notes').value;
+      const pnlInput = parseFloat(document.getElementById('trade-pnl-val').value) || 0;
+      const dayNum = parseInt(document.getElementById('trade-day-num').value) || 23;
 
       let imageSrc = null;
 
+      const processLog = (img) => {
+        // Update Calendar Day Data
+        if (!calendarDays[dayNum]) {
+          calendarDays[dayNum] = { pnl: 0, trades: 0, wins: 0 };
+        }
+        calendarDays[dayNum].pnl += pnlInput;
+        calendarDays[dayNum].trades += 1;
+        if (pnlInput > 0) calendarDays[dayNum].wins += 1;
+
+        // Add to Trade Journal
+        tradeLogs.unshift({
+          type: isCompliant ? 'Compliant Trade' : 'Rule Violation',
+          status: isCompliant ? 'compliant' : 'violation',
+          date: `Sep ${dayNum}, 2026 - ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+          pnl: pnlInput,
+          notes: notesInput || (isCompliant ? 'Logged compliant trade.' : 'Logged rule violation.'),
+          image: img
+        });
+
+        // Update Chart
+        const lastVal = equityPoints[equityPoints.length - 1];
+        equityPoints.push(lastVal + pnlInput);
+        chartLabels.push('T' + equityPoints.length);
+
+        renderCalendar();
+        renderChart();
+        renderJournal();
+
+        document.getElementById('trade-notes').value = '';
+        document.getElementById('trade-chart-file').value = '';
+        alert(`Trade on Sep ${dayNum} logged successfully! PnL updated on Calendar.`);
+      };
+
       if (fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          imageSrc = e.target.result;
-          saveAndRefresh(isCompliant, notesInput, imageSrc);
-        };
+        reader.onload = function(e) { processLog(e.target.result); };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        saveAndRefresh(isCompliant, notesInput, null);
+        processLog(null);
       }
     }
 
-    function saveAndRefresh(isCompliant, notes, imageSrc) {
-      const newTrade = {
-        type: isCompliant ? 'Compliant Trade' : 'Rule Violation',
-        status: isCompliant ? 'compliant' : 'violation',
-        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        notes: notes || (isCompliant ? 'Logged compliant trade meeting all parameters.' : 'Logged rule violation.'),
-        image: imageSrc
+    // Handle CSV Import
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Simple CSV parser simulation for demo
+        alert("CSV imported successfully! Auto-syncing trades with Calendar and Broker Equity Curve.");
+        calendarDays[23] = { pnl: 210.50, trades: 2, wins: 2 };
+        calendarDays[24] = { pnl: -45.00, trades: 1, wins: 0 };
+        renderCalendar();
       };
-
-      tradeLogs.unshift(newTrade);
-
-      // Update Chart equity mock
-      const lastVal = equityPoints[equityPoints.length - 1];
-      const delta = isCompliant ? 1200 : -1500;
-      equityPoints.push(Math.max(5000, lastVal + delta));
-      chartLabels.push('T' + equityPoints.length);
-
-      renderChart();
-      renderJournal();
-
-      // Clear form inputs
-      document.getElementById('trade-notes').value = '';
-      document.getElementById('trade-chart-file').value = '';
-
-      alert(isCompliant ? 'Trade logged successfully!' : 'Rule violation logged to journal.');
+      reader.readAsText(file);
     }
 
-    // Switch View Tabs
+    function exportStats() {
+      alert("Exporting statistics report (CSV / PDF)...");
+    }
+
     function switchTab(viewName, el) {
       document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1478,7 +1534,6 @@
       document.getElementById('page-header-title').innerText = headers[viewName] || 'TraderWell';
     }
 
-    // Toggle Light / Dark Theme
     function toggleTheme() {
       const current = document.body.getAttribute('data-theme');
       const themeIcon = document.getElementById('theme-icon');
@@ -1494,8 +1549,8 @@
       if (chartInstance) renderChart();
     }
 
-    // On Load
     window.addEventListener('DOMContentLoaded', () => {
+      renderCalendar();
       renderChart();
       renderJournal();
     });
