@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TraderWell - Trading Journal & Analytics</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,20 +11,13 @@
             theme: {
                 extend: {
                     colors: {
-                        slate: {
-                            850: '#131e32',
-                            900: '#0f172a'
-                        }
+                        slate: { 850: '#131e32', 900: '#0f172a' }
                     }
                 }
             }
         }
     </script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans antialiased">
@@ -66,7 +58,6 @@
 
     <!-- MAIN APP INTERFACE -->
     <div id="appInterface" class="hidden min-h-screen flex flex-col">
-        <!-- Navigation Header -->
         <header class="border-b border-slate-800 bg-slate-850/50 backdrop-blur-md sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -85,9 +76,7 @@
             </div>
         </header>
 
-        <!-- Main Dashboard Content -->
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full space-y-8">
-            <!-- Metrics Bar -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="p-5 rounded-2xl bg-slate-850 border border-slate-800">
                     <div class="text-xs font-semibold text-slate-400 mb-1">Total PnL</div>
@@ -107,9 +96,7 @@
                 </div>
             </div>
 
-            <!-- Equity Curve Chart & Log Entry Form -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Chart (2 cols on desktop) -->
                 <div class="lg:col-span-2 bg-slate-850 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
                     <h3 class="text-sm font-semibold text-slate-300 mb-4">Cumulative Performance</h3>
                     <div class="h-64 sm:h-80 w-full">
@@ -117,7 +104,6 @@
                     </div>
                 </div>
 
-                <!-- Add Trade Form (1 col) -->
                 <div class="bg-slate-850 border border-slate-800 rounded-2xl p-6">
                     <h3 class="text-sm font-semibold text-slate-300 mb-4">Log New Trade</h3>
                     <form id="tradeForm" onsubmit="handleTradeSubmit(event)" class="space-y-4">
@@ -140,7 +126,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-slate-400 mb-1">Trade Notes / Strategy</label>
-                            <textarea id="tradeNotes" rows="3" placeholder="Setup details, emotional state, management..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                            <textarea id="tradeNotes" rows="3" placeholder="Setup details, emotional state..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
                         </div>
                         <button type="submit" id="saveTradeBtn" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-sm transition">
                             Record Trade
@@ -149,7 +135,6 @@
                 </div>
             </div>
 
-            <!-- Trade Log Table -->
             <div class="bg-slate-850 border border-slate-800 rounded-2xl overflow-hidden">
                 <div class="p-6 border-b border-slate-800">
                     <h3 class="text-sm font-semibold text-slate-300">Recent Trades</h3>
@@ -165,53 +150,31 @@
                                 <th class="p-4">Notes</th>
                             </tr>
                         </thead>
-                        <tbody id="tradesTableBody" class="divide-y divide-slate-800 text-sm text-slate-300">
-                            <!-- Dynamic Table Rows populated via JS -->
-                        </tbody>
+                        <tbody id="tradesTableBody" class="divide-y divide-slate-800 text-sm text-slate-300"></tbody>
                     </table>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Application Script -->
     <script>
-        // SUPABASE CONFIGURATION - Replace with your project details
-        const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let currentUser = null;
         let isRegistering = false;
         let chartInstance = null;
 
-        // Initialize Icons
         lucide.createIcons();
 
-        // Check authentication session on load
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             initChart();
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
+            const savedUser = localStorage.getItem('tw_active_user');
+            if (savedUser) {
+                currentUser = savedUser;
                 showAppUI();
             } else {
                 showAuthUI();
             }
-
-            // Listen for Auth state changes
-            supabase.auth.onAuthStateChange((_event, session) => {
-                if (session) {
-                    currentUser = session.user;
-                    showAppUI();
-                } else {
-                    currentUser = null;
-                    showAuthUI();
-                }
-            });
         });
 
-        // Toggle Auth View
         function toggleAuthMode() {
             isRegistering = !isRegistering;
             document.getElementById('authTitle').innerText = isRegistering ? 'Create Your Account' : 'Sign In to Your Account';
@@ -221,30 +184,37 @@
             document.getElementById('authToggleBtn').innerText = isRegistering ? 'Sign In' : 'Register';
         }
 
-        // Handle Login & Registration
-        async function handleAuth(e) {
+        function handleAuth(e) {
             e.preventDefault();
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
 
+            const users = JSON.parse(localStorage.getItem('tw_users') || '{}');
+
             if (isRegistering) {
-                const { data, error } = await supabase.auth.signUp({ email, password });
-                if (error) {
-                    alert(error.message);
-                } else {
-                    alert('Registration successful! Please check your email for confirmation.');
+                if (users[email]) {
+                    alert('An account with this email already exists.');
+                    return;
                 }
+                users[email] = password;
+                localStorage.setItem('tw_users', JSON.stringify(users));
+                alert('Account created successfully! Logging you in...');
             } else {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) {
-                    alert(error.message);
+                if (!users[email] || users[email] !== password) {
+                    alert('Invalid email or password.');
+                    return;
                 }
             }
+
+            currentUser = email;
+            localStorage.setItem('tw_active_user', email);
+            showAppUI();
         }
 
-        // Handle Logout
-        async function handleLogout() {
-            await supabase.auth.signOut();
+        function handleLogout() {
+            localStorage.removeItem('tw_active_user');
+            currentUser = null;
+            showAuthUI();
         }
 
         function showAuthUI() {
@@ -255,64 +225,43 @@
         function showAppUI() {
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('appInterface').classList.remove('hidden');
-            document.getElementById('userDisplayEmail').innerText = currentUser.email;
-            fetchTrades();
+            document.getElementById('userDisplayEmail').innerText = currentUser;
+            loadTrades();
         }
 
-        // Fetch User Trades from Supabase Database
-        async function fetchTrades() {
-            if (!currentUser) return;
-
-            const { data: trades, error } = await supabase
-                .from('trades')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('Error fetching trades:', error);
-                return;
-            }
-
-            renderDashboard(trades || []);
+        function getTradesKey() {
+            return `tw_trades_${currentUser}`;
         }
 
-        // Record New Trade to Supabase Database
-        async function handleTradeSubmit(e) {
+        function loadTrades() {
+            const trades = JSON.parse(localStorage.getItem(getTradesKey()) || '[]');
+            renderDashboard(trades);
+        }
+
+        function handleTradeSubmit(e) {
             e.preventDefault();
-            if (!currentUser) return;
-
-            const saveBtn = document.getElementById('saveTradeBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerText = 'Saving...';
-
             const symbol = document.getElementById('tradeSymbol').value;
             const direction = document.getElementById('tradeDirection').value;
             const pnl = parseFloat(document.getElementById('tradePnL').value);
             const notes = document.getElementById('tradeNotes').value;
 
-            const { error } = await supabase.from('trades').insert([
-                {
-                    user_id: currentUser.id,
-                    symbol: symbol.toUpperCase(),
-                    direction,
-                    pnl,
-                    notes
-                }
-            ]);
+            const newTrade = {
+                id: Date.now(),
+                symbol: symbol.toUpperCase(),
+                direction,
+                pnl,
+                notes,
+                created_at: new Date().toISOString()
+            };
 
-            saveBtn.disabled = false;
-            saveBtn.innerText = 'Record Trade';
+            const trades = JSON.parse(localStorage.getItem(getTradesKey()) || '[]');
+            trades.unshift(newTrade);
+            localStorage.setItem(getTradesKey(), JSON.stringify(trades));
 
-            if (error) {
-                alert('Error logging trade: ' + error.message);
-            } else {
-                document.getElementById('tradeForm').reset();
-                fetchTrades();
-            }
+            document.getElementById('tradeForm').reset();
+            loadTrades();
         }
 
-        // Update Dashboard Metrics, Table, and Chart
         function renderDashboard(trades) {
             const tableBody = document.getElementById('tradesTableBody');
             tableBody.innerHTML = '';
@@ -324,15 +273,10 @@
                 return;
             }
 
-            let totalPnL = 0;
-            let winCount = 0;
-            let grossProfit = 0;
-            let grossLoss = 0;
-
+            let totalPnL = 0, winCount = 0, grossProfit = 0, grossLoss = 0;
             const cumulativePnL = [];
             const labels = [];
 
-            // Chronological calculation for equity curve
             const sortedTrades = [...trades].reverse();
             let runningPnL = 0;
 
@@ -346,12 +290,8 @@
                 const pnl = parseFloat(trade.pnl);
                 totalPnL += pnl;
 
-                if (pnl > 0) {
-                    winCount++;
-                    grossProfit += pnl;
-                } else if (pnl < 0) {
-                    grossLoss += Math.abs(pnl);
-                }
+                if (pnl > 0) { winCount++; grossProfit += pnl; } 
+                else if (pnl < 0) { grossLoss += Math.abs(pnl); }
 
                 const pnlClass = pnl >= 0 ? 'text-emerald-400' : 'text-rose-400';
                 const dateStr = new Date(trade.created_at).toLocaleDateString();
@@ -379,13 +319,11 @@
             const pnlElem = document.getElementById('metricTotalPnL');
             pnlElem.innerText = `$${pnl.toFixed(2)}`;
             pnlElem.className = `text-2xl font-bold ${pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
-            
             document.getElementById('metricWinRate').innerText = `${winRate}%`;
             document.getElementById('metricTotalTrades').innerText = count;
             document.getElementById('metricProfitFactor').innerText = pf;
         }
 
-        // Initialize Chart.js Equity Curve
         function initChart() {
             const ctx = document.getElementById('pnlChart').getContext('2d');
             chartInstance = new Chart(ctx, {
@@ -405,18 +343,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#94a3b8' }
-                        },
-                        y: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#94a3b8' }
-                        }
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } }
                     }
                 }
             });
