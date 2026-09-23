@@ -135,7 +135,7 @@
     .page-view.active { display: block; }
 
     /* Grid Layouts */
-    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
     @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
     /* Cards Styling */
@@ -145,8 +145,40 @@
       border-radius: 12px;
       padding: 1.5rem;
       box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
     }
     .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; }
+
+    /* Notice Banner */
+    .notice-banner {
+      background-color: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      line-height: 1.4;
+    }
+
+    /* Mindset Box */
+    .quote-box {
+      background: rgba(16, 185, 129, 0.05);
+      border-left: 4px solid var(--green-border);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1rem;
+    }
+    .quote-text { font-style: italic; font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.3rem; }
+    .quote-author { font-size: 0.75rem; font-weight: 700; color: var(--green-text); text-transform: uppercase; }
+
+    .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .concept-card { background: var(--bg-main); border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 8px; }
+    .concept-card h4 { font-size: 0.85rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.4rem; }
+    .concept-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.35; }
 
     /* Checklist Section */
     .checklist-group { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
@@ -159,10 +191,17 @@
       border-radius: 8px;
       border: 1px solid var(--border-color);
       cursor: pointer;
-      user-select: none;
     }
     .checklist-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-    .checklist-item label { font-size: 0.9rem; font-weight: 500; cursor: pointer; flex: 1; }
+    .checklist-item input[type="text"] {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .checklist-item input[type="text"]:focus { outline: none; }
 
     /* Form Inputs */
     .form-group { margin-bottom: 1rem; }
@@ -212,7 +251,6 @@
     .trend-bear { background-color: var(--red-bg); color: var(--red-text); border: 1px solid var(--red-border); }
 
     /* Calendar Grid */
-    .calendar-card { margin-top: 1.5rem; }
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -293,7 +331,7 @@
       <li class="nav-item" onclick="switchTab('accounts', this)"><i data-lucide="link"></i> Broker Connect</li>
     </ul>
     <div class="sidebar-footer">
-      <button class="btn-support" onclick="openSupportModal()"><i data-lucide="mail"></i> Support / Message</button>
+      <button class="btn-support" onclick="openSupportModal()"><i data-lucide="mail"></i> Message / Support</button>
     </div>
   </aside>
 
@@ -312,35 +350,70 @@
       
       <!-- DASHBOARD PAGE VIEW -->
       <section id="view-dashboard" class="page-view active">
+        
+        <!-- TRADING MINDSET & EDGE CONCEPT CARD -->
+        <div class="card">
+          <div class="card-title">
+            <span><i data-lucide="brain"></i> Probabilistic Trading Mindset & System Edge</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Trading in the Zone Framework</span>
+          </div>
+
+          <div class="quote-box">
+            <div class="quote-text">"When you truly execute trades as a simple game of probabilities, there is no fear, no hesitation, and no emotional reaction to losses."</div>
+            <div class="quote-author">— Mark Douglas, Trading in the Zone</div>
+          </div>
+
+          <div class="concept-grid">
+            <div class="concept-card">
+              <h4><i data-lucide="pie-chart"></i> Sample Size Thinking</h4>
+              <p>Never evaluate your strategy over 1 to 5 trades. True statistical edge only reveals itself over a distribution of 20 to 100 trades.</p>
+            </div>
+            <div class="concept-card">
+              <h4><i data-lucide="scale"></i> Risk-to-Reward Math</h4>
+              <p>With a minimum 1:2 Risk-to-Reward ratio, you can lose 60% of your trades and still remain consistently profitable over time.</p>
+            </div>
+            <div class="concept-card">
+              <h4><i data-lucide="shield-alert"></i> Zero Emotional Interference</h4>
+              <p>Accept risk prior to order entry. A loss is merely a cost of doing business, not an indication of system failure.</p>
+            </div>
+          </div>
+        </div>
+
         <div class="dashboard-grid">
           
           <!-- Execution Checklist Form -->
-          <div class="card">
+          <div class="card" style="margin-bottom:0;">
             <div class="card-title">
               <span><i data-lucide="check-square"></i> Execution Checklist</span>
-              <span style="font-size:0.75rem; color:var(--text-muted);">Strict Protocol Engine</span>
+              <button id="edit-rules-btn" class="theme-toggle-btn" onclick="toggleRuleEdit()">
+                <i data-lucide="edit-3"></i> Customize Rules (<span id="edit-count-num">2</span> Edits Left)
+              </button>
             </div>
             
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
-              Verify all pre-trade parameters. All mandatory items must be verified before logging an entry.
-            </p>
+            <!-- Clarification Notice Banner -->
+            <div class="notice-banner">
+              <i data-lucide="lock" style="color:var(--accent-blue); flex-shrink:0;"></i>
+              <div>
+                <strong>System Protection Rule:</strong> To stay true to your edge and prevent random modifications during drawdowns, checklist rule edits are locked to <strong>2 edits maximum</strong>.
+              </div>
+            </div>
 
             <div class="checklist-group">
               <div class="checklist-item">
                 <input type="checkbox" id="chk-1">
-                <label for="chk-1">Market Structure & Higher Timeframe Alignment Confirmed</label>
+                <input type="text" id="rule-text-1" value="Market Structure & Higher Timeframe Alignment Confirmed" disabled>
               </div>
               <div class="checklist-item">
                 <input type="checkbox" id="chk-2">
-                <label for="chk-2">Key Support/Resistance or Liquidity Zone Validated</label>
+                <input type="text" id="rule-text-2" value="Key Support/Resistance or Liquidity Zone Validated" disabled>
               </div>
               <div class="checklist-item">
                 <input type="checkbox" id="chk-3">
-                <label for="chk-3">Strict Risk-to-Reward Ratio Minimum 1:2 Pre-Calculated</label>
+                <input type="text" id="rule-text-3" value="Strict Risk-to-Reward Ratio Minimum 1:2 Pre-Calculated" disabled>
               </div>
               <div class="checklist-item">
                 <input type="checkbox" id="chk-4">
-                <label for="chk-4">No Impulse/FOMO Entry — Confirmation Candle Closed</label>
+                <input type="text" id="rule-text-4" value="No Impulse/FOMO Entry — Confirmation Candle Closed" disabled>
               </div>
             </div>
 
@@ -355,7 +428,7 @@
             </div>
 
             <div class="form-group">
-              <label>Execution Notes & Setup Context</label>
+              <label>Execution Notes & Strategy Context</label>
               <textarea id="trade-notes" class="form-textarea" rows="2" placeholder="Describe entry trigger, confluence, emotional state..."></textarea>
             </div>
 
@@ -375,21 +448,21 @@
           </div>
 
           <!-- Equity Chart Card -->
-          <div class="card">
+          <div class="card" style="margin-bottom:0;">
             <div class="card-title">
               <span>Broker Equity Curve</span>
               <div id="trend-badge-el" class="trend-badge trend-bull">
                 <i data-lucide="trending-up"></i> BULLISH TREND
               </div>
             </div>
-            <div style="height: 320px; position: relative;">
+            <div style="height: 380px; position: relative;">
               <canvas id="equityChart"></canvas>
             </div>
           </div>
         </div>
 
         <!-- September 2026 Calendar Card -->
-        <div class="card calendar-card">
+        <div class="card">
           <div class="card-title">
             <span><i data-lucide="calendar"></i> September 2026 PnL Calendar</span>
             <button onclick="document.getElementById('csv-file-input').click()" class="theme-toggle-btn">
@@ -509,6 +582,9 @@
     let chartLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'];
     let chartInstance = null;
 
+    let editsRemaining = 2;
+    let isEditing = false;
+
     let calendarDays = {
       1: { pnl: 250.0, trades: 2, wins: 2 },
       4: { pnl: -70.0, trades: 1, wins: 0 },
@@ -522,6 +598,51 @@
 
     let tradeLogs = [];
 
+    // Toggle Rule Edit with 2-edit Restriction
+    function toggleRuleEdit() {
+      if (editsRemaining <= 0) {
+        alert("PERMANENT LOCK: You have used all 2 allowed checklist modifications to preserve your strategy edge!");
+        return;
+      }
+
+      const ruleInputs = [
+        document.getElementById('rule-text-1'),
+        document.getElementById('rule-text-2'),
+        document.getElementById('rule-text-3'),
+        document.getElementById('rule-text-4')
+      ];
+
+      const btn = document.getElementById('edit-rules-btn');
+
+      if (!isEditing) {
+        isEditing = true;
+        ruleInputs.forEach(i => {
+          i.disabled = false;
+          i.style.borderBottom = "1px solid var(--accent-blue)";
+        });
+        btn.innerHTML = `<i data-lucide="check"></i> Save Checklist Rules`;
+      } else {
+        isEditing = false;
+        editsRemaining--;
+        document.getElementById('edit-count-num').innerText = editsRemaining;
+
+        ruleInputs.forEach(i => {
+          i.disabled = true;
+          i.style.borderBottom = "none";
+        });
+
+        if (editsRemaining === 0) {
+          btn.innerHTML = `<i data-lucide="lock"></i> Rules Locked (0 Edits Left)`;
+          btn.style.opacity = '0.6';
+          btn.style.cursor = 'not-allowed';
+        } else {
+          btn.innerHTML = `<i data-lucide="edit-3"></i> Customize Rules (${editsRemaining} Edits Left)`;
+        }
+        alert(`Checklist rules updated! Remaining lifetime edits: ${editsRemaining}`);
+      }
+      lucide.createIcons();
+    }
+
     // Process Pre-Trade Execution Checklist Verification
     function processChecklistAndLog(userClickedCompliant) {
       const chk1 = document.getElementById('chk-1').checked;
@@ -533,7 +654,7 @@
 
       if (userClickedCompliant && !allChecked) {
         alert("EXECUTION REJECTED: All mandatory checklist items must be verified before logging a compliant trade!");
-        logTrade(false); // Force violation logging
+        logTrade(false);
       } else {
         logTrade(allChecked && userClickedCompliant);
       }
