@@ -70,10 +70,6 @@
                     </div>
                     <span class="text-[10px] text-gray-400">12ms</span>
                 </div>
-                <!-- Creator Signature -->
-                <div class="text-center py-1 border-t border-gray-100 dark:border-slate-800">
-                    <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 tracking-wide">Created by <span class="text-emerald-600 dark:text-emerald-400 font-bold">Melvin Vibal</span></p>
-                </div>
             </div>
         </aside>
 
@@ -320,7 +316,7 @@
                 <!-- TAB 7: SETTINGS & PROFILE -->
                 <div id="tab-settings" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-4">
-                        <h3 class="font-extrabold text-base">Settings & Trader Profile</h3>
+                        <h3 class="font-extrabold text-base">Settings & Profile</h3>
                         <p class="text-xs text-gray-500">Manage your local profile identity and data storage preferences.</p>
                         <div class="space-y-3 pt-2">
                             <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs py-3 rounded-xl border border-gray-200 dark:border-slate-700 transition">
@@ -409,7 +405,6 @@
             checkThemePreference();
             renderCalendar();
             renderCriteriaList();
-            checkTraderProfile();
         };
 
         // --- Persistence & Profile Management ---
@@ -427,17 +422,6 @@
         function saveData() {
             localStorage.setItem('traderwell_pnl_data', JSON.stringify(monthPnLData));
             localStorage.setItem('traderwell_criteria', JSON.stringify(criteriaList));
-        }
-
-        function checkTraderProfile() {
-            let profileName = localStorage.getItem('traderwell_username');
-            if (!profileName) {
-                profileName = prompt("Welcome to TraderWell! Enter your Trader Profile Name:", "Leo Melvin");
-                if (!profileName || profileName.trim() === "") profileName = "Trader";
-                localStorage.setItem('traderwell_username', profileName.trim());
-            }
-            const profileEl = document.getElementById('headerTraderName');
-            if (profileEl) profileEl.innerText = profileName;
         }
 
         function updateTraderProfileName() {
