@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWellPower / Edge Builder Platform</title>
+    <title>TRADERWELL - Execution Guidance & Broker Equity Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,497 +12,574 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#eff6ff', 500: '#2563eb', 600: '#1d4ed8', 900: '#1e3a8a' }
+                        brand: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome & Chart.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --accent-glow: rgba(37, 99, 235, 0.2);
-        }
-        .accent-blue { color: #3b82f6; }
-        .accent-emerald { color: #10b981; }
-        .accent-purple { color: #8b5cf6; }
-        .accent-amber { color: #f59e0b; }
-    </style>
 </head>
-<body id="appBody" class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen transition-colors duration-200">
 
-    <!-- Header -->
-    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0a0e17] sticky top-0 z-40 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div id="brandLogoBox" class="w-10 h-10 rounded-xl bg-blue-600/10 dark:bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xl transition-colors">
-                    <i class="fa-solid fa-shield-halved"></i>
+                <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">
+                    T
                 </div>
                 <div>
-                    <h1 class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">TraderWellPower <span id="brandBadge" class="text-blue-600 dark:text-blue-400 text-xs px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 ml-1 transition-colors">Edge Builder</span></h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">System Discipline & Anti-Curve Fitting Platform</p>
+                    <h1 class="text-base font-extrabold tracking-wider text-slate-900 dark:text-white uppercase flex items-center gap-2">
+                        TRADERWELL
+                        <span class="text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">v2.5</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Execution Discipline vs. Broker Performance Verification</p>
                 </div>
             </div>
+
             <div class="flex items-center space-x-3">
-                <!-- Knowledge Base Trigger -->
-                <button onclick="openKnowledgeBase()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 text-xs font-semibold flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-book-open text-blue-600 dark:text-blue-400" id="kbIcon"></i>
-                    <span class="hidden sm:inline">Knowledge Base</span>
-                </button>
-                <button onclick="openCtraderModal()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 text-xs font-semibold flex items-center space-x-2 transition">
-                    <i class="fa-solid fa-plug text-blue-600 dark:text-blue-400"></i>
-                    <span class="hidden sm:inline">Connect cTrader</span>
-                </button>
-                <!-- Highlight Color Customizer Dropdown -->
-                <div class="relative">
-                    <select id="accentColorSelector" onchange="changeAccentColor(this.value)" class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 rounded-lg px-2 py-2 focus:outline-none focus:border-blue-500 cursor-pointer">
-                        <option value="blue">Highlight: Blue</option>
-                        <option value="emerald">Highlight: Emerald</option>
-                        <option value="purple">Highlight: Purple</option>
-                        <option value="amber">Highlight: Amber</option>
-                    </select>
-                </div>
-                <!-- Theme Toggle Button -->
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" title="Toggle Light/Dark Theme">
-                    <i id="themeIcon" class="fa-solid fa-sun"></i>
+                <!-- Theme Accent Selector -->
+                <select id="accentSelector" onchange="changeAccentTheme(this.value)" class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="blue">Blue Accent</option>
+                    <option value="emerald">Emerald Accent</option>
+                    <option value="purple">Purple Accent</option>
+                    <option value="amber">Amber Accent</option>
+                </select>
+
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <svg id="themeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-grow w-full">
-
-        <!-- Top Metrics Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-sm dark:shadow-none">
-                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">System Score</div>
-                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-score">0</div>
-                <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> Accumulated Edge Points</div>
-            </div>
-            <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-sm dark:shadow-none">
-                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Discipline Streak</div>
-                <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1 dynamic-accent-text" id="stat-streak">0</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-fire text-amber-500"></i> <span id="streakMultiplierText">1.0x Multiplier Active</span></div>
-            </div>
-            <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-sm dark:shadow-none">
-                <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Checklist Compliance</div>
-                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-compliance">100%</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">Active session average</div>
-            </div>
-            <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-sm dark:shadow-none">
-                <div class="flex items-center justify-between">
-                    <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Broker Equity</div>
-                    <button onclick="openCapitalModal()" class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition p-1" title="Edit Starting Capital">
-                        <i class="fa-solid fa-pen-to-square text-xs"></i>
-                    </button>
+    <!-- BRANDING & MISSION / VISION BANNER -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+        <div class="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-900/90 via-slate-900 to-slate-950 border border-blue-500/20 text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10 max-w-4xl">
+                <span class="text-xs font-black tracking-widest uppercase text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">
+                    TRADERWELL CORE
+                </span>
+                <p class="text-base sm:text-lg font-medium text-slate-200 mt-3 leading-relaxed italic">
+                    "Bridge the gap between execution discipline and broker equity—discover whether your system holds a true statistical edge or if you’re just gambling."
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-800/80">
+                    <div>
+                        <h4 class="text-xs uppercase font-extrabold text-blue-400 tracking-wider mb-1">Mission Statement</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            To empower traders to master execution discipline by providing objective, data-driven comparisons between their trading rule compliance and actual broker performance—helping them eliminate emotional gambling, identify true system edge, and build long-term profitability.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase font-extrabold text-blue-400 tracking-wider mb-1">Vision Statement</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            To become the global standard for trading accountability, where traders measure their success not just by monetary gains, but by flawless execution discipline and verifiable statistical expectancy.
+                        </p>
+                    </div>
                 </div>
-                <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1" id="stat-equity">$10,060</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">Manual Base / Updated via CSV</div>
             </div>
         </div>
+    </section>
 
-        <!-- System Verdict Panel -->
-        <div class="bg-gradient-to-r from-blue-50 dark:from-blue-950/40 via-white dark:via-slate-900 to-white dark:to-slate-900 border border-blue-200 dark:border-blue-500/30 p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm dark:shadow-none">
+    <!-- TOP METRICS GRID -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <!-- Metric 1 -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Account Equity</span>
+                <div id="stat-equity" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">$10,300</div>
+                <button onclick="openCapitalModal()" class="text-[10px] text-blue-500 hover:underline mt-1 font-semibold">Set Capital</button>
+            </div>
+
+            <!-- Metric 2 -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Discipline Compliance</span>
+                <div id="stat-compliance" class="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 mt-1">100%</div>
+                <span class="text-[10px] text-slate-400 mt-1 block">Current Setup Grade</span>
+            </div>
+
+            <!-- Metric 3 -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Discipline Streak</span>
+                <div id="stat-streak" class="text-xl sm:text-2xl font-black text-emerald-500 mt-1">0</div>
+                <span id="streakMultiplierText" class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 block">1.0x Multiplier Active</span>
+            </div>
+
+            <!-- Metric 4 -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total XP Score</span>
+                <div id="stat-score" class="text-xl sm:text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">0</div>
+                <span class="text-[10px] text-slate-400 mt-1 block">Disciplined Trade Points</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYSTEM VERDICT BANNER -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
             <div>
-                <span id="verdictTag" class="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-md transition-colors">Edge Validation Status</span>
-                <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-blue-700 dark:text-blue-300 mt-2 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-notch animate-spin"></i> <span id="verdictText">INITIALIZING SYSTEM DIAGNOSTICS...</span>
+                <span class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400">Automated System Verdict Engine</span>
+                <div id="edgeVerdictBadge" class="text-sm sm:text-base font-extrabold text-blue-700 dark:text-blue-300 mt-0.5 flex items-center gap-2">
+                    <span id="verdictText">DEVELOPING / UNVERIFIED SYSTEM STATE</span>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <label class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold rounded-xl cursor-pointer transition border border-slate-200 dark:border-slate-700">
-                    <i class="fa-solid fa-file-csv mr-1.5 text-blue-600 dark:text-blue-400"></i> Import Broker CSV
-                    <input type="file" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
+            <div class="flex items-center gap-2">
+                <label for="csvFileInput" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl cursor-pointer transition">
+                    Import Broker CSV
                 </label>
-                <button onclick="exportHistoryFile()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl transition shadow-lg shadow-blue-600/25 dynamic-btn">
-                    <i class="fa-solid fa-download mr-1.5"></i> Export State
+                <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
+                <button onclick="exportHistoryFile()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition">
+                    Export State
                 </button>
             </div>
         </div>
+    </section>
 
-        <!-- Main Workspace Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Left 2 Cols: Checklist & Equity Chart -->
-            <div class="lg:col-span-2 space-y-8">
-                
-                <!-- Pre-flight Execution Checklist -->
-                <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4 shadow-sm dark:shadow-none">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="font-bold text-base text-slate-900 dark:text-white">Pre-Flight Execution Rules</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Enforce rigid rules to prevent heuristic adaptation and curve fitting.</p>
-                        </div>
+    <!-- MAIN MAIN WORKSPACE (EXECUTION CHECKLIST & EQUITY CHART) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- CHECKLIST PANEL -->
+            <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Execution Checklist
+                        </h3>
                         <div class="flex items-center space-x-2">
-                            <span class="text-xs px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-lg">
-                                Edits Left: <strong id="editCountBadge">2</strong>
-                            </span>
-                            <button onclick="openCustomizeChecklistModal()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 transition">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                            </button>
+                            <span class="text-[10px] text-slate-400">Edits left: <strong id="editCountBadge" class="text-blue-500">2</strong></span>
+                            <button onclick="openCustomizeChecklistModal()" class="text-xs text-blue-500 hover:underline font-bold">Customize</button>
                         </div>
                     </div>
 
-                    <div id="checklistContainer" class="space-y-3">
-                        <!-- Dynamically populated checklist items -->
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                        Verify all pre-trade parameters before placing an order. Rules are locked to prevent curve-fitting during active trading.
+                    </p>
+
+                    <div id="checklistContainer" class="space-y-2.5">
+                        <!-- Dynamic Checklists rendered via JavaScript -->
                     </div>
                 </div>
 
-                <!-- Equity Curve Chart -->
-                <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4 shadow-sm dark:shadow-none">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="font-bold text-base text-slate-900 dark:text-white">System Equity Growth Tracking</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Correlation mapping between checklist discipline and actual account equity.</p>
-                        </div>
-                        <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Broker Sync: Active</span>
-                    </div>
-                    <div class="h-64 w-full">
-                        <canvas id="equityChart"></canvas>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Right Col: Execution Logger -->
-            <div class="space-y-6">
-                <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-5 shadow-sm dark:shadow-none">
-                    <div>
-                        <h2 class="font-bold text-base text-slate-900 dark:text-white">Log Trade Execution</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Record a system entry or deviation to update streak multipliers and scores.</p>
+                <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                    <textarea id="tradeNoteInput" rows="2" placeholder="Optional execution context, market condition, or mistake log..." class="w-full text-xs p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    
+                    <div class="flex items-center justify-between gap-2">
+                        <input type="file" id="screenshotInput" accept="image/*" class="text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-200 hover:file:bg-slate-200">
                     </div>
 
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Execution Notes / Context</label>
-                            <textarea id="tradeNoteInput" rows="3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500" placeholder="Describe setup parameters, market context, or deviation reasons..."></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Chart Screenshot (Optional)</label>
-                            <input type="file" id="screenshotInput" accept="image/*" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 dark:file:bg-slate-800 file:text-blue-600 dark:file:text-blue-400 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 cursor-pointer">
-                        </div>
-
-                        <div class="pt-2 grid grid-cols-2 gap-3">
-                            <button onclick="logSession('compliant')" class="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-check"></i>
-                                <span>Compliant Entry</span>
-                            </button>
-                            <button onclick="logSession('deviated')" class="w-full py-3 px-4 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-amber-600/20 flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
-                                <span>Rule Deviation</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Execution Log History -->
-                <div class="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-4 shadow-sm dark:shadow-none">
-                    <div class="flex items-center justify-between">
-                        <h2 class="font-bold text-base text-slate-900 dark:text-white">Execution Ledger</h2>
-                        <span id="record-count-badge" class="text-xs text-slate-500 dark:text-slate-400">0 executions logged</span>
-                    </div>
-                    <div id="recordsContainer" class="space-y-3 max-h-80 overflow-y-auto pr-1">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- Knowledge Base Drawer / Modal -->
-    <div id="kbDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeKnowledgeBase()"></div>
-        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
-            <div class="w-screen max-w-md bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
-                <div class="space-y-6">
-                    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                        <div class="flex items-center space-x-2 text-slate-900 dark:text-white font-bold text-base">
-                            <i class="fa-solid fa-book-open text-blue-600 dark:text-blue-400"></i>
-                            <span>Knowledge Base</span>
-                        </div>
-                        <button onclick="closeKnowledgeBase()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white p-1">
-                            <i class="fa-solid fa-xmark text-lg"></i>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button onclick="logSession('compliant')" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-emerald-600/20">
+                            Log Compliant Trade
+                        </button>
+                        <button onclick="logSession('violation')" class="py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition shadow-md shadow-rose-600/20">
+                            Log Rule Violation
                         </button>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Broker Model Card -->
-                    <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
-                        <div class="flex items-center space-x-2 text-amber-600 dark:text-amber-400 font-semibold text-xs uppercase tracking-wider">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span>Brokers & Execution Model</span>
-                        </div>
-                        <p class="text-xs text-slate-700 dark:text-slate-300"><strong class="text-slate-900 dark:text-white">Market Maker (B-Book) vs. ECN/STP Broker:</strong></p>
-                        <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-1.5 list-disc pl-4">
-                            <li><strong class="text-rose-600 dark:text-rose-400">Market Maker (B-Book):</strong> Trades against you, creating conflicts of interest, spread widenings, and slippage.</li>
-                            <li><strong class="text-emerald-600 dark:text-emerald-400">ECN Broker (DMA):</strong> Direct connection to liquidity providers with raw spreads and fixed commissions.</li>
-                        </ul>
+            <!-- EQUITY CHART PANEL -->
+            <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Broker Equity Curve</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Live or CSV imported account performance points</p>
                     </div>
-
-                    <!-- Verified Broker Partner with Affiliate Link -->
-                    <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
-                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Verified Broker Partner</div>
-                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3.5 space-y-2 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-slate-900 dark:text-white">IC Markets (Raw ECN)</span>
-                                <span class="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded">Forex / Metals</span>
-                            </div>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">0.0 Pip Raw Spreads with institutional DMA latency.</p>
-                            <div class="pt-1">
-                                <a href="https://ic.com/?camp=85679" id="referalLink" target="_blank" class="block w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-xs text-center transition shadow-md">
-                                    Open Raw ECN Account <i class="fa-solid fa-external-link-alt ml-1"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recommended Mindset Book -->
-                    <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2">
-                        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Recommended Mindset Book</div>
-                        <p class="text-xs text-slate-600 dark:text-slate-400">Eliminate emotional error and execute purely on probability.</p>
-                        <a href="#" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-block pt-1">Download "Trading in the Zone" (PDF)</a>
-                    </div>
+                    <button onclick="openCtraderModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
+                        Sync cTrader
+                    </button>
                 </div>
 
-                <div class="pt-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400 dark:text-slate-500">
-                    TraderWellPower Education Module v2.6
+                <div class="flex-grow w-full min-h-[260px] relative">
+                    <canvas id="equityChart"></canvas>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Modals -->
-    <!-- Edit Starting Capital Modal -->
-    <div id="capitalModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-xl">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white">Set Starting Capital</h3>
-                <button onclick="closeCapitalModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- CONNECT TO CTRADER & ECN BROKER LIST -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        Connect to cTrader & Preferred ECN Brokers
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Connect your trading account directly or open a raw ECN account through our verified partners.</p>
+                </div>
+                <button onclick="openCtraderModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition flex items-center gap-2">
+                    Connect cTrader API
+                </button>
             </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400">Manually align your baseline capital to match your live broker account before importing CSV history.</p>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Starting Capital ($)</label>
-                <input type="number" id="manualCapitalInput" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200" placeholder="10000">
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeCapitalModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                <button onclick="saveManualCapital()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl dynamic-btn">Save & Update</button>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Broker 1 -->
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-extrabold text-sm text-slate-800 dark:text-slate-100">IC Markets</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">cTrader Raw ECN</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Ultra-low spreads from 0.0 pips, deep liquidity, and native cTrader integration.</p>
+                    </div>
+                    <a href="https://www.icmarkets.com/?camp=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="w-full py-2 bg-slate-200 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-lg text-center transition">
+                        Open ECN Account
+                    </a>
+                </div>
+
+                <!-- Broker 2 -->
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-extrabold text-sm text-slate-800 dark:text-slate-100">Pepperstone</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">cTrader Razor</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Fast execution speeds, regulated globally, and automated order matching.</p>
+                    </div>
+                    <a href="https://www.pepperstone.com/?cfa=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="w-full py-2 bg-slate-200 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-lg text-center transition">
+                        Open Razor Account
+                    </a>
+                </div>
+
+                <!-- Broker 3 -->
+                <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-extrabold text-sm text-slate-800 dark:text-slate-100">FP Markets</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded font-bold">cTrader Raw</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Competitive commissions, high-tier regulation, and zero requotes.</p>
+                    </div>
+                    <a href="https://www.fpmarkets.com/?fpa=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="w-full py-2 bg-slate-200 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-lg text-center transition">
+                        Open Raw Account
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Customize Checklist Modal -->
-    <div id="checklistModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5 shadow-xl">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white">Customize Edge Criteria</h3>
-                <button onclick="closeChecklistModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- QUOTES GALLERY -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+            Principles of Execution
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"A good trade is one where you followed your system and executed with discipline—regardless of whether it won or lost. A bad trade is one where you broke your rules, even if you made a profit."</p>
             </div>
-            <p class="text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl">
-                <i class="fa-solid fa-lock mr-1"></i> Anti-Curve Fitting Protection: You only have 2 rule edits available before a strict 3-month system modification lock is enforced.
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"Don't judge a trade by its outcome; judge it by your execution. Following your rules on a loss is a good trade; breaking your rules for a win is just a lucky gamble."</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"Outcomes don't define trade quality—execution does. A disciplined loss is a good trade; an undisciplined win is a bad habit."</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"Winning doesn't make a trade good, and losing doesn't make it bad. Execution quality determines the grade of a trade, while market randomness determines the result."</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"If you believe that a win means you did something right and a loss means you did something wrong, you are trapped in a cycle of illusion."</p>
+                <span class="text-[10px] font-bold text-blue-500 uppercase tracking-wider">— Mark Douglas</span>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                <p class="text-xs text-slate-600 dark:text-slate-300 italic mb-2">"Once you have a tried process, adhere to it and believe in it. Losses are still bad trades, but good trading (according to your process) will prevail over a career."</p>
+                <span class="text-[10px] font-bold text-blue-500 uppercase tracking-wider">— Peter Brandt</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- KNOWLEDGE BASE & SAMPLE SIZE MATH -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Knowledge Base: Risk to Reward Ratio Formula</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">
+                When analyzing a sample size of 50 trades, your win rate determines how aggressive your risk-to-reward (R:R) ratio needs to be to remain profitable. Assuming you risk a fixed amount of $100 per trade (where a loss always equals -$100), here is how different risk-to-reward ratios perform over 50 trades with 30 wins (60% win rate) versus 25 wins (50% win rate):
             </p>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Rule 1</label>
-                    <input type="text" id="rule1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
+
+            <!-- Data Table -->
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-700 dark:text-slate-300">
+                            <th class="p-3 font-bold">Risk-to-Reward Ratio</th>
+                            <th class="p-3 font-bold">30 Wins / 20 Losses (60% Win Rate)</th>
+                            <th class="p-3 font-bold">25 Wins / 25 Losses (50% Win Rate)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                        <tr>
+                            <td class="p-3 font-semibold">1:1 RR (Win: $100 / Loss: $100)</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">+$1,000 Profit</td>
+                            <td class="p-3 font-bold text-slate-400">$0 (Break-Even)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold">1:2 RR (Win: $200 / Loss: $100)</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">+$4,000 Profit</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">+$2,500 Profit</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-semibold">1:3 RR (Win: $300 / Loss: $100)</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">+$7,000 Profit</td>
+                            <td class="p-3 text-emerald-600 dark:text-emerald-400 font-bold">+$5,000 Profit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Formula Explanations -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Scenario A: 30 Wins and 20 Losses (60% Win Rate)</h4>
+                    <p class="text-slate-500 dark:text-slate-400">At 1:1 R:R: You make $100 on 30 wins ($3,000) and lose $100 on 20 losses (-$2,000).</p>
+                    <p class="font-mono mt-1 text-slate-700 dark:text-slate-300 font-bold">Net Profit = $3,000 - $2,000 = +$1,000</p>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2">At 1:2 R:R: You make $200 on 30 wins ($6,000) and lose $100 on 20 losses (-$2,000).</p>
+                    <p class="font-mono mt-1 text-slate-700 dark:text-slate-300 font-bold">Net Profit = $6,000 - $2,000 = +$4,000</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Rule 2</label>
-                    <input type="text" id="rule2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Rule 3</label>
-                    <input type="text" id="rule3" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Rule 4</label>
-                    <input type="text" id="rule4" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Scenario B: 25 Wins and 25 Losses (50% Win Rate)</h4>
+                    <p class="text-slate-500 dark:text-slate-400">At 1:1 R:R: You make $100 on 25 wins ($2,500) and lose $100 on 25 losses (-$2,500).</p>
+                    <p class="font-mono mt-1 text-slate-700 dark:text-slate-300 font-bold">Net Profit = $2,500 - $2,500 = $0 (Break-even)</p>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2">At 1:2 R:R: You make $200 on 25 wins ($5,000) and lose $100 on 25 losses (-$2,500).</p>
+                    <p class="font-mono mt-1 text-slate-700 dark:text-slate-300 font-bold">Net Profit = $5,000 - $2,500 = +$2,500</p>
                 </div>
             </div>
-            <div class="flex justify-between items-center pt-2">
-                <button onclick="simulateResubscription()" class="text-xs text-blue-600 dark:text-blue-400 hover:underline dynamic-accent-text">Simulate Subscription Reset</button>
-                <div class="space-x-2">
-                    <button onclick="closeChecklistModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                    <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl dynamic-btn">Save Changes</button>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-4 italic">
+                <strong>The Takeaway:</strong> With a 50% win rate, a 1:1 R:R leaves you with exactly zero growth after fees and slippage. Bumping your setup to a 1:2 or 1:3 R:R ensures that even a coin-flip win rate yields strong profitability over a 50-trade sample size.
+            </p>
+        </div>
+    </section>
+
+    <!-- MARK DOUGLAS SEMINARS & EDUCATIONAL MEDIA -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">Mark Douglas Seminars & Educational Media</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Watch key workshops on trading psychology, probability mindsets, and disciplined execution.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+                    <div class="aspect-video w-full">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/7ocTVm-M7q8" title="Mark Douglas Seminar Part 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Mark Douglas - Mindset & Probability Seminar</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Full classic lecture on master mental discipline and building system consistency.</p>
+                    </div>
                 </div>
+
+                <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
+                    <div class="aspect-video w-full">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/ZRU2EegRPDA" title="Trading in the Zone Workshop" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Trading in the Zone - Psychological Framework</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Overcoming fear, emotional triggers, and managing uncertainty across trade samples.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXECUTION LOG HISTORY -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 mb-16">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Execution Ledger History</h3>
+                <span id="record-count-badge" class="text-xs font-semibold text-slate-400">0 executions logged</span>
+            </div>
+            <div id="recordsContainer" class="space-y-3">
+                <div class="p-6 text-center border border-dashed border-slate-300 dark:border-slate-800 rounded-xl text-slate-400 text-xs">
+                    No executions logged in this session yet.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TELEGRAM INTEGRATION CHAT FLOATING BAR -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <a href="https://t.me/YOUR_TELEGRAM_USERNAME" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-full shadow-2xl transition-all duration-200 transform hover:scale-105">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-2.02 9.51c-.15.68-.55.85-1.12.53l-3.08-2.27-1.49 1.43c-.16.16-.3.3-.62.3l.22-3.14 5.73-5.18c.25-.22-.05-.34-.38-.12l-7.08 4.46-3.04-.95c-.66-.21-.67-.66.14-.98l11.89-4.58c.55-.2 1.03.13.85.99z"/></svg>
+            <span class="text-xs font-bold pr-1">Chat on Telegram</span>
+        </a>
+    </div>
+
+    <!-- MODAL: CAPITAL SETUP -->
+    <div id="capitalModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Set Starting Capital</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter your baseline trading capital amount to initialize your equity curve points.</p>
+            <input type="number" id="manualCapitalInput" placeholder="e.g. 10000" class="w-full p-3 text-sm rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeCapitalModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Cancel</button>
+                <button onclick="saveManualCapital()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md">Save Capital</button>
             </div>
         </div>
     </div>
 
-    <!-- cTrader Connect Modal -->
-    <div id="ctraderModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-5 shadow-xl">
+    <!-- MODAL: CTRADER CONNECT -->
+    <div id="ctraderModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Connect cTrader Open API</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Enter your cTrader account credentials to sync real-time equity updates.</p>
+            <div class="space-y-3 mb-4">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase">Account ID</label>
+                    <input type="text" id="ctraderAccId" placeholder="e.g. 1234567" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase">Access Token</label>
+                    <input type="password" id="ctraderToken" placeholder="cTrader OAuth Access Token" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeCtraderModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Cancel</button>
+                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md">Sync Equity</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CUSTOMIZE CHECKLIST -->
+    <div id="checklistModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2">Edit Execution Rules</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Changes are strictly allocation-limited to protect against curve-fitting your strategy parameters.</p>
+            <div class="space-y-3 mb-4">
+                <input type="text" id="rule1" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+                <input type="text" id="rule2" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+                <input type="text" id="rule3" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+                <input type="text" id="rule4" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+            </div>
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white">Connect cTrader Open API</h3>
-                <button onclick="closeCtraderModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <p class="text-xs text-slate-600 dark:text-slate-400">Sync live account balances, trades, and equity points directly into your edge verification matrix.</p>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">cTrader Account ID</label>
-                    <input type="text" id="ctraderAccId" placeholder="e.g. 4839201" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
+                <button onclick="simulateResubscription()" class="text-[11px] text-amber-500 hover:underline font-bold">Reset Allocations</button>
+                <div class="flex space-x-2">
+                    <button onclick="closeChecklistModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">Cancel</button>
+                    <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md">Save Rules</button>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">API Access Token</label>
-                    <input type="password" id="ctraderToken" placeholder="cb_live_token_..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-900 dark:text-slate-200">
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeCtraderModal()" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold rounded-xl">Cancel</button>
-                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl dynamic-btn">Authorize & Sync</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0a0e17] py-6 text-xs text-slate-500 transition-colors">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; 2026 TraderWellPower / Edge Builder Platform. All rights reserved.</p>
-            <div class="flex space-x-6">
-                <a href="https://ic.com/?camp=85679" target="_blank" class="hover:text-slate-900 dark:hover:text-slate-300 transition">IC Markets Partner</a>
-                <a href="#" class="hover:text-slate-900 dark:hover:text-slate-300 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-slate-900 dark:hover:text-slate-300 transition">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- App Logic Script -->
+    <!-- JAVASCRIPT LOGIC ENGINE -->
     <script>
+        // CORE STATE MANAGEMENT
+        let chartInstance = null;
+        let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 0;
         let sessionData = JSON.parse(localStorage.getItem('twp_edge_session_data')) || [];
+        let brokerEquityPoints = JSON.parse(localStorage.getItem('twp_broker_equity_points')) || [10000, 10040, 10090, 10150, 10210, 10300];
+
         let checklistState = JSON.parse(localStorage.getItem('twp_checklist_state')) || {
             editsRemaining: 2,
             lockUntil: null,
             rules: [
-                "Take Profit Target: Area is explicitly mapped out on the chart.",
-                "Donchian Crossover: 3 consecutive candles have closed crossing the middle band.",
-                "Execution Style: Order is an exact Limit or Stop Pending Position (No Market Orders).",
-                "Timing Gateway: Order is placed precisely 8 to 10 minutes before the crossing candle closes."
+                "Market Structure & Higher Timeframe Alignment Confirmed",
+                "Key Support/Resistance or Liquidity Zone Validated",
+                "Strict Risk-to-Reward Ratio Minimum 1:2 Pre-Calculated",
+                "No Impulse/FOMO Entry — Confirmation Candle Closed"
             ]
         };
 
-        let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 0;
-        let equityChartInstance = null;
-        let brokerEquityPoints = JSON.parse(localStorage.getItem('twp_broker_equity_points')) || [10000, 10020, 10010, 10040, 10030, 10060];
-        let currentAccent = localStorage.getItem('twp_accent_color') || 'blue';
+        let currentAccentHex = '#3b82f6';
 
+        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
-            // Robust Theme Initialization
-            const savedTheme = localStorage.getItem('twp_theme');
-            const icon = document.getElementById('themeIcon');
-            
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon';
-            } else {
-                // Default to dark mode if not explicitly set to light
-                document.documentElement.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
-            }
-
-            // Restore accent color
-            document.getElementById('accentColorSelector').value = currentAccent;
-            applyAccentColor(currentAccent);
-
-            initChart();
             renderChecklist();
+            initChart(brokerEquityPoints);
             renderRecords();
             updateStats();
             recalculateEdgeState();
         });
 
+        // DARK MODE TOGGLE
         function toggleDarkMode() {
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            
-            html.classList.toggle('dark');
-            const isDark = html.classList.contains('dark');
-            
-            localStorage.setItem('twp_theme', isDark ? 'dark' : 'light');
-            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-
-            // Re-render chart to match theme grid lines
-            initChart(brokerEquityPoints);
+            document.documentElement.classList.toggle('dark');
+            if (chartInstance) initChart(brokerEquityPoints);
         }
 
-        function changeAccentColor(color) {
-            currentAccent = color;
-            localStorage.setItem('twp_accent_color', color);
-            applyAccentColor(color);
-        }
-
-        function applyAccentColor(color) {
-            const mapColors = {
-                blue: { hex: '#2563eb', textClass: 'text-blue-600 dark:text-blue-400', bgClass: 'bg-blue-600' },
-                emerald: { hex: '#10b981', textClass: 'text-emerald-600 dark:text-emerald-400', bgClass: 'bg-emerald-600' },
-                purple: { hex: '#8b5cf6', textClass: 'text-purple-600 dark:text-purple-400', bgClass: 'bg-purple-600' },
-                amber: { hex: '#f59e0b', textClass: 'text-amber-600 dark:text-amber-400', bgClass: 'bg-amber-600' }
+        // ACCENT THEME CHANGING
+        function changeAccentTheme(theme) {
+            const accents = {
+                blue: '#3b82f6',
+                emerald: '#10b981',
+                purple: '#8b5cf6',
+                amber: '#f59e0b'
             };
-
-            const cfg = mapColors[color] || mapColors.blue;
-            
-            document.querySelectorAll('.dynamic-accent-text').forEach(el => {
-                el.className = el.className.replace(/text-(blue|emerald|purple|amber)-(600|400)(\s+dark:text-(blue|emerald|purple|amber)-400)?/g, cfg.textClass);
-            });
-            document.querySelectorAll('.dynamic-btn').forEach(el => {
-                el.style.backgroundColor = cfg.hex;
-            });
-            document.getElementById('brandLogoBox').style.borderColor = cfg.hex;
-            document.getElementById('brandBadge').className = `${cfg.textClass} text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ml-1`;
-
-            if (equityChartInstance) {
-                equityChartInstance.data.datasets[0].borderColor = cfg.hex;
-                equityChartInstance.update();
-            }
+            currentAccentHex = accents[theme] || '#3b82f6';
+            if (chartInstance) initChart(brokerEquityPoints);
         }
 
-        function openKnowledgeBase() {
-            document.getElementById('kbDrawer').classList.remove('hidden');
-        }
-
-        function closeKnowledgeBase() {
-            document.getElementById('kbDrawer').classList.add('hidden');
-        }
-
-        function initChart(dataPoints = brokerEquityPoints) {
+        // CHART.JS INITIALIZATION
+        function initChart(dataPoints) {
             const ctx = document.getElementById('equityChart').getContext('2d');
-            if (equityChartInstance) equityChartInstance.destroy();
-
             const isDark = document.documentElement.classList.contains('dark');
-            const mapHex = { blue: '#2563eb', emerald: '#10b981', purple: '#8b5cf6', amber: '#f59e0b' };
-            const activeHex = mapHex[currentAccent] || '#2563eb';
 
-            equityChartInstance = new Chart(ctx, {
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, `${currentAccentHex}44`);
+            gradient.addColorStop(1, `${currentAccentHex}00`);
+
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: dataPoints.map((_, i) => `Trade #${i + 1}`),
+                    labels: dataPoints.map((_, i) => `T${i + 1}`),
                     datasets: [{
-                        label: 'Broker Account Equity ($)',
+                        label: 'Broker Equity ($)',
                         data: dataPoints,
-                        borderColor: activeHex,
-                        backgroundColor: isDark ? 'rgba(37, 99, 235, 0.1)' : 'rgba(37, 99, 235, 0.05)',
-                        borderWidth: 3,
+                        borderColor: currentAccentHex,
+                        borderWidth: 2.5,
+                        backgroundColor: gradient,
                         fill: true,
-                        tension: 0.3,
-                        pointRadius: 4
+                        tension: 0.35,
+                        pointBackgroundColor: currentAccentHex,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` Equity: $${ctx.parsed.y.toLocaleString()}`
+                            }
+                        }
+                    },
                     scales: {
-                        x: { grid: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }, ticks: { color: isDark ? '#94a3b8' : '#64748b' } },
-                        y: { grid: { color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }, ticks: { color: isDark ? '#94a3b8' : '#64748b' } }
+                        x: {
+                            grid: { color: isDark ? '#1e293b' : '#e2e8f0' },
+                            ticks: { color: isDark ? '#64748b' : '#94a3b8', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: isDark ? '#1e293b' : '#e2e8f0' },
+                            ticks: { 
+                                color: isDark ? '#64748b' : '#94a3b8',
+                                font: { size: 10 },
+                                callback: (value) => `$${value}`
+                            }
+                        }
                     }
                 }
             });
         }
 
+        // MODAL HANDLERS
         function openCapitalModal() {
             document.getElementById('manualCapitalInput').value = brokerEquityPoints[brokerEquityPoints.length - 1] || 10000;
             document.getElementById('capitalModal').classList.remove('hidden');
@@ -550,10 +627,10 @@
                 return;
             }
 
-            document.getElementById('rule1').value = checklistState.rules[0];
-            document.getElementById('rule2').value = checklistState.rules[1];
-            document.getElementById('rule3').value = checklistState.rules[2];
-            document.getElementById('rule4').value = checklistState.rules[3];
+            document.getElementById('rule1').value = checklistState.rules[0] || '';
+            document.getElementById('rule2').value = checklistState.rules[1] || '';
+            document.getElementById('rule3').value = checklistState.rules[2] || '';
+            document.getElementById('rule4').value = checklistState.rules[3] || '';
             document.getElementById('checklistModal').classList.remove('hidden');
         }
 
@@ -663,16 +740,16 @@
 
             if (compliancePct >= 75 && isEquityGrowing) {
                 verdictEl.innerText = "TRUE STRONG EDGE SYSTEM (Compliant Growth)";
-                badgeContainer.className = "text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-2";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-2";
             } else if (compliancePct < 50 && isEquityGrowing) {
                 verdictEl.innerText = "GAMBLER / PROFITABLE UNDISCIPLINED (Flawed Process)";
-                badgeContainer.className = "text-sm sm:text-base font-extrabold text-amber-600 dark:text-amber-400 mt-2 flex items-center gap-2";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-amber-600 dark:text-amber-400 mt-0.5 flex items-center gap-2";
             } else if (compliancePct >= 75 && !isEquityGrowing) {
                 verdictEl.innerText = "SYSTEM IS NOT PROFITABLE (Flawed Edge / Drawdown)";
-                badgeContainer.className = "text-sm sm:text-base font-extrabold text-rose-600 dark:text-rose-400 mt-2 flex items-center gap-2";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-rose-600 dark:text-rose-400 mt-0.5 flex items-center gap-2";
             } else {
                 verdictEl.innerText = "DEVELOPING / UNVERIFIED SYSTEM STATE";
-                badgeContainer.className = "text-sm sm:text-base font-extrabold text-blue-700 dark:text-blue-300 mt-2 flex items-center gap-2";
+                badgeContainer.className = "text-sm sm:text-base font-extrabold text-blue-700 dark:text-blue-300 mt-0.5 flex items-center gap-2";
             }
         }
 
@@ -770,11 +847,11 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessionData));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "traderwellpower_edge_system_state.json");
+            downloadAnchor.setAttribute("download", "traderwell_edge_system_state.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         }
     </script>
 </body>
-</html>
+</html>      
