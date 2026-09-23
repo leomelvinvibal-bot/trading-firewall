@@ -1,730 +1,1504 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRADERWELL - Professional Trading Performance Dashboard</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f5ff',
-                            100: '#e0ebff',
-                            500: '#2563eb',
-                            600: '#1d4ed8',
-                            700: '#1e40af',
-                            900: '#0f172a'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f6f9;
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TraderWell - Trading Accountability Platform</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg-main: #f4f7fc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary-blue: #2563eb;
+      --primary-hover: #1d4ed8;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --banner-bg: #090e1a;
+      --banner-text: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-sidebar: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --primary-blue: #3b82f6;
+      --primary-hover: #60a5fa;
+      --banner-bg: #020617;
+      --banner-text: #f8fafc;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .brand-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0 0.75rem 1.5rem 0.75rem;
+      letter-spacing: -0.5px;
+    }
+
+    [data-theme="dark"] .brand-logo {
+      color: #60a5fa;
+    }
+
+    .brand-logo span {
+      color: var(--primary-blue);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(37, 99, 235, 0.06);
+      color: var(--primary-blue);
+    }
+
+    .nav-item.active {
+      background-color: rgba(37, 99, 235, 0.1);
+      color: var(--primary-blue);
+    }
+
+    /* Main Area */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .top-header {
+      height: 60px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.75rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-pro {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .badge-session {
+      background-color: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-blue);
+      color: #ffffff;
+      border: none;
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .theme-toggle-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-area {
+      padding: 1.5rem 1.75rem;
+      flex: 1;
+    }
+
+    .page-view {
+      display: none;
+    }
+
+    .page-view.active {
+      display: block;
+    }
+
+    /* Cards & Layout Grid */
+    .card-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Top Demo Workspace Bar */
+    .workspace-bar {
+      background-color: #eff6ff;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    [data-theme="dark"] .workspace-bar {
+      background-color: #1e293b;
+      border-color: #334155;
+    }
+
+    .workspace-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+    }
+
+    .workspace-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 400;
+      margin-left: 0.5rem;
+    }
+
+    /* Summary Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .stat-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+
+    .stat-label {
+      font-size: 0.725rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .sub-green { color: var(--accent-green); }
+    .sub-blue { color: var(--primary-blue); }
+    .sub-muted { color: var(--text-muted); }
+
+    /* Verdict Engine */
+    .verdict-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .verdict-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+
+    .verdict-status {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--accent-green);
+    }
+
+    .verdict-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Split Dashboard Content */
+    .dash-split {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 1.25rem;
+    }
+
+    /* Checklist Column */
+    .checklist-section h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .checklist-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .chk-item {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+    }
+
+    [data-theme="dark"] .chk-item {
+      background-color: #0f172a;
+    }
+
+    .chk-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary-blue);
+      cursor: pointer;
+    }
+
+    .notes-textarea {
+      width: 100%;
+      height: 60px;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+      outline: none;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      resize: vertical;
+    }
+
+    .file-upload-box {
+      border: 1px dashed var(--border-color);
+      padding: 0.6rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      background-color: rgba(37, 99, 235, 0.02);
+    }
+
+    .file-upload-box label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+
+    .btn-group-log {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn-log-compliant {
+      background-color: #059669;
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-log-violation {
+      background-color: #e11d48;
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Chart Column & Trend Indicator */
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .chart-title {
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .trend-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .trend-bull {
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .trend-bear {
+      background-color: #ffe4e6;
+      color: #be123c;
+      border: 1px solid #fecdd3;
+    }
+
+    .chart-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 280px;
+    }
+
+    /* HOME TAB: Welcome Banner + Calendar */
+    .home-banner {
+      background-color: var(--banner-bg);
+      color: var(--banner-text);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .home-banner-tag {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.6rem;
+    }
+
+    .home-banner h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .home-banner p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      max-width: 650px;
+    }
+
+    /* App Cards Grid */
+    .app-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-item-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .app-item-card:hover {
+      border-color: var(--primary-blue);
+    }
+
+    .app-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background-color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.75rem;
+    }
+
+    [data-theme="dark"] .app-icon {
+      background-color: #334155;
+    }
+
+    .app-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .app-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .app-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    /* September 2026 Calendar Grid */
+    .calendar-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .calendar-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .cal-title-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .cal-title-nav h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .cal-stats-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: #e6f4ea;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #137333;
+    }
+
+    [data-theme="dark"] .cal-stats-pills {
+      background-color: #064e3b;
+      color: #a7f3d0;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.4rem;
+    }
+
+    .cal-head-cell {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 0.4rem 0;
+    }
+
+    .cal-day-cell {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      min-height: 65px;
+      padding: 0.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      background-color: var(--bg-card);
+    }
+
+    .cal-day-cell.other-month {
+      opacity: 0.3;
+    }
+
+    .cal-day-cell.profit {
+      background-color: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .cal-day-cell.loss {
+      background-color: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .cal-day-cell.total-col {
+      border-color: var(--primary-blue);
+      background-color: rgba(37, 99, 235, 0.03);
+    }
+
+    .cal-num {
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .cal-val {
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    .cal-val.green { color: #10b981; }
+    .cal-val.red { color: #ef4444; }
+
+    .cal-percent {
+      font-size: 0.65rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* ACCOUNTS PAGE */
+    .brokers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .broker-card {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      background-color: var(--bg-card);
+    }
+
+    .broker-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .broker-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .broker-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .broker-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+
+    /* KNOWLEDGE BASE & QUOTE SECTION */
+    .knowledge-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .quote-card {
+      background-color: rgba(37, 99, 235, 0.05);
+      border-left: 4px solid var(--primary-blue);
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-top: 1rem;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+
+    .rr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .rr-table th, .rr-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+    }
+
+    .rr-table th {
+      background-color: #f8fafc;
+      font-weight: 700;
+    }
+
+    [data-theme="dark"] .rr-table th {
+      background-color: #1e293b;
+    }
+
+    /* SETTINGS / ABOUT PAGE */
+    .about-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .about-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .about-quote-box {
+      background-color: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+
+    .stmt-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .stmt-heading {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      margin-bottom: 0.35rem;
+    }
+
+    .stmt-text {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* JOURNAL BOARD CARDS */
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .journal-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .journal-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .journal-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .tag-compliant { background-color: #dcfce7; color: #166534; }
+    .tag-violation { background-color: #ffe4e6; color: #9f1239; }
+
+    .journal-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .journal-notes {
+      font-size: 0.825rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .journal-img-preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+  </style>
 </head>
-<body class="text-slate-800 antialiased flex flex-col h-screen overflow-hidden">
+<body>
 
-    <!-- TOP NAVBAR -->
-    <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-30 flex-shrink-0">
-        <!-- Logo -->
-        <div class="flex items-center space-x-3 w-60">
-            <div class="font-black text-xl tracking-tight text-slate-900 flex items-center gap-0.5">
-                TRADER<span class="text-blue-600">WELL</span>
-            </div>
-        </div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand-logo">
+      <i data-lucide="shield-check" style="color:#2563eb;"></i> TRADER<span>WELL</span>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" onclick="switchTab('home', this)">
+        <i data-lucide="home"></i> Home
+      </li>
+      <li class="nav-item" onclick="switchTab('dashboard', this)">
+        <i data-lucide="layout-dashboard"></i> Dashboard
+      </li>
+      <li class="nav-item" onclick="switchTab('journal', this)">
+        <i data-lucide="book-open"></i> Journal
+      </li>
+      <li class="nav-item" onclick="switchTab('accounts', this)">
+        <i data-lucide="wallet"></i> Accounts
+      </li>
+      <li class="nav-item" onclick="switchTab('settings', this)">
+        <i data-lucide="settings"></i> Settings
+      </li>
+    </ul>
+  </aside>
 
-        <!-- Top Right Actions / Badges -->
-        <div class="flex items-center space-x-3">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-                💎 Pro Unlocked
-            </span>
-            <div class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                Tokyo • 03:46
-            </div>
-            <button onclick="openCtraderModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                Connect Trading Account &rarr;
-            </button>
-            <div class="w-8 h-8 rounded-full bg-blue-100 border border-blue-300 text-blue-700 font-bold text-xs flex items-center justify-center">
-                TW
-            </div>
-        </div>
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div style="font-weight: 700; font-size: 0.9rem;" id="page-header-title">TraderWell Home</div>
+      <div class="header-actions">
+        <span class="badge-pill badge-pro"><i data-lucide="gem" size="14"></i> Pro Unlocked</span>
+        <span class="badge-pill badge-session"><i data-lucide="globe" size="14"></i> Tokyo • 03:46</span>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <i data-lucide="sun" id="theme-icon"></i>
+        </button>
+        <button class="btn-primary"><i data-lucide="link"></i> Connect Trading Account</button>
+      </div>
     </header>
 
-    <!-- MAIN BODY CONTAINER -->
-    <div class="flex flex-1 overflow-hidden">
+    <main class="content-area">
 
-        <!-- PRIMARY LEFT NAVIGATION SIDEBAR -->
-        <aside class="w-16 bg-white border-r border-slate-200 flex flex-col items-center py-3 justify-between flex-shrink-0 z-20">
-            <div class="flex flex-col items-center space-y-4 w-full">
-                <!-- Home Tab Button -->
-                <button onclick="switchTab('home')" id="tab-btn-home" class="w-12 h-12 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    <span class="text-[10px] font-semibold mt-0.5">Home</span>
-                </button>
-
-                <!-- Dashboard Tab Button -->
-                <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="w-12 h-12 rounded-xl flex flex-col items-center justify-center text-blue-600 bg-blue-50 font-bold transition group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                    <span class="text-[10px] font-semibold mt-0.5">Dashboard</span>
-                </button>
-
-                <!-- Journal Tab Button -->
-                <button onclick="switchTab('journal')" id="tab-btn-journal" class="w-12 h-12 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    <span class="text-[10px] font-semibold mt-0.5">Journal</span>
-                </button>
-
-                <!-- Accounts Tab Button -->
-                <button onclick="switchTab('accounts')" id="tab-btn-accounts" class="w-12 h-12 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    <span class="text-[10px] font-semibold mt-0.5">Accounts</span>
-                </button>
-
-                <!-- Settings Tab Button -->
-                <button onclick="switchTab('settings')" id="tab-btn-settings" class="w-12 h-12 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition group">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                    <span class="text-[10px] font-semibold mt-0.5">Settings</span>
-                </button>
-            </div>
-        </aside>
-
-        <!-- SECONDARY SIDEBAR (DASHBOARD MENU) -->
-        <aside id="secondary-sidebar" class="w-56 bg-slate-50 border-r border-slate-200 p-4 flex flex-col justify-between flex-shrink-0">
-            <div>
-                <div class="mb-5">
-                    <h2 class="text-sm font-extrabold text-slate-900">Dashboard</h2>
-                    <p class="text-xs text-slate-500">Execution & Edge Control</p>
-                </div>
-
-                <nav class="space-y-1">
-                    <a href="#section-metrics" class="flex items-center px-3 py-2 text-xs font-bold text-blue-600 bg-blue-100/60 rounded-lg">
-                        <span class="w-2 h-2 rounded-full bg-blue-600 mr-2.5"></span>
-                        Metrics & Overview
-                    </a>
-                    <a href="#section-checklist" class="flex items-center px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-lg transition">
-                        <span class="w-2 h-2 rounded-full bg-slate-400 mr-2.5"></span>
-                        Execution Checklist
-                    </a>
-                    <a href="#section-equity" class="flex items-center px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-lg transition">
-                        <span class="w-2 h-2 rounded-full bg-slate-400 mr-2.5"></span>
-                        Broker Equity Chart
-                    </a>
-                    <a href="#section-brokers" class="flex items-center px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-lg transition">
-                        <span class="w-2 h-2 rounded-full bg-slate-400 mr-2.5"></span>
-                        cTrader & ECN Brokers
-                    </a>
-                    <a href="#section-knowledge" class="flex items-center px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-lg transition">
-                        <span class="w-2 h-2 rounded-full bg-slate-400 mr-2.5"></span>
-                        Knowledge Base
-                    </a>
-                </nav>
-            </div>
-
-            <div class="p-3 bg-white border border-slate-200 rounded-xl">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">System State</span>
-                <span id="sidebarVerdictBadge" class="text-xs font-extrabold text-emerald-600 block">COMPLIANT EDGE</span>
-            </div>
-        </aside>
-
-        <!-- MAIN SCROLLABLE CONTENT VIEWPORT -->
-        <main class="flex-1 overflow-y-auto p-6 space-y-6">
-
-            <!-- TAB 1: HOME PAGE (APPS & OVERVIEW) -->
-            <div id="view-home" class="space-y-6 hidden">
-                <div class="bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
-                    <div class="max-w-2xl relative z-10">
-                        <span class="text-xs font-bold tracking-widest text-blue-400 uppercase bg-blue-500/20 px-3 py-1 rounded-full border border-blue-400/20">TRADERWELL HOME</span>
-                        <h2 class="text-2xl font-black mt-3">Welcome back, Master Trader</h2>
-                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                            "Bridge the gap between execution discipline and broker equity—discover whether your system holds a true statistical edge or if you’re just gambling."
-                        </p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider mb-3">Your Apps</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                        <div onclick="switchTab('dashboard')" class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-500 cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg mb-3">📊</div>
-                            <h4 class="font-bold text-sm text-slate-900">Dashboard</h4>
-                            <p class="text-xs text-slate-500 mt-1">Review performance, equity curve, and discipline compliance.</p>
-                            <span class="text-xs font-bold text-blue-600 mt-3 inline-block">Open app &rarr;</span>
-                        </div>
-
-                        <div onclick="switchTab('journal')" class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-500 cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg mb-3">📝</div>
-                            <h4 class="font-bold text-sm text-slate-900">Journal</h4>
-                            <p class="text-xs text-slate-500 mt-1">Turn trade executions into structured lessons.</p>
-                            <span class="text-xs font-bold text-blue-600 mt-3 inline-block">Open app &rarr;</span>
-                        </div>
-
-                        <div onclick="switchTab('accounts')" class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-500 cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-3">🏦</div>
-                            <h4 class="font-bold text-sm text-slate-900">Accounts</h4>
-                            <p class="text-xs text-slate-500 mt-1">Manage broker connections, cTrader APIs, and starting capital.</p>
-                            <span class="text-xs font-bold text-blue-600 mt-3 inline-block">Open app &rarr;</span>
-                        </div>
-
-                        <div onclick="switchTab('settings')" class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-500 cursor-pointer transition">
-                            <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg mb-3">🏆</div>
-                            <h4 class="font-bold text-sm text-slate-900">Achievements</h4>
-                            <p class="text-xs text-slate-500 mt-1">Check weekly discipline streak rankings and milestone badges.</p>
-                            <span class="text-xs font-bold text-blue-600 mt-3 inline-block">Open app &rarr;</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: MAIN DASHBOARD VIEW -->
-            <div id="view-dashboard" class="space-y-6">
-
-                <!-- BANNER: DEMO WORKSPACE BAR -->
-                <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-                        <div>
-                            <span class="text-xs font-extrabold text-blue-900 uppercase tracking-wider">Demo Workspace</span>
-                            <span class="text-xs text-blue-700 ml-2">Viewing live discipline vs broker equity data points</span>
-                        </div>
-                    </div>
-                    <button onclick="openCtraderModal()" class="text-xs font-bold bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">
-                        Connect Live Account
-                    </button>
-                </div>
-
-                <!-- TOP STAT CARDS (LARGE TYPOGRAPHY SCALE) -->
-                <section id="section-metrics" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Current Balance</span>
-                        <div id="stat-equity" class="text-3xl font-black text-slate-900 mt-1">$25,857.36</div>
-                        <span class="text-xs font-bold text-emerald-600 mt-1 block">+158.57% Total Gain</span>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Discipline Compliance</span>
-                        <div id="stat-compliance" class="text-3xl font-black text-blue-600 mt-1">100%</div>
-                        <span class="text-xs text-slate-500 mt-1 block">Execution Setup Grade</span>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Winstreak / Streak</span>
-                        <div id="stat-streak" class="text-3xl font-black text-emerald-600 mt-1">2 Trades</div>
-                        <span id="streakMultiplierText" class="text-xs font-semibold text-emerald-600 mt-1 block">1.2x Multiplier Active</span>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Total XP Score</span>
-                        <div id="stat-score" class="text-3xl font-black text-purple-600 mt-1">120</div>
-                        <span class="text-xs text-slate-500 mt-1 block">Disciplined Trade Points</span>
-                    </div>
-                </section>
-
-                <!-- AUTOMATED SYSTEM VERDICT ENGINE -->
-                <div class="bg-white border border-slate-200 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
-                    <div>
-                        <span class="text-[10px] uppercase tracking-widest font-extrabold text-slate-400 block">Automated System Verdict Engine</span>
-                        <div id="edgeVerdictBadge" class="text-base font-extrabold text-emerald-600 mt-0.5">
-                            TRUE STRONG EDGE SYSTEM (Compliant Growth)
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <label for="csvFileInput" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl cursor-pointer transition">
-                            Import Broker CSV
-                        </label>
-                        <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleBrokerCSV(event)">
-                        <button onclick="exportHistoryFile()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition">
-                            Export State
-                        </button>
-                    </div>
-                </div>
-
-                <!-- MAIN WORKSPACE: CHECKLIST & EQUITY CHART GRID -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                    <!-- LEFT PANEL: EXECUTION CHECKLIST -->
-                    <div id="section-checklist" class="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                    Execution Checklist
-                                </h3>
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-xs text-slate-400">Edits left: <strong id="editCountBadge" class="text-blue-600">2</strong></span>
-                                    <button onclick="openCustomizeChecklistModal()" class="text-xs text-blue-600 hover:underline font-bold">Customize</button>
-                                </div>
-                            </div>
-
-                            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
-                                Verify all pre-trade parameters before placing an order. Rules are locked to prevent curve-fitting during active trading.
-                            </p>
-
-                            <div id="checklistContainer" class="space-y-3">
-                                <!-- Dynamic Checklists rendered via JS -->
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-4 border-t border-slate-100 space-y-3">
-                            <textarea id="tradeNoteInput" rows="2" placeholder="Optional execution context, market condition, or mistake log..." class="w-full text-xs p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="logSession('compliant')" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold transition shadow-md shadow-emerald-600/20">
-                                    Log Compliant Trade
-                                </button>
-                                <button onclick="logSession('violation')" class="py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-extrabold transition shadow-md shadow-rose-600/20">
-                                    Log Rule Violation
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT PANEL: BROKER EQUITY CURVE -->
-                    <div id="section-equity" class="lg:col-span-7 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Broker Equity Curve</h3>
-                                <p class="text-xs text-slate-500">Live or CSV imported account performance points</p>
-                            </div>
-                            <button onclick="openCtraderModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow-sm">
-                                Sync cTrader
-                            </button>
-                        </div>
-
-                        <div class="flex-grow w-full min-h-[300px] relative">
-                            <canvas id="equityChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PREFERRED ECN BROKERS & CTRADER -->
-                <section id="section-brokers" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="text-base font-extrabold text-slate-900">Connect to cTrader & Preferred ECN Brokers</h3>
-                            <p class="text-xs text-slate-500 mt-1">Connect your trading account directly or open a raw ECN account through our verified partners.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="font-extrabold text-sm text-slate-900">IC Markets</span>
-                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">cTrader Raw ECN</span>
-                                </div>
-                                <p class="text-xs text-slate-500 mb-4">Ultra-low spreads from 0.0 pips, deep liquidity, and native cTrader integration.</p>
-                            </div>
-                            <a href="https://www.icmarkets.com" target="_blank" class="w-full py-2 bg-slate-200 hover:bg-blue-600 hover:text-white text-slate-800 font-bold text-xs rounded-lg text-center transition">
-                                Open ECN Account
-                            </a>
-                        </div>
-
-                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="font-extrabold text-sm text-slate-900">Pepperstone</span>
-                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">cTrader Razor</span>
-                                </div>
-                                <p class="text-xs text-slate-500 mb-4">Fast execution speeds, regulated globally, and automated order matching.</p>
-                            </div>
-                            <a href="https://www.pepperstone.com" target="_blank" class="w-full py-2 bg-slate-200 hover:bg-blue-600 hover:text-white text-slate-800 font-bold text-xs rounded-lg text-center transition">
-                                Open Razor Account
-                            </a>
-                        </div>
-
-                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="font-extrabold text-sm text-slate-900">FP Markets</span>
-                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">cTrader Raw</span>
-                                </div>
-                                <p class="text-xs text-slate-500 mb-4">Competitive commissions, high-tier regulation, and zero requotes.</p>
-                            </div>
-                            <a href="https://www.fpmarkets.com" target="_blank" class="w-full py-2 bg-slate-200 hover:bg-blue-600 hover:text-white text-slate-800 font-bold text-xs rounded-lg text-center transition">
-                                Open Raw Account
-                            </a>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- KNOWLEDGE BASE & SAMPLE SIZE MATH -->
-                <section id="section-knowledge" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                    <h3 class="text-base font-extrabold text-slate-900 mb-2">Knowledge Base: Risk to Reward Ratio Formula</h3>
-                    <p class="text-xs text-slate-500 mb-6">
-                        When analyzing a sample size of 50 trades, your win rate determines how aggressive your risk-to-reward (R:R) ratio needs to be to remain profitable. Assuming you risk a fixed amount of $100 per trade:
-                    </p>
-
-                    <div class="overflow-x-auto mb-6">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-700">
-                                    <th class="p-3 font-extrabold">Risk-to-Reward Ratio</th>
-                                    <th class="p-3 font-extrabold">30 Wins / 20 Losses (60% Win Rate)</th>
-                                    <th class="p-3 font-extrabold">25 Wins / 25 Losses (50% Win Rate)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200 text-slate-700">
-                                <tr>
-                                    <td class="p-3 font-semibold">1:1 RR (Win: $100 / Loss: $100)</td>
-                                    <td class="p-3 text-emerald-600 font-extrabold">+$1,000 Profit</td>
-                                    <td class="p-3 font-extrabold text-slate-400">$0 (Break-Even)</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-semibold">1:2 RR (Win: $200 / Loss: $100)</td>
-                                    <td class="p-3 text-emerald-600 font-extrabold">+$4,000 Profit</td>
-                                    <td class="p-3 text-emerald-600 font-extrabold">+$2,500 Profit</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-3 font-semibold">1:3 RR (Win: $300 / Loss: $100)</td>
-                                    <td class="p-3 text-emerald-600 font-extrabold">+$7,000 Profit</td>
-                                    <td class="p-3 text-emerald-600 font-extrabold">+$5,000 Profit</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- EXECUTION LEDGER HISTORY -->
-                <section class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Execution Ledger History</h3>
-                        <span id="record-count-badge" class="text-xs font-semibold text-slate-400">0 executions logged</span>
-                    </div>
-                    <div id="recordsContainer" class="space-y-3">
-                        <div class="p-6 text-center border border-dashed border-slate-300 rounded-xl text-slate-400 text-xs">
-                            No executions logged in this session yet.
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- TAB 3: JOURNAL VIEW -->
-            <div id="view-journal" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-lg font-extrabold text-slate-900">Trade Execution Journal</h2>
-                    <p class="text-xs text-slate-500 mt-1">Review your execution context logs and psychological notes.</p>
-                </div>
-            </div>
-
-            <!-- TAB 4: ACCOUNTS VIEW -->
-            <div id="view-accounts" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-lg font-extrabold text-slate-900">Connected Accounts</h2>
-                    <p class="text-xs text-slate-500 mt-1">Manage API keys, cTrader access tokens, and baseline capital settings.</p>
-                </div>
-            </div>
-
-            <!-- TAB 5: SETTINGS & ACHIEVEMENTS VIEW -->
-            <div id="view-settings" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h2 class="text-lg font-extrabold text-slate-900">Account & Streak Settings</h2>
-                    <p class="text-xs text-slate-500 mt-1">Track discipline badges and execution ranks.</p>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- MODAL: CTRADER CONNECT -->
-    <div id="ctraderModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
-            <h3 class="text-base font-extrabold text-slate-900 mb-1">Connect cTrader Open API</h3>
-            <p class="text-xs text-slate-500 mb-4">Enter your cTrader account credentials to sync real-time equity updates.</p>
-            <div class="space-y-3 mb-4">
-                <div>
-                    <label class="text-[11px] font-bold text-slate-500 uppercase">Account ID</label>
-                    <input type="text" id="ctraderAccId" placeholder="e.g. 1234567" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-500 uppercase">Access Token</label>
-                    <input type="password" id="ctraderToken" placeholder="cTrader OAuth Access Token" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2">
-                <button onclick="closeCtraderModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cancel</button>
-                <button onclick="simulateCtraderConnect()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md">Sync Equity</button>
-            </div>
+      <!-- PAGE 1: HOME PAGE -->
+      <section id="view-home" class="page-view active">
+        <div class="home-banner">
+          <span class="home-banner-tag">TRADERWELL HOME</span>
+          <h1>Welcome back, Master Trader</h1>
+          <p>"Bridge the gap between execution discipline and broker equity—discover whether your system holds a true statistical edge or if you're just gambling."</p>
         </div>
-    </div>
 
-    <!-- MODAL: CUSTOMIZE CHECKLIST -->
-    <div id="checklistModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
-            <h3 class="text-base font-extrabold text-slate-900 mb-1">Edit Execution Rules</h3>
-            <p class="text-xs text-slate-500 mb-4">Changes are strictly allocation-limited to protect against curve-fitting your strategy parameters.</p>
-            <div class="space-y-3 mb-4">
-                <input type="text" id="rule1" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
-                <input type="text" id="rule2" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
-                <input type="text" id="rule3" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
-                <input type="text" id="rule4" class="w-full p-2.5 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900">
-            </div>
-            <div class="flex justify-end space-x-2">
-                <button onclick="closeChecklistModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cancel</button>
-                <button onclick="saveChecklistRules()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md">Save Rules</button>
-            </div>
+        <div class="app-cards-grid">
+          <div class="app-item-card" onclick="switchTab('dashboard', document.querySelectorAll('.nav-item')[1])">
+            <div class="app-icon"><i data-lucide="bar-chart-2" style="color:#2563eb;"></i></div>
+            <div class="app-title">Dashboard</div>
+            <div class="app-desc">Review performance, equity curve, and discipline compliance.</div>
+            <div class="app-link">Open app →</div>
+          </div>
+          <div class="app-item-card" onclick="switchTab('journal', document.querySelectorAll('.nav-item')[2])">
+            <div class="app-icon"><i data-lucide="edit-3" style="color:#10b981;"></i></div>
+            <div class="app-title">Journal</div>
+            <div class="app-desc">Turn trade executions into structured lessons with chart captures.</div>
+            <div class="app-link">Open app →</div>
+          </div>
+          <div class="app-item-card" onclick="switchTab('accounts', document.querySelectorAll('.nav-item')[3])">
+            <div class="app-icon"><i data-lucide="building-2" style="color:#f59e0b;"></i></div>
+            <div class="app-title">Accounts</div>
+            <div class="app-desc">Manage broker connections, cTrader APIs, and starting capital.</div>
+            <div class="app-link">Open app →</div>
+          </div>
+          <div class="app-item-card" onclick="switchTab('settings', document.querySelectorAll('.nav-item')[4])">
+            <div class="app-icon"><i data-lucide="trophy" style="color:#8b5cf6;"></i></div>
+            <div class="app-title">Settings & About</div>
+            <div class="app-desc">View mission, vision, and system parameters.</div>
+            <div class="app-link">Open app →</div>
+          </div>
         </div>
-    </div>
 
-    <!-- JAVASCRIPT ENGINE -->
-    <script>
-        // TAB SWITCHING ENGINE
-        function switchTab(tabName) {
-            const tabs = ['home', 'dashboard', 'journal', 'accounts', 'settings'];
-            tabs.forEach(t => {
-                const view = document.getElementById(`view-${t}`);
-                const btn = document.getElementById(`tab-btn-${t}`);
-                if (t === tabName) {
-                    if (view) view.classList.remove('hidden');
-                    if (btn) {
-                        btn.className = "w-12 h-12 rounded-xl flex flex-col items-center justify-center text-blue-600 bg-blue-50 font-bold transition group";
-                    }
-                } else {
-                    if (view) view.classList.add('hidden');
-                    if (btn) {
-                        btn.className = "w-12 h-12 rounded-xl flex flex-col items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition group";
-                    }
-                }
-            });
+        <!-- September 2026 Monthly PnL Performance Grid -->
+        <div class="calendar-container">
+          <div class="calendar-header-bar">
+            <div class="cal-title-nav">
+              <button class="btn-outline">&lt;</button>
+              <h2>September 2026</h2>
+              <button class="btn-outline">&gt;</button>
+            </div>
+            <div class="cal-stats-pills">
+              <span>Trades: <b>24</b></span> |
+              <span>Wins: <b>14</b></span> |
+              <span>Net PnL: <b>77.12</b></span> |
+              <span>Percent: <b>0.30%</b></span>
+            </div>
+          </div>
 
-            // Toggle secondary sidebar visibility
-            const secSidebar = document.getElementById('secondary-sidebar');
-            if (tabName === 'dashboard') {
-                secSidebar.classList.remove('hidden');
-            } else {
-                secSidebar.classList.add('hidden');
+          <div class="calendar-grid">
+            <!-- Table Headers -->
+            <div class="cal-head-cell">Mon</div>
+            <div class="cal-head-cell">Tue</div>
+            <div class="cal-head-cell">Wed</div>
+            <div class="cal-head-cell">Thu</div>
+            <div class="cal-head-cell">Fri</div>
+            <div class="cal-head-cell">Sat</div>
+            <div class="cal-head-cell">Sun</div>
+            <div class="cal-head-cell">Total</div>
+
+            <!-- Row 1 -->
+            <div class="cal-day-cell other-month"><span class="cal-num">31</span></div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">1</span>
+              <div class="cal-val green">157.89</div>
+              <div class="cal-percent">0.61%</div>
+            </div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">2</span>
+              <div class="cal-val green">125.28</div>
+              <div class="cal-percent">0.48%</div>
+            </div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">3</span>
+              <div class="cal-val green">35.21</div>
+              <div class="cal-percent">0.14%</div>
+            </div>
+            <div class="cal-day-cell"><span class="cal-num">4</span></div>
+            <div class="cal-day-cell loss">
+              <span class="cal-num">5</span>
+              <div class="cal-val red">-123.60</div>
+              <div class="cal-percent">-0.47%</div>
+            </div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">6</span>
+              <div class="cal-val green">27.38</div>
+              <div class="cal-percent">0.11%</div>
+            </div>
+            <div class="cal-day-cell total-col profit">
+              <span class="cal-num">W1 Total</span>
+              <div class="cal-val green">$222.16</div>
+              <div class="cal-percent">+0.86%</div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="cal-day-cell"><span class="cal-num">7</span></div>
+            <div class="cal-day-cell loss">
+              <span class="cal-num">8</span>
+              <div class="cal-val red">-51.37</div>
+              <div class="cal-percent">-0.20%</div>
+            </div>
+            <div class="cal-day-cell"><span class="cal-num">9</span></div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">10</span>
+              <div class="cal-val green">54.39</div>
+              <div class="cal-percent">0.21%</div>
+            </div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">11</span>
+              <div class="cal-val green">50.45</div>
+              <div class="cal-percent">0.19%</div>
+            </div>
+            <div class="cal-day-cell"><span class="cal-num">12</span></div>
+            <div class="cal-day-cell loss">
+              <span class="cal-num">13</span>
+              <div class="cal-val red">-102.69</div>
+              <div class="cal-percent">-0.39%</div>
+            </div>
+            <div class="cal-day-cell total-col loss">
+              <span class="cal-num">W2 Total</span>
+              <div class="cal-val red">-$49.22</div>
+              <div class="cal-percent">-0.19%</div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="cal-day-cell profit">
+              <span class="cal-num">14</span>
+              <div class="cal-val green">17.54</div>
+              <div class="cal-percent">0.07%</div>
+            </div>
+            <div class="cal-day-cell"><span class="cal-num">15</span></div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">16</span>
+              <div class="cal-val green">129.27</div>
+              <div class="cal-percent">0.50%</div>
+            </div>
+            <div class="cal-day-cell loss">
+              <span class="cal-num">17</span>
+              <div class="cal-val red">-22.00</div>
+              <div class="cal-percent">-0.08%</div>
+            </div>
+            <div class="cal-day-cell loss">
+              <span class="cal-num">18</span>
+              <div class="cal-val red">-200.25</div>
+              <div class="cal-percent">-0.77%</div>
+            </div>
+            <div class="cal-day-cell"><span class="cal-num">19</span></div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">20</span>
+              <div class="cal-val green">77.86</div>
+              <div class="cal-percent">0.30%</div>
+            </div>
+            <div class="cal-day-cell total-col profit">
+              <span class="cal-num">W3 Total</span>
+              <div class="cal-val green">$2.42</div>
+              <div class="cal-percent">+0.01%</div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="cal-day-cell loss">
+              <span class="cal-num">21</span>
+              <div class="cal-val red">-247.07</div>
+              <div class="cal-percent">-0.95%</div>
+            </div>
+            <div class="cal-day-cell profit">
+              <span class="cal-num">22</span>
+              <div class="cal-val green">148.83</div>
+              <div class="cal-percent">0.58%</div>
+            </div>
+            <div class="cal-day-cell" style="background-color: #dbeafe;"><span class="cal-num" style="color:#1d4ed8; font-weight:800;">23</span></div>
+            <div class="cal-day-cell"><span class="cal-num">24</span></div>
+            <div class="cal-day-cell"><span class="cal-num">25</span></div>
+            <div class="cal-day-cell"><span class="cal-num">26</span></div>
+            <div class="cal-day-cell"><span class="cal-num">27</span></div>
+            <div class="cal-day-cell total-col loss">
+              <span class="cal-num">W4 Total</span>
+              <div class="cal-val red">-$98.24</div>
+              <div class="cal-percent">-0.38%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 2: DASHBOARD PAGE (RESTORED EXACT ORIGINAL DESIGN) -->
+      <section id="view-dashboard" class="page-view">
+        <div class="workspace-bar">
+          <div class="workspace-status">
+            <i data-lucide="circle" size="10" fill="#2563eb"></i> DEMO WORKSPACE
+            <span class="workspace-sub">Viewing live discipline vs broker equity data points</span>
+          </div>
+          <button class="btn-primary" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">Connect Live Account</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">CURRENT BALANCE</div>
+            <div class="stat-value">$25,857.36</div>
+            <div class="stat-sub sub-green">+158.57% Total Gain</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">DISCIPLINE COMPLIANCE</div>
+            <div class="stat-value">100%</div>
+            <div class="stat-sub sub-blue">Execution Setup Grade</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">WINSTREAK / STREAK</div>
+            <div class="stat-value" style="color:#10b981;">2 Trades</div>
+            <div class="stat-sub sub-green">1.2x Multiplier Active</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TOTAL XP SCORE</div>
+            <div class="stat-value" style="color:#8b5cf6;">120</div>
+            <div class="stat-sub sub-muted">Disciplined Trade Points</div>
+          </div>
+        </div>
+
+        <div class="verdict-box">
+          <div>
+            <div class="verdict-title">AUTOMATED SYSTEM VERDICT ENGINE</div>
+            <div class="verdict-status">TRUE STRONG EDGE SYSTEM (Compliant Growth)</div>
+          </div>
+          <div class="verdict-actions">
+            <button class="btn-outline">Import Broker CSV</button>
+            <button class="btn-outline">Export Stats</button>
+          </div>
+        </div>
+
+        <div class="dash-split">
+          <!-- Execution Checklist Form -->
+          <div class="card-box checklist-section">
+            <h3>• EXECUTION CHECKLIST <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">Edits left: 2 <a href="#" style="color:var(--primary-blue);">Customize</a></span></h3>
+            <p class="checklist-desc">Verify all pre-trade parameters before placing an order. Rules are locked to prevent curve-fitting during active trading.</p>
+
+            <div class="chk-item">
+              <input type="checkbox" id="chk1" checked>
+              <label for="chk1">Market Structure & Higher Timeframe Alignment Confirmed</label>
+            </div>
+            <div class="chk-item">
+              <input type="checkbox" id="chk2" checked>
+              <label for="chk2">Key Support/Resistance or Liquidity Zone Validated</label>
+            </div>
+            <div class="chk-item">
+              <input type="checkbox" id="chk3" checked>
+              <label for="chk3">Strict Risk-to-Reward Ratio Minimum 1:2 Pre-Calculated</label>
+            </div>
+            <div class="chk-item">
+              <input type="checkbox" id="chk4" checked>
+              <label for="chk4">No Impulse/FOMO Entry — Confirmation Candle Closed</label>
+            </div>
+
+            <div class="file-upload-box">
+              <label><i data-lucide="image" size="14"></i> Mandatory Chart Capture Screenshot:</label>
+              <input type="file" id="trade-chart-file" accept="image/*" style="font-size:0.75rem;">
+            </div>
+
+            <textarea class="notes-textarea" id="trade-notes" placeholder="Enter psychological notes or execution context..."></textarea>
+
+            <div class="btn-group-log">
+              <button class="btn-log-compliant" onclick="logTrade(true)">Log Compliant Trade</button>
+              <button class="btn-log-violation" onclick="logTrade(false)">Log Rule Violation</button>
+            </div>
+          </div>
+
+          <!-- Broker Equity Curve Graph with Dynamic Bull/Bear Logo -->
+          <div class="card-box">
+            <div class="chart-header">
+              <div class="chart-title">
+                BROKER EQUITY CURVE
+                <span id="trend-badge-el" class="trend-badge trend-bull">
+                  <i data-lucide="trending-up" id="trend-icon"></i> BULLISH TREND (PNL UP)
+                </span>
+              </div>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.75rem;">Live or CSV imported account performance points</p>
+            <div class="chart-canvas-container">
+              <canvas id="equityChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 3: JOURNAL BOARD -->
+      <section id="view-journal" class="page-view">
+        <div class="card-box">
+          <h2 style="font-size: 1.2rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 0.25rem;">Trade Execution Journal</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Review your execution context logs, psychological notes, and captured chart screenshots.</p>
+        </div>
+
+        <div class="journal-grid" id="journal-cards-container">
+          <!-- Dynamically populated journal entries -->
+        </div>
+      </section>
+
+      <!-- PAGE 4: ACCOUNTS (Includes cTrader Brokers + Knowledge Readings) -->
+      <section id="view-accounts" class="page-view">
+        <div class="card-box">
+          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.25rem;">Connect to cTrader & Preferred ECN Brokers</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Connect your trading account directly or open a raw ECN account through our verified partners.</p>
+
+          <div class="brokers-grid">
+            <div class="broker-card">
+              <div class="broker-card-header">
+                <span class="broker-name">IC Markets</span>
+                <span class="broker-tag">cTrader Raw ECN</span>
+              </div>
+              <div class="broker-desc">Ultra-low spreads from 0.0 pips, deep liquidity, and native cTrader integration.</div>
+              <button class="btn-outline" style="width: 100%;">Open ECN Account</button>
+            </div>
+
+            <div class="broker-card">
+              <div class="broker-card-header">
+                <span class="broker-name">Pepperstone</span>
+                <span class="broker-tag">cTrader Razor</span>
+              </div>
+              <div class="broker-desc">Fast execution speeds, regulated globally, and automated order matching.</div>
+              <button class="btn-outline" style="width: 100%;">Open Razor Account</button>
+            </div>
+
+            <div class="broker-card">
+              <div class="broker-card-header">
+                <span class="broker-name">FP Markets</span>
+                <span class="broker-tag">cTrader Raw</span>
+              </div>
+              <div class="broker-desc">Competitive commissions, high-tier regulation, and zero requotes.</div>
+              <button class="btn-outline" style="width: 100%;">Open Raw Account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Knowledge Base & Daily Quotes under Accounts (In between Settings) -->
+        <div class="knowledge-box">
+          <h3 style="font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem;">Knowledge Base: Risk to Reward Ratio Formula</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">When analyzing a sample size of 50 trades, your win rate determines how aggressive your risk-to-reward (R:R) ratio needs to be to remain profitable. Assuming you risk a fixed amount of $100 per trade:</p>
+
+          <table class="rr-table">
+            <thead>
+              <tr>
+                <th>Risk-to-Reward Ratio</th>
+                <th>30 Wins / 20 Losses (60% Win Rate)</th>
+                <th>25 Wins / 25 Losses (50% Win Rate)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>1:1 RR</b> (Win: $100 / Loss: $100)</td>
+                <td style="color:#10b981; font-weight:700;">+$1,000 Profit</td>
+                <td style="color:var(--text-muted); font-weight:700;">$0 (Break-Even)</td>
+              </tr>
+              <tr>
+                <td><b>1:2 RR</b> (Win: $200 / Loss: $100)</td>
+                <td style="color:#10b981; font-weight:700;">+$4,000 Profit</td>
+                <td style="color:#10b981; font-weight:700;">+$2,500 Profit</td>
+              </tr>
+              <tr>
+                <td><b>1:3 RR</b> (Win: $300 / Loss: $100)</td>
+                <td style="color:#10b981; font-weight:700;">+$7,000 Profit</td>
+                <td style="color:#10b981; font-weight:700;">+$5,000 Profit</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="quote-card">
+            "Execution discipline is not about predicting the future; it is about flawlessly executing your edge over a statistically significant sample size while remaining completely unattached to the outcome of any single trade."
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 5: SETTINGS & ABOUT -->
+      <section id="view-settings" class="page-view">
+        <div class="card-box">
+          <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.25rem;">Platform Settings & Configuration</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Manage your workspace parameters, notification rules, and preferences.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-title">• About TraderWell</div>
+          <div class="about-quote-box">
+            "Bridge the gap between execution discipline and broker equity—discover whether your system holds a true statistical edge or if you're just gambling."
+          </div>
+
+          <div class="stmt-group">
+            <div class="stmt-heading">Mission Statement</div>
+            <div class="stmt-text">
+              "Our mission is to empower traders to master execution discipline by providing objective, data-driven comparisons between their trading rule compliance and actual broker performance—helping them eliminate emotional gambling, identify true system edge, and build long-term profitability."
+            </div>
+          </div>
+
+          <div class="stmt-group">
+            <div class="stmt-heading">Vision Statement</div>
+            <div class="stmt-text">
+              "To become the global standard for trading accountability, where traders measure their success not just by monetary gains, but by flawless execution discipline and verifiable statistical expectancy."
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Equity Curve Data State
+    let equityPoints = [10000, 12500, 15000, 18500, 22000, 25857.36];
+    let chartLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'];
+    let chartInstance = null;
+
+    // Journal Trades State
+    let tradeLogs = [
+      {
+        type: 'Compliant Trade',
+        status: 'compliant',
+        date: 'Sep 22, 2026 - 14:32',
+        notes: 'Market structure aligned on 4H chart. Entered after liquidity sweep with 1:2.5 RR.',
+        image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        type: 'Compliant Trade',
+        status: 'compliant',
+        date: 'Sep 20, 2026 - 09:15',
+        notes: 'Key support zone validated. Execution checklist 100% verified prior to order placement.',
+        image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80'
+      }
+    ];
+
+    // Initialize Equity Curve Chart
+    function renderChart() {
+      const ctx = document.getElementById('equityChart').getContext('2d');
+      const isUp = equityPoints[equityPoints.length - 1] >= equityPoints[0];
+
+      // Update Bull / Bear dynamic indicator badge
+      const badge = document.getElementById('trend-badge-el');
+      if (isUp) {
+        badge.className = 'trend-badge trend-bull';
+        badge.innerHTML = '<i data-lucide="trending-up"></i> BULLISH TREND (PNL UP)';
+      } else {
+        badge.className = 'trend-badge trend-bear';
+        badge.innerHTML = '<i data-lucide="trending-down"></i> BEARISH TREND (PNL DOWN)';
+      }
+      lucide.createIcons();
+
+      const lineColor = isUp ? '#2563eb' : '#ef4444';
+      const bgGradientColor = isUp ? 'rgba(37, 99, 235, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartLabels,
+          datasets: [{
+            label: 'Broker Equity ($)',
+            data: equityPoints,
+            borderColor: lineColor,
+            borderWidth: 3,
+            backgroundColor: bgGradientColor,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: lineColor,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false }
+            },
+            y: {
+              grid: { color: 'rgba(0,0,0,0.05)' }
             }
+          }
         }
+      });
+    }
 
-        // DASHBOARD STATE MANAGEMENT
-        let chartInstance = null;
-        let disciplineStreak = parseInt(localStorage.getItem('twp_discipline_streak')) || 2;
-        let sessionData = JSON.parse(localStorage.getItem('twp_edge_session_data')) || [];
-        let brokerEquityPoints = JSON.parse(localStorage.getItem('twp_broker_equity_points')) || [10000, 12500, 15000, 18500, 22000, 25857.36];
+    // Render Journal Entries
+    function renderJournal() {
+      const container = document.getElementById('journal-cards-container');
+      container.innerHTML = '';
 
-        let checklistState = JSON.parse(localStorage.getItem('twp_checklist_state')) || {
-            editsRemaining: 2,
-            rules: [
-                "Market Structure & Higher Timeframe Alignment Confirmed",
-                "Key Support/Resistance or Liquidity Zone Validated",
-                "Strict Risk-to-Reward Ratio Minimum 1:2 Pre-Calculated",
-                "No Impulse/FOMO Entry — Confirmation Candle Closed"
-            ]
+      tradeLogs.forEach(trade => {
+        const card = document.createElement('div');
+        card.className = 'journal-card';
+        card.innerHTML = `
+          <div class="journal-card-header">
+            <span class="journal-tag ${trade.status === 'compliant' ? 'tag-compliant' : 'tag-violation'}">${trade.type}</span>
+            <span class="journal-date">${trade.date}</span>
+          </div>
+          <div class="journal-notes">${trade.notes || 'No specific notes recorded.'}</div>
+          ${trade.image ? `<img src="${trade.image}" class="journal-img-preview" alt="Chart capture">` : '<div style="font-size:0.75rem; color:var(--text-muted); font-style:italic;">No chart capture attached</div>'}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Log Compliant or Rule Violation Trade
+    function logTrade(isCompliant) {
+      const fileInput = document.getElementById('trade-chart-file');
+      const notesInput = document.getElementById('trade-notes').value;
+
+      let imageSrc = null;
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imageSrc = e.target.result;
+          saveAndRefresh(isCompliant, notesInput, imageSrc);
         };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        saveAndRefresh(isCompliant, notesInput, null);
+      }
+    }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            renderChecklist();
-            initChart(brokerEquityPoints);
-            renderRecords();
-            updateStats();
-            recalculateEdgeState();
-        });
+    function saveAndRefresh(isCompliant, notes, imageSrc) {
+      const newTrade = {
+        type: isCompliant ? 'Compliant Trade' : 'Rule Violation',
+        status: isCompliant ? 'compliant' : 'violation',
+        date: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        notes: notes || (isCompliant ? 'Logged compliant trade meeting all parameters.' : 'Logged rule violation.'),
+        image: imageSrc
+      };
 
-        function initChart(dataPoints) {
-            const ctx = document.getElementById('equityChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
+      tradeLogs.unshift(newTrade);
 
-            const gradient = ctx.createLinearGradient(0, 0, 0, 250);
-            gradient.addColorStop(0, '#2563eb33');
-            gradient.addColorStop(1, '#2563eb00');
+      // Update Chart equity mock
+      const lastVal = equityPoints[equityPoints.length - 1];
+      const delta = isCompliant ? 1200 : -1500;
+      equityPoints.push(Math.max(5000, lastVal + delta));
+      chartLabels.push('T' + equityPoints.length);
 
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dataPoints.map((_, i) => `T${i + 1}`),
-                    datasets: [{
-                        label: 'Account Equity ($)',
-                        data: dataPoints,
-                        borderColor: '#2563eb',
-                        borderWidth: 3,
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.3,
-                        pointBackgroundColor: '#2563eb',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 } } },
-                        y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 11 }, callback: (v) => `$${v.toLocaleString()}` } }
-                    }
-                }
-            });
-        }
+      renderChart();
+      renderJournal();
 
-        function renderChecklist() {
-            document.getElementById('editCountBadge').innerText = checklistState.editsRemaining;
-            const container = document.getElementById('checklistContainer');
-            container.innerHTML = checklistState.rules.map((rule, idx) => `
-                <label class="flex items-center space-x-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:border-blue-500 transition">
-                    <input type="checkbox" name="chk" value="Rule ${idx+1}" class="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" onchange="recalculateEdgeState()">
-                    <span class="text-xs font-semibold text-slate-800">${rule}</span>
-                </label>
-            `).join('');
-        }
+      // Clear form inputs
+      document.getElementById('trade-notes').value = '';
+      document.getElementById('trade-chart-file').value = '';
 
-        function openCustomizeChecklistModal() {
-            document.getElementById('rule1').value = checklistState.rules[0] || '';
-            document.getElementById('rule2').value = checklistState.rules[1] || '';
-            document.getElementById('rule3').value = checklistState.rules[2] || '';
-            document.getElementById('rule4').value = checklistState.rules[3] || '';
-            document.getElementById('checklistModal').classList.remove('hidden');
-        }
+      alert(isCompliant ? 'Trade logged successfully!' : 'Rule violation logged to journal.');
+    }
 
-        function closeChecklistModal() {
-            document.getElementById('checklistModal').classList.add('hidden');
-        }
+    // Switch View Tabs
+    function switchTab(viewName, el) {
+      document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-        function saveChecklistRules() {
-            checklistState.rules[0] = document.getElementById('rule1').value;
-            checklistState.rules[1] = document.getElementById('rule2').value;
-            checklistState.rules[2] = document.getElementById('rule3').value;
-            checklistState.rules[3] = document.getElementById('rule4').value;
-            checklistState.editsRemaining = Math.max(0, checklistState.editsRemaining - 1);
+      document.getElementById('view-' + viewName).classList.add('active');
+      if (el) el.classList.add('active');
 
-            localStorage.setItem('twp_checklist_state', JSON.stringify(checklistState));
-            renderChecklist();
-            closeChecklistModal();
-        }
+      const headers = {
+        'home': 'TraderWell Home',
+        'dashboard': 'Analytics & Execution Dashboard',
+        'journal': 'Trade Execution Journal Board',
+        'accounts': 'Broker Connections & Knowledge Base',
+        'settings': 'Platform Settings & Mission'
+      };
 
-        function openCtraderModal() { document.getElementById('ctraderModal').classList.remove('hidden'); }
-        function closeCtraderModal() { document.getElementById('ctraderModal').classList.add('hidden'); }
+      document.getElementById('page-header-title').innerText = headers[viewName] || 'TraderWell';
+    }
 
-        function simulateCtraderConnect() {
-            closeCtraderModal();
-            alert('cTrader account successfully connected!');
-        }
+    // Toggle Light / Dark Theme
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      const themeIcon = document.getElementById('theme-icon');
 
-        function handleBrokerCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+      if (current === 'dark') {
+        document.body.removeAttribute('data-theme');
+        themeIcon.setAttribute('data-lucide', 'sun');
+      } else {
+        document.body.setAttribute('data-theme', 'dark');
+        themeIcon.setAttribute('data-lucide', 'moon');
+      }
+      lucide.createIcons();
+      if (chartInstance) renderChart();
+    }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const lines = text.split('\n');
-                let parsedEquity = [];
-
-                lines.forEach((line, idx) => {
-                    if (idx === 0) return;
-                    const cols = line.split(',');
-                    if (cols.length >= 2) {
-                        let val = parseFloat(cols[cols.length - 1]);
-                        if (!isNaN(val) && val > 0) parsedEquity.push(val);
-                    }
-                });
-
-                if (parsedEquity.length > 0) {
-                    brokerEquityPoints = parsedEquity;
-                    localStorage.setItem('twp_broker_equity_points', JSON.stringify(brokerEquityPoints));
-                    initChart(brokerEquityPoints);
-                    updateStats();
-                    alert('Broker CSV successfully loaded!');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function recalculateEdgeState() {
-            const checkboxes = document.querySelectorAll('input[name="chk"]');
-            const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
-            const compliancePct = checkboxes.length > 0 ? Math.round((checkedCount / checkboxes.length) * 100) : 100;
-            document.getElementById('stat-compliance').innerText = `${compliancePct}%`;
-        }
-
-        function logSession(type) {
-            const note = document.getElementById('tradeNoteInput').value;
-            const checkboxes = document.querySelectorAll('input[name="chk"]');
-            const checkedCount = Array.from(checkboxes).filter(chk => chk.checked).length;
-            const currentCompliance = checkboxes.length > 0 ? Math.round((checkedCount / checkboxes.length) * 100) : 100;
-
-            if (type === 'compliant' && currentCompliance === 100) {
-                disciplineStreak += 1;
-            } else {
-                disciplineStreak = 0;
-            }
-
-            const record = {
-                id: Date.now(),
-                type: type,
-                compliance: currentCompliance,
-                note: note || 'No checklist notes provided.',
-                timestamp: new Date().toLocaleString()
-            };
-
-            sessionData.unshift(record);
-            localStorage.setItem('twp_edge_session_data', JSON.stringify(sessionData));
-            document.getElementById('tradeNoteInput').value = '';
-
-            renderRecords();
-            updateStats();
-        }
-
-        function renderRecords() {
-            const container = document.getElementById('recordsContainer');
-            document.getElementById('record-count-badge').innerText = `${sessionData.length} executions logged`;
-
-            if (sessionData.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center border border-dashed border-slate-300 rounded-xl text-slate-400 text-xs">No executions logged in this session yet.</div>`;
-                return;
-            }
-
-            container.innerHTML = sessionData.map(r => `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row justify-between gap-3">
-                    <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.type === 'compliant' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-                                ${r.type.toUpperCase()} | Compliance: ${r.compliance}%
-                            </span>
-                            <span class="text-[10px] text-slate-400">${r.timestamp}</span>
-                        </div>
-                        <p class="text-xs text-slate-700 font-medium">${r.note}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateStats() {
-            document.getElementById('stat-streak').innerText = `${disciplineStreak} Trades`;
-            if (brokerEquityPoints.length > 0) {
-                const latestEquity = brokerEquityPoints[brokerEquityPoints.length - 1];
-                document.getElementById('stat-equity').innerText = `$${latestEquity.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            }
-        }
-
-        function exportHistoryFile() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessionData));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "traderwell_state.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-    </script>
+    // On Load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderChart();
+      renderJournal();
+    });
+  </script>
 </body>
 </html>
