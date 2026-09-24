@@ -43,7 +43,7 @@
         body.theme-light .text-white { color: #0f172a !important; }
         body.theme-light .text-slate-400 { color: #64748b !important; }
         body.theme-light .text-slate-300 { color: #334155 !important; }
-        body.theme-light input, body.theme-light select { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
+        body.theme-light input, body.theme-light select, body.theme-light textarea { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
     </style>
 </head>
 <body id="appBody" class="bg-[#0b101d] text-slate-200 min-h-screen flex font-sans antialiased">
@@ -114,7 +114,7 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span>System Active</span>
                 </span>
-                <span class="text-slate-500">v3.6</span>
+                <span class="text-slate-500">v3.7</span>
             </div>
         </div>
     </aside>
@@ -218,10 +218,10 @@
             <div id="view-journal" class="space-y-6 hidden">
                 <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-bold text-white">Trade Executions & Setup Reasons</h3>
+                        <h3 class="text-sm font-bold text-white">Trade Executions & Entry Reasons</h3>
                         <button onclick="openCaptureModal()" class="px-3.5 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-semibold flex items-center space-x-2">
                             <i data-lucide="camera" class="w-4 h-4"></i>
-                            <span>Attach Chart & Entry Reason</span>
+                            <span>Attach Entry Chart & Reason</span>
                         </button>
                     </div>
 
@@ -238,7 +238,8 @@
                                     <th class="py-3 px-3">Status / Follow-up</th>
                                     <th class="py-3 px-3">Profit ($)</th>
                                     <th class="py-3 px-3">Equity ($)</th>
-                                    <th class="py-3 px-3">Chart Preview</th>
+                                    <th class="py-3 px-3">Entry Photo</th>
+                                    <th class="py-3 px-3">Result Photo</th>
                                 </tr>
                             </thead>
                             <tbody id="journalBody" class="divide-y divide-slate-800/60"></tbody>
@@ -253,15 +254,15 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h3 class="text-sm font-bold text-white">Monthly Chart Analysis Wall</h3>
-                            <p class="text-xs text-slate-400">Review accumulated trade screenshots, entries, exits, and labels.</p>
+                            <p class="text-xs text-slate-400">Accumulated entry & post-trade result screenshots with entry reasons and result notes.</p>
                         </div>
                         <button onclick="openCaptureModal()" class="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center space-x-2 self-start sm:self-auto">
                             <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                            <span>Upload Chart Photo</span>
+                            <span>Upload Entry Chart</span>
                         </button>
                     </div>
 
-                    <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div id="galleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         <!-- Chart cards generated dynamically -->
                     </div>
                 </div>
@@ -370,7 +371,6 @@
             <!-- TAB 7: DISCIPLINE & PERFORMANCE ANALYTICS -->
             <div id="view-analytics" class="space-y-6 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Separate Execution Discipline Performance Graph -->
                     <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-bold text-white">Trader Discipline Grade Score (%)</h3>
@@ -380,7 +380,6 @@
                         <div class="h-60 w-full"><canvas id="chartDisciplineGrade"></canvas></div>
                     </div>
 
-                    <!-- Performance Curves & Drawdown Graph -->
                     <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
                         <h3 class="text-sm font-bold text-white">Equity & Peak Drawdown Curve (%)</h3>
                         <p class="text-[11px] text-slate-400">Historical performance metrics and drawdown depths.</p>
@@ -389,7 +388,7 @@
                 </div>
             </div>
 
-            <!-- TAB 8: KNOWLEDGE & QUOTE (WITH BOOK READER) -->
+            <!-- TAB 8: KNOWLEDGE & QUOTE -->
             <div id="view-knowledge" class="space-y-6 hidden">
                 <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
@@ -453,12 +452,12 @@
         </main>
     </div>
 
-    <!-- MODAL: POST-TRADE FOLLOW-UP & CANCELLATION LOG -->
+    <!-- MODAL: POST-TRADE FOLLOW-UP & RESULT SCREENSHOT LOG -->
     <div id="followupModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
             <button onclick="closeFollowupModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h3 class="text-sm font-bold text-white">Post-Trade Follow-up & Status</h3>
-            <p class="text-xs text-slate-400">Log what happened to this position or reason for pending order cancellation.</p>
+            <p class="text-xs text-slate-400">Log what happened to this position and attach the result screenshot photo.</p>
             
             <div class="space-y-3 text-xs">
                 <div>
@@ -468,9 +467,9 @@
                 <div>
                     <label class="block text-slate-300 font-semibold mb-1">Final Outcome Status</label>
                     <select id="fuStatusSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none">
-                        <option value="Closed Target Hit">Closed — Profit Target Hit</option>
-                        <option value="Closed SL Hit">Closed — Stop Loss Hit</option>
-                        <option value="Manually Closed">Closed Manually (Early Exit)</option>
+                        <option value="Closed — Profit Target Hit">Closed — Profit Target Hit</option>
+                        <option value="Closed — Stop Loss Hit">Closed — Stop Loss Hit</option>
+                        <option value="Closed Manually (Early Exit)">Closed Manually (Early Exit)</option>
                         <option value="Cancelled Pending Order">Cancelled Pending Order</option>
                     </select>
                 </div>
@@ -480,22 +479,26 @@
                 </div>
                 <div>
                     <label class="block text-slate-300 font-semibold mb-1">P&L Amount ($)</label>
-                    <input type="number" id="fuPnLInput" placeholder="0.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none">
+                    <input type="number" id="fuPnLInput" placeholder="65.00" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-slate-300 font-semibold mb-1">Follow-up Notes / Lessons</label>
-                    <textarea id="fuNotesInput" rows="2" placeholder="What happened during execution?" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none"></textarea>
+                    <label class="block text-slate-300 font-semibold mb-1">Result Photo (Post-Trade Chart Screenshot)</label>
+                    <input type="file" id="fuFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-300">
                 </div>
-                <button onclick="saveFollowup()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg shadow-md">Complete Follow-up & Unlock Checklist</button>
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Follow-up Notes / Result Lessons</label>
+                    <textarea id="fuNotesInput" rows="2" placeholder="e.g. Hit target -- clean setup" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none"></textarea>
+                </div>
+                <button onclick="saveFollowup()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg shadow-md">Complete Follow-up & Save Result Photo</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: ATTACH CHART SCREENSHOT -->
+    <!-- MODAL: ATTACH INITIAL ENTRY CHART SCREENSHOT -->
     <div id="captureModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
             <button onclick="closeCaptureModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h3 class="text-sm font-bold text-white">Attach Screenshot & Entry Reason</h3>
+            <h3 class="text-sm font-bold text-white">Attach Entry Chart & Reason</h3>
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block text-slate-300 font-semibold mb-1">Select Trade Ticket</label>
@@ -512,10 +515,10 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-300 font-semibold mb-1">Chart Screenshot File</label>
+                    <label class="block text-slate-300 font-semibold mb-1">Entry Chart Screenshot File</label>
                     <input type="file" id="captureFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-300">
                 </div>
-                <button onclick="saveCapture()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg shadow-md">Save Details</button>
+                <button onclick="saveCapture()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg shadow-md">Save Entry Photo</button>
             </div>
         </div>
     </div>
@@ -524,7 +527,7 @@
     <div id="imageViewerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-6">
         <button onclick="closeImageViewer()" class="absolute top-5 right-5 text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
         <div class="max-w-4xl w-full space-y-3 text-center">
-            <img id="modalFullImage" src="" class="max-h-[80vh] mx-auto rounded-xl border border-slate-800 shadow-2xl object-contain">
+            <img id="modalFullImage" src="" class="max-h-[75vh] mx-auto rounded-xl border border-slate-800 shadow-2xl object-contain">
             <div id="modalImageLabel" class="text-sm font-bold text-white"></div>
             <div id="modalImageSub" class="text-xs text-teal-400"></div>
         </div>
@@ -536,6 +539,7 @@
             baseline: 100000,
             currentMonth: new Date(2026, 8, 1),
             captures: {},
+            results: {},
             hasActivePendingPosition: false,
             activePendingTicket: null,
             preRules: [
@@ -553,17 +557,16 @@
         };
 
         const defaultSample = [
-            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, profit: -3.00, reason: 'Break & Retest', disciplineScore: 100, status: 'Closed SL Hit' },
-            { ticket: 4146673158, closing_time_utc: '2026-09-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, profit: 145.50, reason: 'Liquidity Sweep', disciplineScore: 100, status: 'Closed Target Hit' },
-            { ticket: 4134360398, closing_time_utc: '2026-09-12T13:56:15', symbol: 'BTCUSDc', type: 'buy', lots: 0.01, profit: -12.10, reason: 'Order Block', disciplineScore: 66.7, status: 'Manually Closed' },
-            { ticket: 3787037546, closing_time_utc: '2026-09-02T12:58:30', symbol: 'XAUUSDc', type: 'buy', lots: 0.06, profit: 292.20, reason: 'Break & Retest', disciplineScore: 100, status: 'Closed Target Hit' }
+            { ticket: 8769113780, closing_time_utc: '2026-09-24T14:20:00', symbol: 'XAUUSD', type: 'buy', lots: 0.10, profit: 65.00, reason: 'Break & Retest', disciplineScore: 100, status: 'Closed — Profit Target Hit' },
+            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, profit: -3.00, reason: 'Break & Retest', disciplineScore: 100, status: 'Closed — Stop Loss Hit' },
+            { ticket: 4146673158, closing_time_utc: '2026-09-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, profit: 145.50, reason: 'Liquidity Sweep', disciplineScore: 100, status: 'Closed — Profit Target Hit' }
         ];
 
         const tabs = [
             { id: 'home', title: 'Home & Overview', sub: 'Account status, execution metrics, and equity dashboard.' },
             { id: 'calendar', title: 'Trading P&L Calendar', sub: 'Daily gain/loss breakdown and execution calendar.' },
             { id: 'journal', title: 'Trade Journal', sub: 'Executed trade records with entry reasons and chart previews.' },
-            { id: 'gallery', title: 'Chart Gallery & Wall', sub: 'Monthly accumulation of uploaded chart screenshots with entry/exit tags.' },
+            { id: 'gallery', title: 'Chart Gallery & Wall', sub: 'Monthly accumulation of uploaded entry and result chart screenshots.' },
             { id: 'checklist', title: 'Pre-Trade Checklist', sub: 'Pre-defined execution criteria & sequential lock.' },
             { id: 'timing', title: 'Market Timing Guidance', sub: 'Killzones, session overlays, and execution rules.' },
             { id: 'analytics', title: 'Discipline & Performance', sub: 'Grades, execution scores, and equity curves.' },
@@ -688,26 +691,28 @@
         function renderTable() {
             const tbody = document.getElementById('journalBody');
             tbody.innerHTML = state.trades.map(t => {
-                const cap = state.captures[t.ticket] || {};
-                const img = cap.img;
-                const reason = cap.reason || t.reason;
+                const entryCap = state.captures[t.ticket] || {};
+                const resCap = state.results[t.ticket] || {};
                 const isPending = t.status === 'Active Pending / Open';
 
                 return `
                 <tr class="hover:bg-slate-800/30">
-                    <td class="py-2.5 px-3 font-mono text-slate-400">${t.ticket}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-400">#${t.ticket}</td>
                     <td class="py-2.5 px-3 text-slate-300">${t.closing_time_utc.replace('T', ' ')}</td>
                     <td class="py-2.5 px-3 font-bold text-white">${t.symbol}</td>
                     <td class="py-2.5 px-3 uppercase text-[10px] font-bold ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
                     <td class="py-2.5 px-3 font-mono text-slate-300">${t.lots}</td>
-                    <td class="py-2.5 px-3 font-semibold text-teal-400">${reason}</td>
+                    <td class="py-2.5 px-3 font-semibold text-teal-400">${entryCap.reason || t.reason}</td>
                     <td class="py-2.5 px-3 font-medium">
                         ${isPending ? `<button onclick="openFollowupModal(${t.ticket})" class="px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-bold flex items-center space-x-1 hover:bg-amber-500/30"><span>Log Follow-up</span></button>` : `<span class="text-slate-400 text-[11px]">${t.status}</span>`}
                     </td>
                     <td class="py-2.5 px-3 font-bold ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-500'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
                     <td class="py-2.5 px-3 font-mono text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                     <td class="py-2.5 px-3">
-                        ${img ? `<img src="${img}" onclick="viewFullImage('${img}', '#${t.ticket} - ${t.symbol}', '${reason} (${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)})')" class="w-10 h-8 object-cover rounded border border-teal-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No image</span>'}
+                        ${entryCap.img ? `<img src="${entryCap.img}" onclick="viewFullImage('${entryCap.img}', 'ENTRY PHOTO • #${t.ticket} (${t.symbol})', 'Entry Reason:${entryCap.reason || t.reason}')" class="w-10 h-8 object-cover rounded border border-teal-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No photo</span>'}
+                    </td>
+                    <td class="py-2.5 px-3">
+                        ${resCap.img ? `<img src="${resCap.img}" onclick="viewFullImage('${resCap.img}', 'RESULT PHOTO • #${t.ticket} (${t.symbol})', 'Result Note:${resCap.notes || 'Outcome verified'}')" class="w-10 h-8 object-cover rounded border border-emerald-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No photo</span>'}
                     </td>
                 </tr>
             `}).join('');
@@ -719,16 +724,20 @@
             const items = [];
 
             state.trades.forEach(t => {
-                const cap = state.captures[t.ticket];
-                if (cap && cap.img) {
+                const entryCap = state.captures[t.ticket];
+                const resCap = state.results[t.ticket];
+                if ((entryCap && entryCap.img) || (resCap && resCap.img)) {
                     items.push({
                         ticket: t.ticket,
                         symbol: t.symbol,
                         date: t.closing_time_utc.split('T')[0],
-                        reason: cap.reason || t.reason,
+                        reason: entryCap?.reason || t.reason,
+                        status: t.status,
                         profit: t.profit,
                         type: t.type,
-                        img: cap.img
+                        entryImg: entryCap?.img || null,
+                        resultImg: resCap?.img || null,
+                        resultNotes: resCap?.notes || 'No result note'
                     });
                 }
             });
@@ -737,7 +746,7 @@
                 grid.innerHTML = `
                     <div class="col-span-full py-12 text-center text-slate-500 text-xs">
                         <i data-lucide="image-off" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
-                        No chart photos uploaded yet. Click "Attach Chart & Entry Reason" in the trade journal or gallery to add chart photos.
+                        No chart photos uploaded yet. Upload Entry photos or complete Post-Trade Follow-ups to stack up chart photos on this wall.
                     </div>
                 `;
                 lucide.createIcons();
@@ -745,20 +754,47 @@
             }
 
             grid.innerHTML = items.map(item => `
-                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-teal-500/50 transition-all cursor-pointer group" onclick="viewFullImage('${item.img}', '#${item.ticket} • ${item.symbol}', '${item.reason} | P&L: ${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}')">
-                    <div class="h-40 overflow-hidden relative bg-slate-900">
-                        <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold ${item.profit >= 0 ? 'bg-emerald-500/80 text-white' : 'bg-rose-500/80 text-white'}">
-                            ${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}
-                        </span>
-                    </div>
-                    <div class="p-3 space-y-1">
-                        <div class="flex items-center justify-between text-xs font-bold text-white">
-                            <span>${item.symbol} <span class="uppercase text-[10px] ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span></span>
-                            <span class="text-[10px] text-slate-400 font-mono">#${item.ticket}</span>
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 hover:border-teal-500/40 transition-all">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+                        <div>
+                            <span class="text-xs font-bold text-white">${item.symbol}</span>
+                            <span class="uppercase text-[10px] font-bold ml-1.5 ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span>
                         </div>
-                        <div class="text-[11px] font-medium text-teal-400">${item.reason}</div>
-                        <div class="text-[10px] text-slate-500">${item.date}</div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-400 font-mono">#${item.ticket}</span>
+                            <div class="text-[10px] font-bold ${item.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}</div>
+                        </div>
+                    </div>
+
+                    <!-- Dual Photos Container -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- Entry Photo Card -->
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-bold text-teal-400 uppercase tracking-wider">Entry Photo</div>
+                            ${item.entryImg ? `
+                                <div class="h-28 rounded-lg overflow-hidden border border-slate-800 relative bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.entryImg}', 'ENTRY PHOTO • #${item.ticket} (${item.symbol})', 'Entry Reason:${item.reason}')">
+                                    <img src="${item.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                </div>
+                            ` : `<div class="h-28 rounded-lg border border-dashed border-slate-800 flex items-center justify-center text-[10px] text-slate-600">Pending</div>`}
+                            <div class="text-[10px] font-medium text-slate-300 truncate" title="${item.reason}"><span class="text-slate-500">Reason:</span> ${item.reason}</div>
+                        </div>
+
+                        <!-- Result Photo Card -->
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Result Photo</div>
+                            ${item.resultImg ? `
+                                <div class="h-28 rounded-lg overflow-hidden border border-slate-800 relative bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.resultImg}', 'RESULT PHOTO • #${item.ticket} (${item.symbol})', 'Result Note:${item.resultNotes}')">
+                                    <img src="${item.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                </div>
+                            ` : `<div class="h-28 rounded-lg border border-dashed border-slate-800 flex items-center justify-center text-[10px] text-slate-600">Pending</div>`}
+                            <div class="text-[10px] font-medium text-slate-300 truncate" title="${item.resultNotes}"><span class="text-slate-500">Result:</span> ${item.resultNotes}</div>
+                        </div>
+                    </div>
+
+                    <div class="text-[9px] text-slate-500 pt-1 border-t border-slate-900 flex justify-between">
+                        <span>Date: ${item.date}</span>
+                        <span>Status: ${item.status}</span>
                     </div>
                 </div>
             `).join('');
@@ -917,21 +953,39 @@
                 const status = document.getElementById('fuStatusSelect').value;
                 const reason = document.getElementById('fuReasonSelect').value;
                 const pnl = parseFloat(document.getElementById('fuPnLInput').value) || 0;
+                const notes = document.getElementById('fuNotesInput').value || 'Hit target';
+                const file = document.getElementById('fuFileInput').files[0];
 
                 trade.status = status;
-                trade.reason = reason;
                 trade.profit = pnl;
 
-                // Recalculate equities
-                let running = state.baseline;
-                state.trades.forEach(t => {
-                    running += t.profit;
-                    t.calculatedEquity = running;
-                });
-            }
+                const finishSave = (imgUrl) => {
+                    state.results[ticket] = {
+                        img: imgUrl || state.results[ticket]?.img || null,
+                        notes
+                    };
 
-            closeFollowupModal();
-            updateAllDisplays();
+                    // Recalculate equities
+                    let running = state.baseline;
+                    state.trades.forEach(t => {
+                        running += t.profit;
+                        t.calculatedEquity = running;
+                    });
+
+                    closeFollowupModal();
+                    updateAllDisplays();
+                };
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => finishSave(e.target.result);
+                    reader.readAsDataURL(file);
+                } else {
+                    finishSave(null);
+                }
+            } else {
+                closeFollowupModal();
+            }
         }
 
         function changeTheme(theme) {
