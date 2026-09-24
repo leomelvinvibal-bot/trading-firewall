@@ -76,6 +76,10 @@
                     <i data-lucide="book-open" class="w-4 h-4"></i>
                     <span>Trade Journal</span>
                 </button>
+                <button onclick="switchTab('gallery')" id="nav-gallery" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="image" class="w-4 h-4"></i>
+                    <span>Chart Gallery & Wall</span>
+                </button>
                 <button onclick="switchTab('checklist')" id="nav-checklist" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
                     <i data-lucide="check-square" class="w-4 h-4"></i>
                     <span>Pre-Trade Checklist</span>
@@ -110,7 +114,7 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span>System Active</span>
                 </span>
-                <span class="text-slate-500">v3.5</span>
+                <span class="text-slate-500">v3.6</span>
             </div>
         </div>
     </aside>
@@ -243,7 +247,27 @@
                 </div>
             </div>
 
-            <!-- TAB 4: PRE-TRADE CHECKLIST & SEQUENTIAL LOCK SYSTEM -->
+            <!-- TAB 4: CHART GALLERY & DASHBOARD WALL -->
+            <div id="view-gallery" class="space-y-6 hidden">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Monthly Chart Analysis Wall</h3>
+                            <p class="text-xs text-slate-400">Review accumulated trade screenshots, entries, exits, and labels.</p>
+                        </div>
+                        <button onclick="openCaptureModal()" class="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center space-x-2 self-start sm:self-auto">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Upload Chart Photo</span>
+                        </button>
+                    </div>
+
+                    <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Chart cards generated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: PRE-TRADE CHECKLIST & SEQUENTIAL LOCK SYSTEM -->
             <div id="view-checklist" class="space-y-6 hidden">
                 <!-- Lock Notice Banner if position pending -->
                 <div id="lockNoticeBanner" class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs flex items-center justify-between hidden">
@@ -304,7 +328,7 @@
                 </div>
             </div>
 
-            <!-- TAB 5: MARKET TIMING GUIDANCE -->
+            <!-- TAB 6: MARKET TIMING GUIDANCE -->
             <div id="view-timing" class="space-y-6 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-3">
@@ -343,7 +367,7 @@
                 </div>
             </div>
 
-            <!-- TAB 6: DISCIPLINE & PERFORMANCE ANALYTICS -->
+            <!-- TAB 7: DISCIPLINE & PERFORMANCE ANALYTICS -->
             <div id="view-analytics" class="space-y-6 hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Separate Execution Discipline Performance Graph -->
@@ -365,7 +389,7 @@
                 </div>
             </div>
 
-            <!-- TAB 7: KNOWLEDGE & QUOTE (WITH BOOK READER) -->
+            <!-- TAB 8: KNOWLEDGE & QUOTE (WITH BOOK READER) -->
             <div id="view-knowledge" class="space-y-6 hidden">
                 <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
@@ -409,7 +433,7 @@
                 </div>
             </div>
 
-            <!-- TAB 8: SETTINGS -->
+            <!-- TAB 9: SETTINGS -->
             <div id="view-settings" class="space-y-6 hidden">
                 <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div>
@@ -496,6 +520,16 @@
         </div>
     </div>
 
+    <!-- MODAL: FULL-SIZE CHART IMAGE PREVIEW -->
+    <div id="imageViewerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-6">
+        <button onclick="closeImageViewer()" class="absolute top-5 right-5 text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <div class="max-w-4xl w-full space-y-3 text-center">
+            <img id="modalFullImage" src="" class="max-h-[80vh] mx-auto rounded-xl border border-slate-800 shadow-2xl object-contain">
+            <div id="modalImageLabel" class="text-sm font-bold text-white"></div>
+            <div id="modalImageSub" class="text-xs text-teal-400"></div>
+        </div>
+    </div>
+
     <script>
         let state = {
             trades: [],
@@ -529,6 +563,7 @@
             { id: 'home', title: 'Home & Overview', sub: 'Account status, execution metrics, and equity dashboard.' },
             { id: 'calendar', title: 'Trading P&L Calendar', sub: 'Daily gain/loss breakdown and execution calendar.' },
             { id: 'journal', title: 'Trade Journal', sub: 'Executed trade records with entry reasons and chart previews.' },
+            { id: 'gallery', title: 'Chart Gallery & Wall', sub: 'Monthly accumulation of uploaded chart screenshots with entry/exit tags.' },
             { id: 'checklist', title: 'Pre-Trade Checklist', sub: 'Pre-defined execution criteria & sequential lock.' },
             { id: 'timing', title: 'Market Timing Guidance', sub: 'Killzones, session overlays, and execution rules.' },
             { id: 'analytics', title: 'Discipline & Performance', sub: 'Grades, execution scores, and equity curves.' },
@@ -594,6 +629,7 @@
 
             renderTable();
             renderCalendar();
+            renderGalleryWall();
             updateCharts();
             populateTicketSelect();
             updateLockStatus();
@@ -671,11 +707,74 @@
                     <td class="py-2.5 px-3 font-bold ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-500'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
                     <td class="py-2.5 px-3 font-mono text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                     <td class="py-2.5 px-3">
-                        ${img ? `<a href="${img}" target="_blank"><img src="${img}" class="w-10 h-8 object-cover rounded border border-teal-500/40 hover:scale-110 transition-transform"></a>` : '<span class="text-slate-600">No image</span>'}
+                        ${img ? `<img src="${img}" onclick="viewFullImage('${img}', '#${t.ticket} - ${t.symbol}', '${reason} (${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)})')" class="w-10 h-8 object-cover rounded border border-teal-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No image</span>'}
                     </td>
                 </tr>
             `}).join('');
             lucide.createIcons();
+        }
+
+        function renderGalleryWall() {
+            const grid = document.getElementById('galleryGrid');
+            const items = [];
+
+            state.trades.forEach(t => {
+                const cap = state.captures[t.ticket];
+                if (cap && cap.img) {
+                    items.push({
+                        ticket: t.ticket,
+                        symbol: t.symbol,
+                        date: t.closing_time_utc.split('T')[0],
+                        reason: cap.reason || t.reason,
+                        profit: t.profit,
+                        type: t.type,
+                        img: cap.img
+                    });
+                }
+            });
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500 text-xs">
+                        <i data-lucide="image-off" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+                        No chart photos uploaded yet. Click "Attach Chart & Entry Reason" in the trade journal or gallery to add chart photos.
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = items.map(item => `
+                <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-teal-500/50 transition-all cursor-pointer group" onclick="viewFullImage('${item.img}', '#${item.ticket} • ${item.symbol}', '${item.reason} | P&L: ${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}')">
+                    <div class="h-40 overflow-hidden relative bg-slate-900">
+                        <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold ${item.profit >= 0 ? 'bg-emerald-500/80 text-white' : 'bg-rose-500/80 text-white'}">
+                            ${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}
+                        </span>
+                    </div>
+                    <div class="p-3 space-y-1">
+                        <div class="flex items-center justify-between text-xs font-bold text-white">
+                            <span>${item.symbol} <span class="uppercase text-[10px] ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span></span>
+                            <span class="text-[10px] text-slate-400 font-mono">#${item.ticket}</span>
+                        </div>
+                        <div class="text-[11px] font-medium text-teal-400">${item.reason}</div>
+                        <div class="text-[10px] text-slate-500">${item.date}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function viewFullImage(src, title, sub) {
+            document.getElementById('modalFullImage').src = src;
+            document.getElementById('modalImageLabel').innerText = title;
+            document.getElementById('modalImageSub').innerText = sub;
+            document.getElementById('imageViewerModal').classList.remove('hidden');
+        }
+
+        function closeImageViewer() {
+            document.getElementById('imageViewerModal').classList.add('hidden');
         }
 
         function renderChecklists() {
@@ -860,13 +959,13 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     state.captures[ticket] = { img: e.target.result, reason };
-                    renderTable();
+                    updateAllDisplays();
                     closeCaptureModal();
                 };
                 reader.readAsDataURL(file);
             } else {
                 state.captures[ticket] = { img: state.captures[ticket]?.img || null, reason };
-                renderTable();
+                updateAllDisplays();
                 closeCaptureModal();
             }
         }
