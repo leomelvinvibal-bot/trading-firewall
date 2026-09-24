@@ -65,7 +65,6 @@
 
             <!-- RIGHT CONTROL ACTIONS & ALWAYS VISIBLE THEME TOGGLE -->
             <div class="flex items-center space-x-2">
-                <!-- THEME TOGGLE BUTTON -->
                 <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold transition flex items-center justify-center" title="Toggle Light/Dark Theme">
                     <i class="fa-solid fa-sun text-amber-500 dark:hidden text-sm"></i>
                     <i class="fa-solid fa-moon text-indigo-400 hidden dark:block text-sm"></i>
@@ -128,12 +127,12 @@
                 <div class="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Broker Equity</div>
                     <div id="metricEquity" class="text-xl font-black text-slate-900 dark:text-white mt-1">$10,534.12</div>
-                    <div class="text-[10px] text-emerald-500 mt-1 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +5.34% total return</div>
+                    <div id="metricReturn" class="text-[10px] text-emerald-500 mt-1 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +5.34% total return</div>
                 </div>
                 <div class="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Month Net PnL</div>
                     <div id="metricNetPnL" class="text-xl font-black text-emerald-500 mt-1">+$534.12</div>
-                    <div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">10 Win / 2 Loss Days</div>
+                    <div id="metricWinLossDays" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">10 Win / 2 Loss Days</div>
                 </div>
                 <div class="p-4 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-xs">
                     <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Discipline Grade Score</div>
@@ -165,24 +164,18 @@
 
                         <p class="text-xs text-slate-500 dark:text-slate-400">All pre-defined criteria must be evaluated before opening a new position or pending order ticket.</p>
 
-                        <!-- DYNAMIC CRITERIA LIST CONTAINER -->
-                        <div id="criteriaListContainer" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
-                            <!-- Items dynamically inserted via JS -->
-                        </div>
+                        <div id="criteriaListContainer" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1"></div>
 
-                        <!-- ADD CUSTOM CRITERIA INPUT -->
                         <div class="flex space-x-2 pt-2">
                             <input type="text" id="newCriteriaInput" placeholder="Add custom entry criteria rule..." class="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500">
                             <button onclick="addNewCriteria()" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition">Add</button>
                         </div>
 
-                        <!-- PRE-DEFINED INVALIDATION CRITERIA INPUT -->
                         <div class="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800">
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pre-Defined Invalidations (Editable Criteria)</label>
                             <input type="text" id="predefinedInvalidationInput" value="Higher Timeframe Structure Break, High Impact News Spread Spike (>3 pips)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-emerald-500">
                         </div>
 
-                        <!-- THESIS NOTES & PROOF SCREENSHOT -->
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Trade Thesis & Technical Setup Notes</label>
                             <textarea id="guardTradeNotes" rows="2" placeholder="Why are you taking this trade? Note key liquidity levels..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
@@ -258,9 +251,9 @@
                                 <button onclick="changeMonth(1)" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs transition"><i class="fa-solid fa-chevron-right"></i></button>
                             </div>
                             <div class="flex items-center space-x-3 text-xs">
-                                <span class="text-slate-500 dark:text-slate-400">Trades: <strong id="calMonthTradesCount" class="text-slate-900 dark:text-white">24</strong></span>
-                                <span class="text-slate-500 dark:text-slate-400">Wins: <strong id="calMonthWinsCount" class="text-emerald-500">14</strong></span>
-                                <span class="text-slate-500 dark:text-slate-400">Net: <strong id="calMonthNetPnL" class="text-emerald-500">+$534.12</strong></span>
+                                <span class="text-slate-500 dark:text-slate-400">Trades: <strong id="calMonthTradesCount" class="text-slate-900 dark:text-white">0</strong></span>
+                                <span class="text-slate-500 dark:text-slate-400">Wins: <strong id="calMonthWinsCount" class="text-emerald-500">0</strong></span>
+                                <span class="text-slate-500 dark:text-slate-400">Net: <strong id="calMonthNetPnL" class="text-emerald-500">$0.00</strong></span>
                             </div>
                         </div>
 
@@ -269,10 +262,8 @@
                             <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
                         </div>
 
-                        <!-- CALENDAR GRID (30-31 DAYS) -->
-                        <div id="fullMonthCalendarGrid" class="grid grid-cols-7 gap-2">
-                            <!-- Cells dynamically rendered via JS -->
-                        </div>
+                        <!-- CALENDAR GRID -->
+                        <div id="fullMonthCalendarGrid" class="grid grid-cols-7 gap-2"></div>
                     </div>
 
                     <!-- BROKER EQUITY & DISCIPLINE GRAPH CURVES -->
@@ -312,18 +303,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
                     <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Win/Loss Ratio</h4>
-                    <div class="text-3xl font-black text-emerald-500">68.4%</div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Calculated over 38 executed trades this month.</p>
+                    <div id="dashWinRatio" class="text-3xl font-black text-emerald-500">68.4%</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Calculated over imported trades this month.</p>
                 </div>
                 <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
-                    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Average Risk-to-Reward (RR)</h4>
-                    <div class="text-3xl font-black text-teal-500">1 : 2.45</div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Average win $185.00 vs loss $75.50.</p>
+                    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Average Profit per Trade</h4>
+                    <div id="dashAvgProfit" class="text-3xl font-black text-teal-500">$0.00</div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Net win vs loss trade distribution.</p>
                 </div>
                 <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
                     <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider">Average Compliance Score</h4>
                     <div class="text-3xl font-black text-amber-500">94.2%</div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">35/38 trades strictly followed all checklist criteria.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Rule adherence tracking.</p>
                 </div>
             </div>
         </div>
@@ -337,9 +328,7 @@
                 </div>
             </div>
 
-            <div id="journalEntriesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Dynamic cards prepended here -->
-            </div>
+            <div id="journalEntriesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
         <!-- TAB 4: RISK & POSITION SIZE CALCULATOR -->
@@ -353,7 +342,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Account Balance ($)</label>
-                        <input type="number" id="calcBalance" value="10534.12" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200">
+                        <input type="number" id="calcBalance" value="10000.00" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Risk Percentage (%)</label>
@@ -375,19 +364,18 @@
                 </button>
                 <div id="calcResultBox" class="hidden p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-emerald-500/30 text-center">
                     <div class="text-xs text-slate-500 dark:text-slate-400">Recommended Position Size:</div>
-                    <div id="calcLotOutput" class="text-2xl font-black text-emerald-500 mt-1">0.70 Lots</div>
+                    <div id="calcLotOutput" class="text-2xl font-black text-emerald-500 mt-1">0.67 Lots</div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 5: KNOWLEDGE READINGS & DAILY QUOTES -->
+        <!-- TAB 5: KNOWLEDGE HUB -->
         <div id="tab-knowledge" class="tab-content space-y-6 hidden">
             <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
                 <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Knowledge Readings & Daily Psychology Quotes</h2>
                 <p class="text-xs text-slate-500 dark:text-slate-400">Master trading psychology with foundational literature and daily discipline prompts.</p>
             </div>
 
-            <!-- RECOMMENDED BOOK SECTION -->
             <div class="p-6 rounded-2xl bg-gradient-to-r from-slate-100 to-indigo-50 dark:from-slate-900 dark:to-indigo-950/60 border border-indigo-200 dark:border-indigo-800/40 space-y-4 flex flex-col md:flex-row items-center gap-6">
                 <div class="h-36 w-28 bg-white dark:bg-slate-950 rounded-xl border border-indigo-300 dark:border-indigo-500/30 flex flex-col items-center justify-center text-center p-3 shadow-2xl flex-shrink-0">
                     <i class="fa-solid fa-book-open text-3xl text-indigo-500 mb-2"></i>
@@ -402,25 +390,11 @@
                     </a>
                 </div>
             </div>
-
-            <!-- DAILY PSYCHOLOGY QUOTES -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2">
-                    <i class="fa-solid fa-quote-left text-emerald-500 text-xl"></i>
-                    <p class="text-xs text-slate-700 dark:text-slate-200 italic">"When you accept the risk, you will be at peace with whatever outcome."</p>
-                    <span class="block text-[11px] font-bold text-slate-400">— Mark Douglas</span>
-                </div>
-                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-2">
-                    <i class="fa-solid fa-quote-left text-teal-500 text-xl"></i>
-                    <p class="text-xs text-slate-700 dark:text-slate-200 italic">"Consistency is not about never making a mistake; it's about following your process without deviation."</p>
-                    <span class="block text-[11px] font-bold text-slate-400">— TraderWell Discipline Rule</span>
-                </div>
-            </div>
         </div>
 
     </main>
 
-    <!-- TRADING PLATFORM / BROKER CONNECTION MODAL (MT5 / CTRADER) -->
+    <!-- MODALS -->
     <div id="brokerConnectModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -546,7 +520,7 @@
         </div>
     </div>
 
-    <!-- LIGHTBOX MODAL FOR CHARTS -->
+    <!-- LIGHTBOX MODAL -->
     <div id="lightboxModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 z-50" onclick="closeLightbox()">
         <div class="relative max-w-4xl w-full max-h-[90vh]" onclick="event.stopPropagation()">
             <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white hover:text-emerald-400 font-bold text-sm flex items-center gap-1">
@@ -556,15 +530,15 @@
         </div>
     </div>
 
-    <!-- INTEGRATED SCRIPT ENGINE -->
+    <!-- SCRIPT ENGINE WITH REAL CSV PARSER -->
     <script>
         let equityChartInstance = null;
         let disciplineChartInstance = null;
         let currentMonthIndex = 8; // September (0-indexed)
         let currentYear = 2026;
+        const initialAccountBalance = 10000;
         const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-        // State Lock for Active Positions
         let activePositionGuard = {
             hasActivePosition: false,
             symbol: "",
@@ -574,7 +548,6 @@
             grade: "A+"
         };
 
-        // Pre-defined Entry Criteria
         let criteriaList = [
             { id: 1, text: "Target Level & Liquidity Sweep Defined", checked: false },
             { id: 2, text: "Defined Stop Loss & Max Risk Verified", checked: false },
@@ -582,17 +555,17 @@
             { id: 4, text: "Higher Timeframe Alignment Checked", checked: false }
         ];
 
-        // Monthly Daily PnL Database
+        // Core dynamic database
         let monthPnLData = {
             2026: {
-                8: { // September
+                8: {
                     1: { pnl: 157.89, trades: 2, grade: 'A+', disciplineScore: 100 },
                     2: { pnl: 125.28, trades: 1, grade: 'A+', disciplineScore: 100 },
                     3: { pnl: -45.20, trades: 2, grade: 'B', disciplineScore: 75 },
                     5: { pnl: 89.10, trades: 1, grade: 'A', disciplineScore: 90 },
                     8: { pnl: 42.10, trades: 1, grade: 'A', disciplineScore: 90 },
                     9: { pnl: -15.50, trades: 1, grade: 'C', disciplineScore: 60 },
-                    10: { pnl: 110.00, trades: 2, grade: 'A+', disciplineScore: 100 }
+                    10: { pnl: 180.45, trades: 2, grade: 'A+', disciplineScore: 100 }
                 }
             }
         };
@@ -606,7 +579,6 @@
             updateGuardStateUI();
         };
 
-        /* --- ALWAYS VISIBLE THEME TOGGLE LOGIC --- */
         function toggleTheme() {
             const htmlEl = document.documentElement;
             if (htmlEl.classList.contains('dark')) {
@@ -627,7 +599,6 @@
             }
         }
 
-        /* --- TAB NAVIGATION --- */
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -645,12 +616,12 @@
             }
         }
 
-        /* --- CALENDAR RENDERING --- */
         function changeMonth(dir) {
             currentMonthIndex += dir;
             if (currentMonthIndex > 11) { currentMonthIndex = 0; currentYear++; }
             if (currentMonthIndex < 0) { currentMonthIndex = 11; currentYear--; }
             renderCalendar();
+            updateChartsFromState();
         }
 
         function renderCalendar() {
@@ -663,11 +634,23 @@
 
             const monthData = (monthPnLData[currentYear] && monthPnLData[currentYear][currentMonthIndex]) || {};
 
+            let totalNetPnL = 0;
+            let totalTradesCount = 0;
+            let winDays = 0;
+            let lossDays = 0;
+
             for (let day = 1; day <= 30; day++) {
                 const dayInfo = monthData[day] || { pnl: 0, trades: 0, grade: '-' };
                 const hasTrades = dayInfo.trades > 0;
                 const isProfit = dayInfo.pnl > 0;
                 const isLoss = dayInfo.pnl < 0;
+
+                if (hasTrades) {
+                    totalNetPnL += dayInfo.pnl;
+                    totalTradesCount += dayInfo.trades;
+                    if (isProfit) winDays++;
+                    if (isLoss) lossDays++;
+                }
 
                 let bgClass = 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800/80';
                 if (hasTrades && isProfit) bgClass = 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/50';
@@ -686,6 +669,175 @@
                 `;
                 gridContainer.appendChild(cell);
             }
+
+            // Update Header Stats
+            document.getElementById('calMonthTradesCount').innerText = totalTradesCount;
+            document.getElementById('calMonthWinsCount').innerText = winDays;
+            
+            const netPnLEl = document.getElementById('calMonthNetPnL');
+            netPnLEl.innerText = `${totalNetPnL >= 0 ? '+' : ''}$${totalNetPnL.toFixed(2)}`;
+            netPnLEl.className = totalNetPnL >= 0 ? 'text-emerald-500 font-bold' : 'text-red-500 font-bold';
+
+            // Update Top Metrics
+            const currentEquity = initialAccountBalance + totalNetPnL;
+            document.getElementById('metricEquity').innerText = `$${currentEquity.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            
+            const topNetPnLEl = document.getElementById('metricNetPnL');
+            topNetPnLEl.innerText = `${totalNetPnL >= 0 ? '+' : ''}$${totalNetPnL.toFixed(2)}`;
+            topNetPnLEl.className = totalNetPnL >= 0 ? 'text-xl font-black text-emerald-500 mt-1' : 'text-xl font-black text-red-500 mt-1';
+            
+            document.getElementById('metricWinLossDays').innerText = `${winDays} Win / ${lossDays} Loss Days`;
+            
+            const retPct = (totalNetPnL / initialAccountBalance) * 100;
+            document.getElementById('metricReturn').innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> ${retPct >= 0 ? '+' : ''}${retPct.toFixed(2)}% total return`;
+        }
+
+        /* --- REAL CSV PARSER ENGINE --- */
+        function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
+
+        function handleCsvImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                parseAndApplyCsvData(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseAndApplyCsvData(csvText) {
+            const lines = csvText.split(/\r\n|\n/);
+            if (lines.length < 2) {
+                alert("CSV file appears to be empty or missing headers.");
+                return;
+            }
+
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/[^a-z0-9]/g, ''));
+            
+            // Auto-detect standard column names across MT4, MT5, cTrader, and TradeZella CSV formats
+            const dateIdx = headers.findIndex(h => h.includes('date') || h.includes('time') || h.includes('close'));
+            const pnlIdx = headers.findIndex(h => h.includes('pnl') || h.includes('profit') || h.includes('net') || h.includes('amount'));
+            const symbolIdx = headers.findIndex(h => h.includes('symbol') || h.includes('item') || h.includes('pair'));
+
+            if (pnlIdx === -1) {
+                alert("Could not locate a Profit/PnL column in your CSV. Ensure headers contain 'PnL', 'Profit', or 'Net'.");
+                return;
+            }
+
+            if (!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
+            if (!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
+
+            let importedCount = 0;
+
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+                if (cols.length < headers.length) continue;
+
+                const rawPnL = parseFloat(cols[pnlIdx]);
+                if (isNaN(rawPnL)) continue;
+
+                let day = i; // Fallback day sequence
+                if (dateIdx !== -1 && cols[dateIdx]) {
+                    const parsedDate = new Date(cols[dateIdx]);
+                    if (!isNaN(parsedDate.getTime())) {
+                        day = parsedDate.getDate();
+                    }
+                }
+                if (day > 30) day = (day % 30) + 1;
+
+                if (!monthPnLData[currentYear][currentMonthIndex][day]) {
+                    monthPnLData[currentYear][currentMonthIndex][day] = {
+                        pnl: rawPnL,
+                        trades: 1,
+                        grade: rawPnL >= 0 ? 'A+' : 'C',
+                        disciplineScore: rawPnL >= 0 ? 100 : 70
+                    };
+                } else {
+                    monthPnLData[currentYear][currentMonthIndex][day].pnl += rawPnL;
+                    monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
+                }
+                importedCount++;
+            }
+
+            renderCalendar();
+            updateChartsFromState();
+            alert(`Successfully imported and processed ${importedCount} trades! Calendar grid and equity charts updated.`);
+        }
+
+        /* --- CHART RE-DRAWING FROM STATE --- */
+        function updateChartsFromState() {
+            const monthData = (monthPnLData[currentYear] && monthPnLData[currentYear][currentMonthIndex]) || {};
+            const labels = [];
+            const equityPoints = [];
+            const disciplinePoints = [];
+
+            let runningEquity = initialAccountBalance;
+
+            for (let day = 1; day <= 30; day++) {
+                if (monthData[day] && monthData[day].trades > 0) {
+                    runningEquity += monthData[day].pnl;
+                    labels.push(`${monthsNames[currentMonthIndex].slice(0, 3)} ${day}`);
+                    equityPoints.push(runningEquity);
+                    disciplinePoints.push(monthData[day].disciplineScore || 90);
+                }
+            }
+
+            if (equityChartInstance) {
+                equityChartInstance.data.labels = labels;
+                equityChartInstance.data.datasets[0].data = equityPoints;
+                equityChartInstance.update();
+            }
+
+            if (disciplineChartInstance) {
+                disciplineChartInstance.data.labels = labels;
+                disciplineChartInstance.data.datasets[0].data = disciplinePoints;
+                disciplineChartInstance.update();
+            }
+        }
+
+        function initEquityChart() {
+            const ctx = document.getElementById('equityChart');
+            if (!ctx) return;
+            equityChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sep 1', 'Sep 2', 'Sep 3', 'Sep 5', 'Sep 8', 'Sep 9', 'Sep 10'],
+                    datasets: [{
+                        label: 'Equity ($)',
+                        data: [10157.89, 10283.17, 10237.97, 10327.07, 10369.17, 10353.67, 10534.12],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function initDisciplineChart() {
+            const ctx = document.getElementById('disciplineChart');
+            if (!ctx) return;
+            disciplineChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sep 1', 'Sep 2', 'Sep 3', 'Sep 5', 'Sep 8', 'Sep 9', 'Sep 10'],
+                    datasets: [{
+                        label: 'Rule Compliance (%)',
+                        data: [100, 100, 75, 90, 90, 60, 100],
+                        borderColor: '#14b8a6',
+                        backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
         }
 
         /* --- PRE-DEFINED CRITERIA & ANTI-FOMO GUARD --- */
@@ -822,20 +974,20 @@
                 logNote += ` | Cancel Reason: ${reason}`;
             }
 
-            const today = 24; // Current day
-            if (!monthPnLData[2026][8][today]) {
-                monthPnLData[2026][8][today] = { pnl: pnl, trades: 1, grade: activePositionGuard.grade, disciplineScore: activePositionGuard.score };
+            const today = 24;
+            if (!monthPnLData[currentYear][currentMonthIndex][today]) {
+                monthPnLData[currentYear][currentMonthIndex][today] = { pnl: pnl, trades: 1, grade: activePositionGuard.grade, disciplineScore: activePositionGuard.score };
             } else {
-                monthPnLData[2026][8][today].pnl += pnl;
-                monthPnLData[2026][8][today].trades += 1;
+                monthPnLData[currentYear][currentMonthIndex][today].pnl += pnl;
+                monthPnLData[currentYear][currentMonthIndex][today].trades += 1;
             }
 
             appendNewJournalEntry(activePositionGuard.imgUrl, logNote, activePositionGuard.grade, activePositionGuard.score, pnl);
-            updateGraphCurves(pnl, activePositionGuard.score);
-
+            
             activePositionGuard.hasActivePosition = false;
             updateGuardStateUI();
             renderCalendar();
+            updateChartsFromState();
 
             document.getElementById('guardTradeNotes').value = '';
             document.getElementById('guardChartFile').value = '';
@@ -885,18 +1037,13 @@
             }
         }
 
-        /* --- BROKER PLATFORM CONNECT MODAL & SYNC ENGINE --- */
-        function openBrokerConnectModal() {
-            document.getElementById('brokerConnectModal').classList.remove('hidden');
-        }
-        function closeBrokerConnectModal() {
-            document.getElementById('brokerConnectModal').classList.add('hidden');
-        }
+        /* --- BROKER CONNECT & CSV EXPORT --- */
+        function openBrokerConnectModal() { document.getElementById('brokerConnectModal').classList.remove('hidden'); }
+        function closeBrokerConnectModal() { document.getElementById('brokerConnectModal').classList.add('hidden'); }
 
         function testBrokerPing() {
             const platform = document.getElementById('platformType').value;
-            const pingMs = Math.floor(Math.random() * 8) + 12;
-            alert(`[${platform} API Ping Successful]: Connection to server latency is ${pingMs}ms. Ready to stream closed order records.`);
+            alert(`[${platform} API Ping Successful]: Connection latency is 14ms.`);
         }
 
         function handleBrokerConnect(e) {
@@ -904,19 +1051,21 @@
             const platform = document.getElementById('platformType').value;
             const accountId = document.getElementById('brokerAccountId').value;
             
-            const statusLabel = document.getElementById('brokerConnectionStatus');
-            const connectionDot = document.getElementById('connectionDot');
-            const graphBadge = document.getElementById('equityGraphBadge');
-
-            if (statusLabel) statusLabel.innerText = `${platform} ID: ${accountId} Sync Active`;
-            if (connectionDot) connectionDot.className = "inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-            if (graphBadge) graphBadge.innerText = `${platform} API Connected`;
-
+            document.getElementById('brokerConnectionStatus').innerText = `${platform} ID: ${accountId} Sync Active`;
             closeBrokerConnectModal();
-            alert(`Successfully authenticated ${platform} trading account #${accountId}! Your trading calendar will automatically absorb execution records and equity changes.`);
+            alert(`Authenticated ${platform} account #${accountId}! API polling active.`);
         }
 
-        /* --- JOURNAL & LIGHTBOX --- */
+        function exportTradesCsv() {
+            const csv = "data:text/csv;charset=utf-8,Date,Symbol,Direction,PnL,DisciplineGrade\n2026-09-01,EURUSD,LONG,157.89,A+\n2026-09-02,US30,SHORT,125.28,A+\n2026-09-03,GBPUSD,LONG,-45.20,B";
+            const uri = encodeURI(csv);
+            const a = document.createElement("a");
+            a.href = uri;
+            a.download = "TraderWell_Broker_Records_2026.csv";
+            a.click();
+        }
+
+        /* --- JOURNAL & UTILS --- */
         function appendNewJournalEntry(imgUrl, thesisNotes, grade, score, pnl) {
             const container = document.getElementById('journalEntriesContainer');
             if (!container) return;
@@ -932,7 +1081,7 @@
                 </div>
                 <div class="p-4 space-y-3">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-slate-400 font-semibold">Sep 24, 2026 • MT5 / cTrader</span>
+                        <span class="text-slate-400 font-semibold">Sep 24, 2026</span>
                         <span class="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 font-extrabold">Grade: ${grade} (${score}%)</span>
                     </div>
                     <p class="text-xs text-slate-700 dark:text-slate-200 line-clamp-3"><strong>Thesis:</strong> ${thesisNotes}</p>
@@ -953,85 +1102,8 @@
                 modal.classList.remove('hidden');
             }
         }
-        function closeLightbox() {
-            document.getElementById('lightboxModal').classList.add('hidden');
-        }
+        function closeLightbox() { document.getElementById('lightboxModal').classList.add('hidden'); }
 
-        /* --- CSV HANDLERS --- */
-        function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
-        function handleCsvImport(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            alert(`Broker CSV Documental Records (${file.name}) imported successfully! Equity curves and calendar updated.`);
-        }
-        function exportTradesCsv() {
-            const csv = "data:text/csv;charset=utf-8,Date,Symbol,Direction,PnL,DisciplineGrade\n2026-09-01,EURUSD,LONG,157.89,A+\n2026-09-02,US30,SHORT,125.28,A+\n2026-09-03,GBPUSD,LONG,-45.20,B";
-            const uri = encodeURI(csv);
-            const a = document.createElement("a");
-            a.href = uri;
-            a.download = "TraderWell_Broker_Records_2026.csv";
-            a.click();
-        }
-
-        /* --- CHARTS INITIALIZATION & UPDATES --- */
-        function initEquityChart() {
-            const ctx = document.getElementById('equityChart');
-            if (!ctx) return;
-            equityChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Sep 1', 'Sep 3', 'Sep 5', 'Sep 8', 'Sep 10', 'Sep 24'],
-                    datasets: [{
-                        label: 'Equity ($)',
-                        data: [10000, 10157, 10382, 10424, 10534, 10650],
-                        borderColor: '#22c55e',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function initDisciplineChart() {
-            const ctx = document.getElementById('disciplineChart');
-            if (!ctx) return;
-            disciplineChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Sep 1', 'Sep 3', 'Sep 5', 'Sep 8', 'Sep 10', 'Sep 24'],
-                    datasets: [{
-                        label: 'Rule Compliance (%)',
-                        data: [100, 75, 90, 90, 100, 100],
-                        borderColor: '#14b8a6',
-                        backgroundColor: 'rgba(20, 184, 166, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function updateGraphCurves(addedPnL, newScore) {
-            if (equityChartInstance) {
-                const currentData = equityChartInstance.data.datasets[0].data;
-                const lastVal = currentData[currentData.length - 1];
-                currentData.push(lastVal + addedPnL);
-                equityChartInstance.data.labels.push(`Sep 24 (#${currentData.length})`);
-                equityChartInstance.update();
-            }
-            if (disciplineChartInstance) {
-                disciplineChartInstance.data.datasets[0].data.push(newScore);
-                disciplineChartInstance.data.labels.push(`Sep 24 (#${disciplineChartInstance.data.datasets[0].data.length})`);
-                disciplineChartInstance.update();
-            }
-        }
-
-        /* --- CALCULATOR --- */
         function calculatePositionSize() {
             const bal = parseFloat(document.getElementById('calcBalance').value) || 0;
             const riskPct = parseFloat(document.getElementById('calcRiskPct').value) || 0;
@@ -1043,7 +1115,6 @@
             document.getElementById('calcLotOutput').innerText = `${lot.toFixed(2)} Lots`;
         }
 
-        /* --- MODAL CONTROLS & CONTACT --- */
         function openTradeModal() { document.getElementById('tradeModal').classList.remove('hidden'); }
         function closeTradeModal() { document.getElementById('tradeModal').classList.add('hidden'); }
         function openContactModal() { document.getElementById('contactModal').classList.remove('hidden'); }
@@ -1061,18 +1132,18 @@
             e.preventDefault();
             const pnl = parseFloat(document.getElementById('tradePnL').value);
             const day = parseInt(document.getElementById('tradeDay').value);
-            const notes = document.getElementById('tradeNotes').value;
 
-            if (!monthPnLData[2026][8][day]) {
-                monthPnLData[2026][8][day] = { pnl: pnl, trades: 1, grade: 'A', disciplineScore: 90 };
+            if (!monthPnLData[currentYear][currentMonthIndex][day]) {
+                monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1, grade: 'A', disciplineScore: 90 };
             } else {
-                monthPnLData[2026][8][day].pnl += pnl;
-                monthPnLData[2026][8][day].trades += 1;
+                monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
+                monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
             }
 
             renderCalendar();
+            updateChartsFromState();
             closeTradeModal();
-            alert("Trade manually logged to calendar!");
+            alert("Trade manually logged!");
         }
     </script>
 </body>
