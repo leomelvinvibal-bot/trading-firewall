@@ -69,12 +69,24 @@
         <!-- Sidebar Footer Controls -->
         <div class="p-4 border-t border-slate-800 space-y-3">
             <div class="flex items-center justify-between text-xs text-slate-300">
-                <span class="font-bold uppercase tracking-wider">Color Theme</span>
+                <span class="font-bold uppercase tracking-wider">Preset Theme</span>
                 <select onchange="changeTheme(this.value)" class="bg-slate-900 border border-slate-700 text-white font-bold rounded-lg px-2.5 py-1.5 focus:outline-none cursor-pointer">
                     <option value="dark">Dark Slate</option>
                     <option value="monokai">Monokai</option>
                     <option value="light">Light Mode</option>
                 </select>
+            </div>
+
+            <!-- Custom Wall / Background Color Adjustment -->
+            <div class="flex items-center justify-between text-xs text-slate-300">
+                <span class="font-bold uppercase tracking-wider">Wall / Screen Color</span>
+                <input type="color" id="wallColorPicker" value="#0b101d" onchange="updateCustomWallColor(this.value)" class="w-8 h-8 rounded border-0 cursor-pointer bg-transparent">
+            </div>
+
+            <!-- Custom Word / Text Color Adjustment -->
+            <div class="flex items-center justify-between text-xs text-slate-300">
+                <span class="font-bold uppercase tracking-wider">Text / Word Color</span>
+                <input type="color" id="textColorPicker" value="#e2e8f0" onchange="updateCustomTextColor(this.value)" class="w-8 h-8 rounded border-0 cursor-pointer bg-transparent">
             </div>
             
             <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
@@ -92,7 +104,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    <main id="mainContentArea" class="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
         <!-- Top Market Sessions Bar -->
         <header class="bg-slate-950/90 backdrop-blur border-b border-slate-800 px-6 py-3.5 sticky top-0 z-20 flex items-center justify-between">
@@ -144,7 +156,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-1">
                         <div class="text-xs uppercase font-extrabold text-slate-400 tracking-wider">Account Balance</div>
-                        <div id="homeEquity" class="text-2xl font-black text-white">$10,000.00</div>
+                        <div id="homeEquity" class="text-2xl font-black text-white">10,000.00</div>
                         <div class="pt-2 text-xs text-slate-400 flex items-center space-x-2">
                             <span>Baseline:</span>
                             <input type="number" id="baselineInput" value="10000" onchange="updateBaseline(this.value)" class="bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-white font-mono text-xs w-24">
@@ -174,7 +186,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Equity Curve Chart -->
                     <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
-                        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center space-x-2">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider flex items-center space-x-2">
                             <i data-lucide="trending-up" class="w-4 h-4 text-teal-400"></i>
                             <span>Account Equity Curve</span>
                         </h3>
@@ -185,7 +197,7 @@
 
                     <!-- Connected Discipline vs Equity Chart -->
                     <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-3">
-                        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider flex items-center space-x-2">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider flex items-center space-x-2">
                             <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i>
                             <span>Discipline Score (%) vs. Equity Growth</span>
                         </h3>
@@ -200,8 +212,8 @@
             <section id="tab-checklist" class="hidden space-y-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-xl font-black text-white">Pre-Trade Discipline Checklist</h2>
-                        <p class="text-xs text-slate-400 font-medium">Verify execution criteria before opening a trade ticket.</p>
+                        <h2 class="text-xl font-black">Pre-Trade Discipline Checklist</h2>
+                        <p class="text-xs opacity-80 font-medium">Verify execution criteria before opening a trade ticket.</p>
                     </div>
                     <button onclick="addNewRulePrompt('pre')" class="px-4 py-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/30 text-xs font-bold hover:bg-teal-500/20 transition-all flex items-center space-x-1.5">
                         <i data-lucide="plus" class="w-4 h-4"></i>
@@ -215,36 +227,36 @@
 
                     <!-- Position Form -->
                     <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4">
-                        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider border-b border-slate-800 pb-2">Launch Position Ticket</h3>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider border-b border-slate-800 pb-2">Launch Position Ticket</h3>
                         
                         <div class="space-y-3 text-xs">
                             <div>
-                                <label class="block text-slate-300 font-bold mb-1">Symbol / Pair</label>
-                                <input type="text" id="newSymbolInput" value="XAUUSD" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-bold uppercase focus:outline-none focus:border-teal-500">
+                                <label class="block font-bold mb-1 opacity-90">Symbol / Pair</label>
+                                <input type="text" id="newSymbolInput" value="XAUUSD" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 font-bold uppercase focus:outline-none focus:border-teal-500">
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-slate-300 font-bold mb-1">Order Type</label>
-                                    <select id="newTypeInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-bold focus:outline-none focus:border-teal-500">
+                                    <label class="block font-bold mb-1 opacity-90">Order Type</label>
+                                    <select id="newTypeInput" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 font-bold focus:outline-none focus:border-teal-500">
                                         <option value="buy">BUY</option>
                                         <option value="sell">SELL</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-slate-300 font-bold mb-1">Lots</label>
-                                    <input type="number" step="0.01" id="newLotsInput" value="0.10" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono font-bold focus:outline-none focus:border-teal-500">
+                                    <label class="block font-bold mb-1 opacity-90">Lots</label>
+                                    <input type="number" step="0.01" id="newLotsInput" value="0.10" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 font-mono font-bold focus:outline-none focus:border-teal-500">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-slate-300 font-bold mb-1">Entry Setup Reason</label>
-                                <input type="text" id="newReasonInput" value="London Open Sweep & MSS" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-medium focus:outline-none focus:border-teal-500">
+                                <label class="block font-bold mb-1 opacity-90">Entry Setup Reason</label>
+                                <input type="text" id="newReasonInput" value="London Open Sweep & MSS" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 font-medium focus:outline-none focus:border-teal-500">
                             </div>
 
                             <div>
-                                <label class="block text-slate-300 font-bold mb-1">Entry Chart Snapshot (Optional)</label>
-                                <input type="file" id="newEntryImgInput" accept="image/*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-400">
+                                <label class="block font-bold mb-1 opacity-90">Entry Chart Snapshot (Optional)</label>
+                                <input type="file" id="newEntryImgInput" accept="image/*" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 opacity-80">
                             </div>
 
                             <button id="submitOrderBtn" onclick="submitNewPosition()" class="w-full py-3 rounded-xl bg-teal-400 text-slate-950 font-black text-xs hover:bg-teal-300 transition-all shadow-lg shadow-teal-500/20">
@@ -257,7 +269,7 @@
                 <!-- Invalidation Rules -->
                 <div class="pt-6 border-t border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">Invalidation & Exit Rules</h3>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider">Invalidation & Exit Rules</h3>
                         <button onclick="addNewRulePrompt('invalid')" class="text-xs text-teal-400 hover:text-teal-300 font-bold">+ Add Exit Criteria</button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="invalidationContainer"></div>
@@ -267,14 +279,14 @@
             <!-- TAB 3: TRADE JOURNAL -->
             <section id="tab-journal" class="hidden space-y-4">
                 <div>
-                    <h2 class="text-xl font-black text-white">Execution Journal</h2>
-                    <p class="text-xs text-slate-400 font-medium">Record of historical executions, setups, discipline scores, and result follow-ups.</p>
+                    <h2 class="text-xl font-black">Execution Journal</h2>
+                    <p class="text-xs opacity-80 font-medium">Record of historical executions, setups, discipline scores, and result follow-ups.</p>
                 </div>
 
                 <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-900/80 border-b border-slate-800 text-slate-300 font-black uppercase text-[11px] tracking-wider">
+                            <thead class="bg-slate-900/80 border-b border-slate-800 opacity-90 font-black uppercase text-[11px] tracking-wider">
                                 <tr>
                                     <th class="py-3.5 px-3">Ticket</th>
                                     <th class="py-3.5 px-3">Date (UTC)</th>
@@ -289,7 +301,7 @@
                                     <th class="py-3.5 px-3">Result Chart</th>
                                 </tr>
                             </thead>
-                            <tbody id="journalBody" class="divide-y divide-slate-800/60 text-slate-200 font-medium"></tbody>
+                            <tbody id="journalBody" class="divide-y divide-slate-800/60 font-medium"></tbody>
                         </table>
                     </div>
                 </div>
@@ -299,27 +311,27 @@
             <section id="tab-calendar" class="hidden space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-xl font-black text-white">Monthly Performance Calendar</h2>
-                        <p class="text-xs text-slate-400 font-medium">Daily net P&L and win/loss breakdowns.</p>
+                        <h2 class="text-xl font-black">Monthly Performance Calendar</h2>
+                        <p class="text-xs opacity-80 font-medium">Daily net P&L and win/loss breakdowns.</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button onclick="navMonth(-1)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                        <span id="calMonthTitle" class="text-sm font-black text-white font-mono min-w-[140px] text-center">Month 2026</span>
-                        <button onclick="navMonth(1)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                        <button onclick="navMonth(-1)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:opacity-80"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                        <span id="calMonthTitle" class="text-sm font-black font-mono min-w-[140px] text-center">Month 2026</span>
+                        <button onclick="navMonth(1)" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:opacity-80"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-                        <div class="text-xs font-extrabold uppercase text-slate-400">Monthly Trades</div>
-                        <div id="calTrades" class="text-lg font-black text-white mt-1">0</div>
+                        <div class="text-xs font-extrabold uppercase opacity-80">Monthly Trades</div>
+                        <div id="calTrades" class="text-lg font-black mt-1">0</div>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-                        <div class="text-xs font-extrabold uppercase text-slate-400">Winning Days</div>
+                        <div class="text-xs font-extrabold uppercase opacity-80">Winning Days</div>
                         <div id="calWins" class="text-lg font-black text-emerald-400 mt-1">0</div>
                     </div>
                     <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
-                        <div class="text-xs font-extrabold uppercase text-slate-400">Net Monthly P&L</div>
+                        <div class="text-xs font-extrabold uppercase opacity-80">Net Monthly P&L</div>
                         <div id="calNetPnL" class="text-lg font-black text-teal-400 mt-1">$0.00</div>
                     </div>
                 </div>
@@ -327,11 +339,11 @@
                 <div class="grid grid-cols-7 gap-2" id="calendarGrid"></div>
             </section>
 
-            <!-- TAB 5: CHART EVIDENCE WALL (SINGLE COLUMN STACKED) -->
+            <!-- TAB 5: CHART EVIDENCE WALL -->
             <section id="tab-gallery" class="hidden space-y-4">
                 <div>
-                    <h2 class="text-xl font-black text-white">Chart Evidence Wall</h2>
-                    <p class="text-xs text-slate-400 font-medium">Single-column stacked layout displaying Entry and Result charts side-by-side cleanly for each trade.</p>
+                    <h2 class="text-xl font-black">Chart Evidence Wall</h2>
+                    <p class="text-xs opacity-80 font-medium">Single-column stacked layout displaying Entry and Result charts side-by-side cleanly for each trade.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="galleryGrid"></div>
@@ -344,49 +356,49 @@
     <div id="followupModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-sm font-black text-white">Complete Post-Trade Follow-up</h3>
-                <button onclick="closeFollowupModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <h3 class="text-sm font-black">Complete Post-Trade Follow-up</h3>
+                <button onclick="closeFollowupModal()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-slate-300 font-bold mb-1">Ticket / Symbol</label>
-                    <input type="text" id="fuTicketDisplay" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 font-mono font-bold">
+                    <label class="block font-bold mb-1 opacity-90">Ticket / Symbol</label>
+                    <input type="text" id="fuTicketDisplay" disabled class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 opacity-70 font-mono font-bold">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-slate-300 font-bold mb-1">Closing Status</label>
-                        <select id="fuStatusSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-bold">
+                        <label class="block font-bold mb-1 opacity-90">Closing Status</label>
+                        <select id="fuStatusSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-bold">
                             <option value="Closed Profit">Closed Profit</option>
                             <option value="Closed Loss">Closed Loss</option>
                             <option value="Break-Even">Break-Even</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-slate-300 font-bold mb-1">Final P&L ($)</label>
-                        <input type="number" step="0.01" id="fuPnLInput" value="150.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-mono font-bold">
+                        <label class="block font-bold mb-1 opacity-90">Final P&L ($)</label>
+                        <input type="number" step="0.01" id="fuPnLInput" value="150.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-mono font-bold">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-slate-300 font-bold mb-1">Exit Reason</label>
-                    <select id="fuReasonSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white font-medium"></select>
+                    <label class="block font-bold mb-1 opacity-90">Exit Reason</label>
+                    <select id="fuReasonSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 font-medium"></select>
                 </div>
 
                 <div>
-                    <label class="block text-slate-300 font-bold mb-1">Result Outcome Notes</label>
-                    <textarea id="fuNotesInput" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none" placeholder="Target hit cleanly at key high..."></textarea>
+                    <label class="block font-bold mb-1 opacity-90">Result Outcome Notes</label>
+                    <textarea id="fuNotesInput" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 focus:outline-none" placeholder="Target hit cleanly at key high..."></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-slate-300 font-bold mb-1">Result Chart Snapshot</label>
-                    <input type="file" id="fuFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-400">
+                    <label class="block font-bold mb-1 opacity-90">Result Chart Snapshot</label>
+                    <input type="file" id="fuFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 opacity-80">
                 </div>
             </div>
 
             <div class="flex space-x-3 pt-2">
-                <button onclick="closeFollowupModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700">Cancel</button>
+                <button onclick="closeFollowupModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 font-bold text-xs hover:bg-slate-700">Cancel</button>
                 <button onclick="saveFollowup()" class="flex-1 py-2.5 rounded-xl bg-teal-400 text-slate-950 font-black text-xs hover:bg-teal-300">Save Outcome</button>
             </div>
         </div>
@@ -398,9 +410,9 @@
             <div class="p-4 border-b border-slate-800 flex items-center justify-between">
                 <div>
                     <div id="modalImageLabel" class="text-xs font-black text-teal-400 uppercase tracking-wider">ENTRY PHOTO</div>
-                    <div id="modalImageSub" class="text-xs text-slate-400">#000000</div>
+                    <div id="modalImageSub" class="text-xs opacity-70">#000000</div>
                 </div>
-                <button onclick="closeImageViewer()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="closeImageViewer()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <div class="p-2 bg-slate-950 flex-1 flex items-center justify-center overflow-hidden">
                 <img id="modalFullImage" src="" class="max-h-[75vh] w-auto object-contain rounded-lg">
@@ -462,6 +474,16 @@
             updateAllDisplays();
         });
 
+        /* Dynamic Color Customizer Logic */
+        function updateCustomWallColor(hexColor) {
+            document.getElementById('appBody').style.backgroundColor = hexColor;
+            document.getElementById('mainContentArea').style.backgroundColor = hexColor;
+        }
+
+        function updateCustomTextColor(hexColor) {
+            document.getElementById('appBody').style.color = hexColor;
+        }
+
         function initClock() {
             function updateClock() {
                 const now = new Date();
@@ -483,7 +505,7 @@
                     return `
                         <div class="flex items-center space-x-2">
                             <span class="w-2.5 h-2.5 rounded-full ${isOpen ? 'bg-emerald-400 shadow-sm shadow-emerald-400' : 'bg-slate-700'}"></span>
-                            <span class="${isOpen ? 'text-white font-black' : 'text-slate-500'}">${s.name}</span>
+                            <span class="${isOpen ? 'font-black' : 'opacity-50'}">${s.name}</span>
                         </div>
                     `;
                 }).join('');
@@ -496,7 +518,7 @@
                 } else if (h >= 18 && h < 20) {
                     kz.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span><span class="text-amber-400 font-bold">NY PM Killzone</span>`;
                 } else {
-                    kz.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span><span class="text-slate-500">No Active ICT Killzone</span>`;
+                    kz.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-slate-600"></span><span class="opacity-50">No Active ICT Killzone</span>`;
                 }
             }
             updateClock();
@@ -507,7 +529,7 @@
             ['home', 'checklist', 'journal', 'calendar', 'gallery'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`nav-${t}`);
-                if (btn) btn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-900 hover:text-white transition-all";
+                if (btn) btn.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold opacity-80 hover:bg-slate-900 transition-all";
             });
 
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
@@ -564,19 +586,19 @@
                     <label class="flex items-start space-x-3 cursor-pointer">
                         <input type="checkbox" ${r.checked ? 'checked' : ''} onchange="togglePreRule(${r.id})" class="mt-1 rounded border-slate-700 text-teal-400 focus:ring-0">
                         <div>
-                            <div class="text-sm font-bold text-white">${r.text}</div>
-                            <div class="text-xs text-slate-400">${r.desc}</div>
+                            <div class="text-sm font-bold">${r.text}</div>
+                            <div class="text-xs opacity-70">${r.desc}</div>
                         </div>
                     </label>
-                    <button onclick="deletePreRule(${r.id})" class="text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="deletePreRule(${r.id})" class="opacity-50 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>
             `).join('');
 
             const invContainer = document.getElementById('invalidationContainer');
             invContainer.innerHTML = state.invalidRules.map(r => `
                 <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
-                    <span class="text-slate-200 font-bold">${r.text}</span>
-                    <button onclick="deleteInvalidRule(${r.id})" class="text-slate-500 hover:text-rose-400 ml-2"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    <span class="font-bold">${r.text}</span>
+                    <button onclick="deleteInvalidRule(${r.id})" class="opacity-50 hover:text-rose-400 ml-2"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
             `).join('');
 
@@ -757,29 +779,28 @@
 
                 return `
                 <tr class="hover:bg-slate-900/60 transition-colors">
-                    <td class="py-3 px-3 font-mono font-bold text-slate-400">#${t.ticket}</td>
-                    <td class="py-3 px-3 text-slate-300 font-bold">${t.closing_time_utc.replace('T', ' ')}</td>
-                    <td class="py-3 px-3 font-extrabold text-white">${t.symbol}</td>
+                    <td class="py-3 px-3 font-mono font-bold opacity-70">#${t.ticket}</td>
+                    <td class="py-3 px-3 font-bold">${t.closing_time_utc.replace('T', ' ')}</td>
+                    <td class="py-3 px-3 font-extrabold">${t.symbol}</td>
                     <td class="py-3 px-3 uppercase text-xs font-black ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
-                    <td class="py-3 px-3 font-mono font-bold text-slate-200">${t.lots}</td>
+                    <td class="py-3 px-3 font-mono font-bold">${t.lots}</td>
                     <td class="py-3 px-3 font-bold text-teal-400">${entryCap.reason || t.reason}</td>
                     <td class="py-3 px-3">
-                        ${isPending ? `<button onclick="openFollowupModal(${t.ticket})" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30">Log Outcome</button>` : `<span class="text-slate-300 text-xs font-bold">${t.status}</span>`}
+                        ${isPending ? `<button onclick="openFollowupModal(${t.ticket})" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30">Log Outcome</button>` : `<span class="text-xs font-bold opacity-80">${t.status}</span>`}
                     </td>
                     <td class="py-3 px-3 font-black ${t.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
-                    <td class="py-3 px-3 font-mono font-bold text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="py-3 px-3 font-mono font-bold">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                     <td class="py-3 px-3">
-                        ${entryCap.img ? `<img src="${entryCap.img}" onclick="viewFullImage('${entryCap.img}', 'ENTRY PHOTO • #${t.ticket} (${t.symbol})', 'Setup:${entryCap.reason || t.reason}')" class="w-10 h-8 object-cover rounded border border-teal-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-500 text-xs">No photo</span>'}
+                        ${entryCap.img ? `<img src="${entryCap.img}" onclick="viewFullImage('${entryCap.img}', 'ENTRY PHOTO • #${t.ticket} (${t.symbol})', 'Setup:${entryCap.reason || t.reason}')" class="w-10 h-8 object-cover rounded border border-teal-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="opacity-50 text-xs">No photo</span>'}
                     </td>
                     <td class="py-3 px-3">
-                        ${resCap.img ? `<img src="${resCap.img}" onclick="viewFullImage('${resCap.img}', 'RESULT PHOTO • #${t.ticket} (${t.symbol})', 'Outcome Note:${resCap.notes || 'Verified'}')" class="w-10 h-8 object-cover rounded border border-amber-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-500 text-xs">No photo</span>'}
+                        ${resCap.img ? `<img src="${resCap.img}" onclick="viewFullImage('${resCap.img}', 'RESULT PHOTO • #${t.ticket} (${t.symbol})', 'Outcome Note:${resCap.notes || 'Verified'}')" class="w-10 h-8 object-cover rounded border border-amber-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="opacity-50 text-xs">No photo</span>'}
                     </td>
                 </tr>
             `}).join('');
             lucide.createIcons();
         }
 
-        // Single Column Stacked Gallery
         function renderGalleryWall() {
             const grid = document.getElementById('galleryGrid');
             const items = [];
@@ -804,7 +825,7 @@
             });
 
             if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-sm font-bold">No uploaded chart snapshots yet. Upload Entry photos on position launch or complete Result follow-ups to populate this wall.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-12 text-center opacity-70 text-sm font-bold">No uploaded chart snapshots yet. Upload Entry photos on position launch or complete Result follow-ups to populate this wall.</div>`;
                 return;
             }
 
@@ -813,11 +834,11 @@
                     <!-- Card Header -->
                     <div class="flex items-center justify-between pb-2 border-b border-slate-800">
                         <div>
-                            <span class="text-base font-black text-white font-mono">${item.symbol}</span>
+                            <span class="text-base font-black font-mono">${item.symbol}</span>
                             <span class="uppercase text-xs font-black ml-2 ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs text-slate-400 font-mono">#${item.ticket}</span>
+                            <span class="text-xs opacity-70 font-mono">#${item.ticket}</span>
                             <div class="text-sm font-black ${item.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}</div>
                         </div>
                     </div>
@@ -829,14 +850,14 @@
                         <div class="space-y-1.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-black text-teal-400 uppercase tracking-wider">ENTRY PHOTO</span>
-                                <span class="text-xs text-slate-300 font-medium truncate max-w-[180px]">Setup: ${item.reason}</span>
+                                <span class="text-xs font-medium truncate max-w-[180px] opacity-80">Setup: ${item.reason}</span>
                             </div>
                             ${item.entryImg ? `
                                 <div class="w-full aspect-video rounded-xl overflow-hidden border border-teal-500/40 bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.entryImg}', 'ENTRY PHOTO • #${item.ticket} (${item.symbol})', 'Setup:${item.reason}')">
                                     <img src="${item.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </div>
                             ` : `
-                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs text-slate-500 font-bold">
+                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs opacity-50 font-bold">
                                     Pending Entry Chart Snapshot
                                 </div>
                             `}
@@ -846,14 +867,14 @@
                         <div class="space-y-1.5">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-black text-amber-400 uppercase tracking-wider">RESULT PHOTO</span>
-                                <span class="text-xs text-slate-300 font-medium truncate max-w-[180px]">Outcome: ${item.resultNotes}</span>
+                                <span class="text-xs font-medium truncate max-w-[180px] opacity-80">Outcome: ${item.resultNotes}</span>
                             </div>
                             ${item.resultImg ? `
                                 <div class="w-full aspect-video rounded-xl overflow-hidden border border-amber-500/40 bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.resultImg}', 'RESULT PHOTO • #${item.ticket} (${item.symbol})', 'Outcome Note:${item.resultNotes}')">
                                     <img src="${item.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </div>
                             ` : `
-                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs text-slate-500 font-bold">
+                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs opacity-50 font-bold">
                                     Pending Result Chart Snapshot
                                 </div>
                             `}
@@ -862,7 +883,7 @@
                     </div>
 
                     <!-- Footer -->
-                    <div class="text-xs text-slate-400 font-bold pt-2 border-t border-slate-900 flex justify-between">
+                    <div class="text-xs opacity-70 font-bold pt-2 border-t border-slate-900 flex justify-between">
                         <span>Date: ${item.date}</span>
                         <span>Status: ${item.status}</span>
                     </div>
@@ -898,7 +919,7 @@
 
             ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => {
                 const header = document.createElement('div');
-                header.className = 'text-center text-xs font-black text-slate-400 uppercase py-1';
+                header.className = 'text-center text-xs font-black opacity-60 uppercase py-1';
                 header.innerText = d;
                 grid.appendChild(header);
             });
@@ -923,9 +944,9 @@
                     mNet += dayPnL;
 
                     cell.className = `h-20 rounded-xl p-2 border flex flex-col justify-between ${dayPnL >= 0 ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' : 'bg-rose-500/10 border-rose-500/40 text-rose-400'}`;
-                    cell.innerHTML = `<div class="font-black text-xs text-slate-200">${d}</div><div class="text-right"><div class="font-black text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[10px] text-slate-300 font-bold">${dayTrades.length} trades</div></div>`;
+                    cell.innerHTML = `<div class="font-black text-xs opacity-90">${d}</div><div class="text-right"><div class="font-black text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[10px] opacity-80 font-bold">${dayTrades.length} trades</div></div>`;
                 } else {
-                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800 rounded-xl p-2 text-xs text-slate-500 font-bold';
+                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800 rounded-xl p-2 text-xs opacity-50 font-bold';
                     cell.innerText = d;
                 }
                 grid.appendChild(cell);
@@ -963,6 +984,8 @@
         function changeTheme(theme) {
             const body = document.getElementById('appBody');
             body.className = "min-h-screen flex font-sans antialiased text-sm ";
+            body.style.backgroundColor = "";
+            body.style.color = "";
             if (theme === 'monokai') body.classList.add('theme-monokai');
             else if (theme === 'light') body.classList.add('theme-light');
             else body.classList.add('bg-[#0b101d]', 'text-slate-200');
