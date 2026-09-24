@@ -30,17 +30,27 @@
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(12, 19, 34, 0.6); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(12, 19, 34, 0.4); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.6); border-radius: 4px; }
+
+        /* Custom Theme Styles */
+        body.theme-monokai { background-color: #272822 !important; color: #f8f8f2 !important; }
+        body.theme-monokai aside, body.theme-monokai header, body.theme-monokai .card-bg { background-color: #1e1f1c !important; border-color: #3e3d32 !important; }
+        body.theme-light { background-color: #f8fafc !important; color: #0f172a !important; }
+        body.theme-light aside, body.theme-light header, body.theme-light .card-bg { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #0f172a !important; }
+        body.theme-light .text-white { color: #0f172a !important; }
+        body.theme-light .text-slate-400 { color: #64748b !important; }
+        body.theme-light .text-slate-300 { color: #334155 !important; }
+        body.theme-light input, body.theme-light select { background-color: #f1f5f9 !important; color: #0f172a !important; border-color: #cbd5e1 !important; }
     </style>
 </head>
-<body class="bg-[#0b101d] text-slate-200 min-h-screen flex font-sans antialiased">
+<body id="appBody" class="bg-[#0b101d] text-slate-200 min-h-screen flex font-sans antialiased">
 
     <!-- LEFT VERTICAL SIDEBAR NAVIGATION -->
-    <aside class="w-64 border-r border-slate-800/80 bg-[#0c1322] flex flex-col justify-between shrink-0">
+    <aside class="w-64 border-r border-slate-800/80 bg-[#0c1322] flex flex-col justify-between shrink-0 z-20">
         <div class="p-5">
             <!-- Brand Header -->
             <div class="flex items-center space-x-3 mb-8">
@@ -59,25 +69,29 @@
                     <i data-lucide="home" class="w-4 h-4"></i>
                     <span>Home & Overview</span>
                 </button>
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
-                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                    <span>Dashboard Analytics</span>
+                <button onclick="switchTab('calendar')" id="nav-calendar" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    <span>P&L Calendar</span>
                 </button>
                 <button onclick="switchTab('journal')" id="nav-journal" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
                     <span>Trade Journal</span>
                 </button>
+                <button onclick="switchTab('timing')" id="nav-timing" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span>Market Timing Guidance</span>
+                </button>
                 <button onclick="switchTab('checklist')" id="nav-checklist" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
                     <i data-lucide="check-square" class="w-4 h-4"></i>
                     <span>Execution Checklist</span>
                 </button>
-                <button onclick="switchTab('brokers')" id="nav-brokers" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
-                    <i data-lucide="wallet" class="w-4 h-4"></i>
-                    <span>Brokers & Accounts</span>
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="line-chart" class="w-4 h-4"></i>
+                    <span>Performance Analytics</span>
                 </button>
                 <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
                     <i data-lucide="settings" class="w-4 h-4"></i>
-                    <span>Settings & About</span>
+                    <span>Settings & Themes</span>
                 </button>
             </nav>
         </div>
@@ -88,22 +102,32 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>Broker Connected</span>
             </span>
-            <span class="text-slate-500">v2.4</span>
+            <span class="text-slate-500">v3.2</span>
         </div>
     </aside>
 
     <!-- MAIN RIGHT CONTENT WRAPPER -->
     <div class="flex-1 flex flex-col min-w-0">
 
-        <!-- TOP BAR (Title + Actions) -->
-        <header class="h-16 border-b border-slate-800/80 px-8 flex items-center justify-between bg-[#0b101d]/80 backdrop-blur-md sticky top-0 z-30">
+        <!-- TOP BAR -->
+        <header class="h-16 border-b border-slate-800/80 px-8 flex items-center justify-between bg-[#0b101d]/80 backdrop-blur-md sticky top-0 z-30 card-bg">
             <div>
                 <h2 id="pageTitle" class="text-lg font-bold text-white">Home & Overview</h2>
                 <p id="pageSubtitle" class="text-xs text-slate-400">Account status, execution metrics, and equity dashboard.</p>
             </div>
 
-            <!-- Actions -->
+            <!-- Top Actions & Theme Selector -->
             <div class="flex items-center space-x-3">
+                <!-- Theme/Color Selector -->
+                <div class="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 rounded-lg p-1">
+                    <i data-lucide="palette" class="w-3.5 h-3.5 text-slate-400 ml-1"></i>
+                    <select id="themeSelect" onchange="changeTheme(this.value)" class="bg-transparent text-xs text-slate-200 font-semibold focus:outline-none cursor-pointer">
+                        <option value="dark">Dark Theme</option>
+                        <option value="monokai">Monokai Pro</option>
+                        <option value="light">Light Theme</option>
+                    </select>
+                </div>
+
                 <label for="csvInput" class="cursor-pointer flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all">
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                     <span>Import CSV</span>
@@ -112,7 +136,7 @@
 
                 <button onclick="exportCSV()" class="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md shadow-teal-600/20 transition-all">
                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                    <span>Export</span>
+                    <span>Export CSV</span>
                 </button>
             </div>
         </header>
@@ -120,66 +144,70 @@
         <!-- VIEW AREA -->
         <main class="p-8 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
 
-            <!-- PAGE 1: HOME & OVERVIEW -->
+            <!-- TAB 1: HOME & OVERVIEW -->
             <div id="view-home" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-4">
                         <div class="text-xs font-semibold text-slate-400 mb-1">Calculated Equity</div>
                         <div class="text-2xl font-bold text-white" id="homeEquity">$100,000.00</div>
                         <div class="text-[11px] text-teal-400 mt-1" id="homeReturn">+0.00% Net Return</div>
                     </div>
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-4">
                         <div class="text-xs font-semibold text-slate-400 mb-1">Win Rate / Profit Factor</div>
                         <div class="text-2xl font-bold text-white"><span id="homeWinRate">0.0%</span> <span class="text-xs text-slate-400 font-normal">/ <span id="homePF">0.00</span></span></div>
                         <div class="text-[11px] text-slate-400 mt-1" id="homeTrades">0 Executed Trades</div>
                     </div>
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-4">
                         <div class="text-xs font-semibold text-slate-400 mb-1">Execution Discipline</div>
-                        <div class="text-2xl font-bold text-teal-400">96.8%</div>
-                        <div class="text-[11px] text-slate-400 mt-1">Rule Compliance Score</div>
+                        <div class="text-2xl font-bold text-teal-400" id="homeDiscipline">100.0%</div>
+                        <div class="text-[11px] text-slate-400 mt-1">Checklist Compliance Score</div>
                     </div>
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-4">
                         <div class="text-xs font-semibold text-slate-400 mb-1">Starting Baseline ($)</div>
                         <input type="number" id="baselineInput" value="100000" onchange="updateBaseline(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none focus:border-teal-500">
                     </div>
                 </div>
 
-                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5">
                     <h3 class="text-sm font-bold text-white mb-4">Equity Curve Progress</h3>
                     <div class="h-64 w-full"><canvas id="chartHomeEquity"></canvas></div>
                 </div>
             </div>
 
-            <!-- PAGE 2: DASHBOARD ANALYTICS -->
-            <div id="view-dashboard" class="space-y-6 hidden">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
-                        <h3 class="text-sm font-bold text-white mb-3">Symbol Distribution</h3>
-                        <div class="h-52"><canvas id="chartSymbols"></canvas></div>
+            <!-- TAB 2: TRADING P&L CALENDAR -->
+            <div id="view-calendar" class="space-y-6 hidden">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-4 mb-4">
+                        <div class="flex items-center space-x-3">
+                            <button onclick="navMonth(-1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                            <h3 class="text-base font-bold text-white" id="calMonthTitle">September 2026</h3>
+                            <button onclick="navMonth(1)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="flex items-center space-x-6 text-xs">
+                            <div><span class="text-slate-400">Monthly Trades: </span><span class="text-white font-bold" id="calTrades">0</span></div>
+                            <div><span class="text-slate-400">Winning Days: </span><span class="text-teal-400 font-bold" id="calWins">0</span></div>
+                            <div><span class="text-slate-400">Net Month P&L: </span><span class="font-bold text-teal-400" id="calNetPnL">$0.00</span></div>
+                        </div>
                     </div>
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
-                        <h3 class="text-sm font-bold text-white mb-3">Exit Reason Breakdown</h3>
-                        <div class="h-52"><canvas id="chartExits"></canvas></div>
+
+                    <div class="grid grid-cols-7 text-center text-slate-400 text-xs font-bold py-2 uppercase tracking-wider">
+                        <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
                     </div>
-                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
-                        <h3 class="text-sm font-bold text-white mb-3">Buy vs. Sell Ratio</h3>
-                        <div class="h-52"><canvas id="chartTypes"></canvas></div>
-                    </div>
+                    <div class="grid grid-cols-7 gap-2.5" id="calendarGrid"></div>
                 </div>
             </div>
 
-            <!-- PAGE 3: TRADE JOURNAL + SCREEN CAPTURE -->
+            <!-- TAB 3: TRADE JOURNAL WITH REASON & SCREENSHOT PREVIEW -->
             <div id="view-journal" class="space-y-6 hidden">
-                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-bold text-white">Trade Journal & Chart Captures</h3>
-                        <button onclick="openCaptureModal()" class="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-semibold flex items-center space-x-1.5">
-                            <i data-lucide="image" class="w-3.5 h-3.5"></i>
-                            <span>Attach Screen Capture</span>
+                        <h3 class="text-sm font-bold text-white">Trade Executions & Setup Reasons</h3>
+                        <button onclick="openCaptureModal()" class="px-3.5 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-semibold flex items-center space-x-2">
+                            <i data-lucide="camera" class="w-4 h-4"></i>
+                            <span>Attach Chart & Entry Reason</span>
                         </button>
                     </div>
 
-                    <!-- Journal Table -->
                     <div class="overflow-x-auto custom-scrollbar">
                         <table class="w-full text-left text-xs text-slate-300">
                             <thead class="bg-slate-950 uppercase text-[10px] text-slate-400 border-b border-slate-800">
@@ -189,9 +217,10 @@
                                     <th class="py-3 px-3">Symbol</th>
                                     <th class="py-3 px-3">Type</th>
                                     <th class="py-3 px-3">Lots</th>
+                                    <th class="py-3 px-3">Entry Reason</th>
                                     <th class="py-3 px-3">Profit ($)</th>
                                     <th class="py-3 px-3">Equity ($)</th>
-                                    <th class="py-3 px-3">Screen Capture</th>
+                                    <th class="py-3 px-3">Chart Preview</th>
                                 </tr>
                             </thead>
                             <tbody id="journalBody" class="divide-y divide-slate-800/60"></tbody>
@@ -200,118 +229,131 @@
                 </div>
             </div>
 
-            <!-- PAGE 4: EXECUTION CHECKLIST -->
-            <div id="view-checklist" class="space-y-6 hidden">
-                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <div>
-                        <h3 class="text-sm font-bold text-white">Pre-Trade Execution Checklist</h3>
-                        <p class="text-xs text-slate-400">Complete all rule requirements prior to placing market positions.</p>
-                    </div>
-
-                    <div class="space-y-3" id="checklistContainer">
-                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
-                            <input type="checkbox" checked class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
-                            <div>
-                                <div class="text-xs font-bold text-white">Stop Loss Defined & Placed on Order Entry</div>
-                                <div class="text-[11px] text-slate-400">Enforces standard risk parameter per trade setup.</div>
-                            </div>
-                        </label>
-                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
-                            <input type="checkbox" checked class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
-                            <div>
-                                <div class="text-xs font-bold text-white">High Impact Economic News Check</div>
-                                <div class="text-[11px] text-slate-400">Ensure no major CPI, FOMC, or NFP releases within 30 minutes.</div>
-                            </div>
-                        </label>
-                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
-                            <div>
-                                <div class="text-xs font-bold text-white">Minimum 1:2 Risk-to-Reward Ratio</div>
-                                <div class="text-[11px] text-slate-400">Calculated price distance targeting key structure points.</div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE 5: BROKERS & ACCOUNTS -->
-            <div id="view-brokers" class="space-y-6 hidden">
-                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold text-white">Connected Broker Accounts</h3>
-                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 font-bold text-xs">MT5</div>
-                            <div>
-                                <div class="text-xs font-bold text-white">MetaTrader 5 Live Account</div>
-                                <div class="text-[11px] text-slate-400">Account ID: #50192842 • Server: IC Markets Live</div>
-                            </div>
+            <!-- TAB 4: MARKET TIMING & ENTRY GUIDANCE -->
+            <div id="view-timing" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Asian Session</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">00:00 - 08:00 UTC</span>
                         </div>
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active Sync</span>
+                        <h4 class="text-sm font-bold text-white">Asian Liquidity Range</h4>
+                        <p class="text-xs text-slate-400">Look for tight range accumulation. Avoid breakout entries; prepare for London liquidity sweeps.</p>
+                    </div>
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">London Killzone</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">07:00 - 10:00 UTC</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white">London Expansion Phase</h4>
+                        <p class="text-xs text-slate-400">Optimal timing for Judas Swings and expansion entries off Asian high/low sweeps.</p>
+                    </div>
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">NY Open Killzone</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">12:00 - 15:00 UTC</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white">New York High Volatility</h4>
+                        <p class="text-xs text-slate-400">Peak liquidity window. Ideal for trend continuations or high-impact reversal confirmations.</p>
+                    </div>
+                </div>
+
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-white">Optimal Entry Timing Rules</h3>
+                    <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+                        <li>Only execute trades during active Killzone windows (London or New York Open).</li>
+                        <li>Do NOT open new positions 15 minutes before or after tier-1 high-impact news releases (CPI, FOMC, NFP).</li>
+                        <li>Ensure multi-timeframe order block alignment before entering market orders.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADJUSTABLE EXECUTION CHECKLIST -->
+            <div id="view-checklist" class="space-y-6 hidden">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Pre-Trade Execution Checklist Rules</h3>
+                            <p class="text-xs text-slate-400">Customize your rules. Checked items will dynamically calculate your discipline score.</p>
+                        </div>
+                        <button onclick="addNewRulePrompt()" class="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center space-x-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Add Custom Rule</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3" id="checklistContainer"></div>
+                </div>
+            </div>
+
+            <!-- TAB 6: PERFORMANCE & DRAWDOWN ANALYTICS -->
+            <div id="view-analytics" class="space-y-6 hidden">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <h3 class="text-sm font-bold text-white">Performance Curves & Peak Drawdown (%)</h3>
+                    <div class="h-64 w-full"><canvas id="chartPerformanceDrawdown"></canvas></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                        <h3 class="text-sm font-bold text-white mb-3">Symbol Distribution</h3>
+                        <div class="h-52"><canvas id="chartSymbols"></canvas></div>
+                    </div>
+                    <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                        <h3 class="text-sm font-bold text-white mb-3">Trade Side Ratio (Buy / Sell)</h3>
+                        <div class="h-52"><canvas id="chartTypes"></canvas></div>
                     </div>
                 </div>
             </div>
 
-            <!-- PAGE 6: SETTINGS & ABOUT + EMAIL ALERT FEATURE -->
+            <!-- TAB 7: SETTINGS & ABOUT -->
             <div id="view-settings" class="space-y-6 hidden">
-                <!-- Screenshot Design Matching Block -->
-                <div class="bg-[#101728] border border-slate-800/90 rounded-2xl p-6 space-y-6">
+                <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-6">
                     <div>
                         <h3 class="text-lg font-bold text-white">About TraderWell</h3>
                         <p class="text-xs text-slate-400 mt-1">Empowering disciplined traders through quantitative feedback and rule-based tracking.</p>
                     </div>
-                    <hr class="border-slate-800/80">
+                    <hr class="border-slate-800">
                     <div class="space-y-4">
                         <div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider text-slate-300">Mission</h4>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Mission</h4>
                             <p class="text-xs text-slate-400 mt-1 leading-relaxed">To convert discretionary emotion into process-oriented consistency by holding traders accountable to their predefined risk checklists.</p>
                         </div>
                         <div>
-                            <h4 class="text-xs font-bold text-white uppercase tracking-wider text-slate-300">Vision</h4>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Vision</h4>
                             <p class="text-xs text-slate-400 mt-1 leading-relaxed">Building the premiere, lightweight web suite for seamless trading journals and real-time execution analytics.</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Email Message / Alerts Settings Section -->
-                <div class="bg-[#101728] border border-slate-800/90 rounded-2xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold text-white">Email Messages & Journal Report Dispatch</h3>
-                    <p class="text-xs text-slate-400">Receive daily execution summaries or email notifications whenever a drawdown threshold is reached.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Notification Email</label>
-                            <input type="email" id="userEmail" value="trader@traderwell.io" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-300 mb-1">Report Schedule</label>
-                            <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
-                                <option>Daily Post-Market Summary</option>
-                                <option>Weekly Performance Report</option>
-                                <option>Drawdown Alert Only</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button onclick="saveSettings()" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold">Save Email Preferences</button>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- MODAL: ATTACH SCREEN CAPTURE -->
+    <!-- MODAL: ATTACH CHART SCREENSHOT & ENTRY REASON -->
     <div id="captureModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#101728] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
+        <div class="card-bg bg-[#101728] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
             <button onclick="closeCaptureModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h3 class="text-sm font-bold text-white">Attach Screen Capture to Trade</h3>
+            <h3 class="text-sm font-bold text-white">Attach Screenshot & Entry Reason</h3>
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block text-slate-300 font-semibold mb-1">Select Trade Ticket</label>
-                    <select id="modalTicketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"></select>
+                    <select id="modalTicketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none"></select>
                 </div>
                 <div>
-                    <label class="block text-slate-300 font-semibold mb-1">Chart Screenshot (Image File)</label>
+                    <label class="block text-slate-300 font-semibold mb-1">Primary Entry Reason</label>
+                    <select id="modalReasonSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none">
+                        <option>Break & Retest</option>
+                        <option>Liquidity Sweep & FVG</option>
+                        <option>Order Block Rejection</option>
+                        <option>Trendline Breakout</option>
+                        <option>News Momentum Play</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 font-semibold mb-1">Chart Screenshot File</label>
                     <input type="file" id="captureFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-300">
                 </div>
-                <button onclick="saveCapture()" class="w-full py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg">Save Screen Capture</button>
+                <button onclick="saveCapture()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg shadow-md">Save Details</button>
             </div>
         </div>
     </div>
@@ -320,46 +362,52 @@
         let state = {
             trades: [],
             baseline: 100000,
+            currentMonth: new Date(2026, 8, 1),
             captures: {},
+            rules: [
+                { id: 1, text: "Stop Loss Defined & Placed on Entry", desc: "Prevents runaway account risk.", checked: true },
+                { id: 2, text: "No Major Economic News Release ±30 Mins", desc: "Avoids high slippage during releases.", checked: true },
+                { id: 3, text: "Minimum 1:2 Risk-to-Reward Ratio Target", desc: "Guarantees statistical expectancy.", checked: true }
+            ],
             charts: {}
         };
 
-        const sampleTrades = [
-            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, profit: -3.00 },
-            { ticket: 4146673158, closing_time_utc: '2026-08-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, profit: -0.50 },
-            { ticket: 4134360398, closing_time_utc: '2026-08-12T13:56:15', symbol: 'BTCUSDc', type: 'buy', lots: 0.01, profit: -1.01 },
-            { ticket: 3787037546, closing_time_utc: '2026-06-26T12:58:30', symbol: 'XAUUSDc', type: 'buy', lots: 0.06, profit: 292.20 }
+        const defaultSample = [
+            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, profit: -3.00, reason: 'Break & Retest' },
+            { ticket: 4146673158, closing_time_utc: '2026-09-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, profit: 145.50, reason: 'Liquidity Sweep' },
+            { ticket: 4134360398, closing_time_utc: '2026-09-12T13:56:15', symbol: 'BTCUSDc', type: 'buy', lots: 0.01, profit: -12.10, reason: 'Order Block' },
+            { ticket: 3787037546, closing_time_utc: '2026-09-02T12:58:30', symbol: 'XAUUSDc', type: 'buy', lots: 0.06, profit: 292.20, reason: 'Break & Retest' }
         ];
 
         const tabs = [
             { id: 'home', title: 'Home & Overview', sub: 'Account status, execution metrics, and equity dashboard.' },
-            { id: 'dashboard', title: 'Dashboard Analytics', sub: 'Quantitative metrics and trade execution analytics.' },
-            { id: 'journal', title: 'Trade Journal', sub: 'Executed trade records with attached screen captures.' },
-            { id: 'checklist', title: 'Execution Checklist', sub: 'Rule compliance and pre-trade criteria verification.' },
-            { id: 'brokers', title: 'Brokers & Accounts', sub: 'Manage live broker API connections.' },
-            { id: 'settings', title: 'Settings & About', sub: 'Application mission, vision, and email notification setup.' }
+            { id: 'calendar', title: 'Trading P&L Calendar', sub: 'Daily gain/loss breakdown and execution calendar.' },
+            { id: 'journal', title: 'Trade Journal', sub: 'Executed trade records with entry reasons and chart previews.' },
+            { id: 'timing', title: 'Market Timing Guidance', sub: 'Killzones, session overlays, and execution rules.' },
+            { id: 'checklist', title: 'Execution Checklist', sub: 'Pre-trade compliance checklist and custom rules.' },
+            { id: 'analytics', title: 'Performance Analytics', sub: 'Equity progress, drawdown curves, and symbol metrics.' },
+            { id: 'settings', title: 'Settings & Themes', sub: 'Customize colors, mission statement, and system settings.' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             initCharts();
-            processData(sampleTrades);
+            renderChecklist();
+            processData(defaultSample);
         });
 
         function switchTab(targetId) {
             tabs.forEach(t => {
                 document.getElementById(`view-${t.id}`).classList.add('hidden');
-                const btn = document.getElementById(`nav-${t.id}`);
-                btn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white';
+                document.getElementById(`nav-${t.id}`).className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white';
             });
 
             document.getElementById(`view-${targetId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-${targetId}`);
-            activeBtn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20';
+            document.getElementById(`nav-${targetId}`).className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20';
 
-            const activeMeta = tabs.find(t => t.id === targetId);
-            document.getElementById('pageTitle').innerText = activeMeta.title;
-            document.getElementById('pageSubtitle').innerText = activeMeta.sub;
+            const active = tabs.find(t => t.id === targetId);
+            document.getElementById('pageTitle').innerText = active.title;
+            document.getElementById('pageSubtitle').innerText = active.sub;
         }
 
         function processData(raw) {
@@ -369,7 +417,7 @@
             state.trades = sorted.map(t => {
                 const profit = parseFloat(t.profit) || 0;
                 running += profit;
-                return { ...t, profit, calculatedEquity: running };
+                return { ...t, profit, calculatedEquity: running, reason: t.reason || 'Technical Pattern' };
             });
 
             updateAllDisplays();
@@ -391,19 +439,67 @@
             document.getElementById('homeTrades').innerText = `${total} Executed Trades`;
 
             renderTable();
+            renderCalendar();
             updateCharts();
             populateTicketSelect();
         }
 
-        function updateBaseline(val) {
-            state.baseline = parseFloat(val) || 0;
-            processData(state.trades);
+        function renderCalendar() {
+            const year = state.currentMonth.getFullYear();
+            const month = state.currentMonth.getMonth();
+            const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+            document.getElementById('calMonthTitle').innerText = `${monthNames[month]} ${year}`;
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            let offset = firstDay.getDay() - 1;
+            if (offset === -1) offset = 6;
+
+            for (let i = 0; i < offset; i++) {
+                grid.appendChild(Object.assign(document.createElement('div'), { className: 'h-20 bg-slate-900/20 rounded-xl opacity-20' }));
+            }
+
+            let mTrades = 0, mWins = 0, mNet = 0;
+
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dayTrades = state.trades.filter(t => (t.closing_time_utc || '').startsWith(dateStr));
+                
+                const cell = document.createElement('div');
+                if (dayTrades.length > 0) {
+                    const dayPnL = dayTrades.reduce((acc, c) => acc + c.profit, 0);
+                    mTrades += dayTrades.length;
+                    if (dayPnL >= 0) mWins++;
+                    mNet += dayPnL;
+
+                    cell.className = `h-20 rounded-xl p-2 border flex flex-col justify-between ${dayPnL >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`;
+                    cell.innerHTML = `<div class="font-bold text-[10px] text-slate-300">${d}</div><div class="text-right"><div class="font-bold text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[9px] text-slate-400">${dayTrades.length} trades</div></div>`;
+                } else {
+                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800/50 rounded-xl p-2 text-[10px] text-slate-500 font-semibold';
+                    cell.innerText = d;
+                }
+                grid.appendChild(cell);
+            }
+
+            document.getElementById('calTrades').innerText = mTrades;
+            document.getElementById('calWins').innerText = mWins;
+            document.getElementById('calNetPnL').innerText = (mNet >= 0 ? '+' : '') + '$' + mNet.toFixed(2);
+        }
+
+        function navMonth(delta) {
+            state.currentMonth.setMonth(state.currentMonth.getMonth() + delta);
+            renderCalendar();
         }
 
         function renderTable() {
             const tbody = document.getElementById('journalBody');
             tbody.innerHTML = state.trades.map(t => {
-                const img = state.captures[t.ticket];
+                const cap = state.captures[t.ticket] || {};
+                const img = cap.img;
+                const reason = cap.reason || t.reason;
                 return `
                 <tr class="hover:bg-slate-800/30">
                     <td class="py-2.5 px-3 font-mono text-slate-400">${t.ticket}</td>
@@ -411,14 +507,66 @@
                     <td class="py-2.5 px-3 font-bold text-white">${t.symbol}</td>
                     <td class="py-2.5 px-3 uppercase text-[10px] font-bold ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
                     <td class="py-2.5 px-3 font-mono text-slate-300">${t.lots}</td>
+                    <td class="py-2.5 px-3 font-semibold text-teal-400">${reason}</td>
                     <td class="py-2.5 px-3 font-bold ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-500'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
                     <td class="py-2.5 px-3 font-mono text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                     <td class="py-2.5 px-3">
-                        ${img ? `<a href="${img}" target="_blank" class="inline-flex items-center space-x-1 text-teal-400 underline font-semibold text-[11px]"><i data-lucide="image" class="w-3 h-3"></i><span>View Capture</span></a>` : '<span class="text-slate-600">None</span>'}
+                        ${img ? `<a href="${img}" target="_blank"><img src="${img}" class="w-10 h-8 object-cover rounded border border-teal-500/40 hover:scale-110 transition-transform"></a>` : '<span class="text-slate-600">No image</span>'}
                     </td>
                 </tr>
             `}).join('');
             lucide.createIcons();
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = state.rules.map((r, idx) => `
+                <div class="flex items-start justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+                    <label class="flex items-start space-x-3 cursor-pointer">
+                        <input type="checkbox" ${r.checked ? 'checked' : ''} onchange="toggleRule(${r.id})" class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
+                        <div>
+                            <div class="text-xs font-bold text-white">${r.text}</div>
+                            <div class="text-[11px] text-slate-400">${r.desc}</div>
+                        </div>
+                    </label>
+                    <button onclick="deleteRule(${r.id})" class="text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+            calcDisciplineScore();
+        }
+
+        function toggleRule(id) {
+            const rule = state.rules.find(r => r.id === id);
+            if (rule) rule.checked = !rule.checked;
+            calcDisciplineScore();
+        }
+
+        function deleteRule(id) {
+            state.rules = state.rules.filter(r => r.id !== id);
+            renderChecklist();
+        }
+
+        function addNewRulePrompt() {
+            const text = prompt("Enter new pre-trade rule:");
+            if (!text) return;
+            state.rules.push({ id: Date.now(), text: text, desc: "Custom pre-trade execution rule.", checked: true });
+            renderChecklist();
+        }
+
+        function calcDisciplineScore() {
+            if (state.rules.length === 0) return;
+            const checked = state.rules.filter(r => r.checked).length;
+            const score = ((checked / state.rules.length) * 100).toFixed(1) + '%';
+            document.getElementById('homeDiscipline').innerText = score;
+        }
+
+        function changeTheme(theme) {
+            const body = document.getElementById('appBody');
+            body.className = "min-h-screen flex font-sans antialiased ";
+            if (theme === 'monokai') body.classList.add('theme-monokai');
+            else if (theme === 'light') body.classList.add('theme-light');
+            else body.classList.add('bg-[#0b101d]', 'text-slate-200');
         }
 
         function populateTicketSelect() {
@@ -431,20 +579,22 @@
 
         function saveCapture() {
             const ticket = document.getElementById('modalTicketSelect').value;
+            const reason = document.getElementById('modalReasonSelect').value;
             const file = document.getElementById('captureFileInput').files[0];
-            if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                state.captures[ticket] = e.target.result;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    state.captures[ticket] = { img: e.target.result, reason };
+                    renderTable();
+                    closeCaptureModal();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                state.captures[ticket] = { img: state.captures[ticket]?.img || null, reason };
                 renderTable();
                 closeCaptureModal();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function saveSettings() {
-            alert('Email preferences saved! System reports will be sent to ' + document.getElementById('userEmail').value);
+            }
         }
 
         function handleFileSelect(event) {
@@ -473,13 +623,42 @@
                 data: { labels: ['Start'], datasets: [{ label: 'Equity', data: [state.baseline], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.08)', fill: true, tension: 0.2 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+
+            const ctxDD = document.getElementById('chartPerformanceDrawdown').getContext('2d');
+            state.charts.drawdown = new Chart(ctxDD, {
+                type: 'line',
+                data: { labels: ['Start'], datasets: [{ label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', yAxisID: 'y' }, { label: 'Drawdown (%)', data: [0], borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,0.1)', fill: true, yAxisID: 'y1' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { position: 'left' }, y1: { position: 'right', grid: { drawOnChartArea: false } } } }
+            });
         }
 
         function updateCharts() {
             if (!state.charts.homeEquity) return;
-            state.charts.homeEquity.data.labels = ['Start', ...state.trades.map((_, i) => `T${i+1}`)];
-            state.charts.homeEquity.data.datasets[0].data = [state.baseline, ...state.trades.map(t => t.calculatedEquity)];
+            const labels = ['Start', ...state.trades.map((_, i) => `T${i+1}`)];
+            const equityData = [state.baseline, ...state.trades.map(t => t.calculatedEquity)];
+
+            state.charts.homeEquity.data.labels = labels;
+            state.charts.homeEquity.data.datasets[0].data = equityData;
             state.charts.homeEquity.update();
+
+            // Calculate Drawdown Percentages
+            let peak = state.baseline;
+            const ddData = [0];
+            state.trades.forEach(t => {
+                if (t.calculatedEquity > peak) peak = t.calculatedEquity;
+                const dd = ((t.calculatedEquity - peak) / peak) * 100;
+                ddData.push(dd);
+            });
+
+            state.charts.drawdown.data.labels = labels;
+            state.charts.drawdown.data.datasets[0].data = equityData;
+            state.charts.drawdown.data.datasets[1].data = ddData;
+            state.charts.drawdown.update();
+        }
+
+        function updateBaseline(val) {
+            state.baseline = parseFloat(val) || 0;
+            processData(state.trades);
         }
     </script>
 </body>
