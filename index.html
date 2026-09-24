@@ -1,483 +1,301 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell Journal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PapaParse for CSV processing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+   let mTrades = 0, mWins = 0, mNet = 0;
 
-    <style>
-        .theme-monokai {
-            background-color: #272822 !important;
-            color: #f8f8f2 !important;
-        }
-        .theme-light {
-            background-color: #f8fafc !important;
-            color: #0f172a !important;
-        }
-    </style>
-</head>
-<body id="appBody" class="min-h-screen flex font-sans antialiased text-sm bg-[#0b101d] text-slate-200">
+            for (let d = 1; d <= lastDay.getDate(); d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dayTrades = state.trades.filter(t => (t.closing_time_utc || '').startsWith(dateStr));
+                
+                const cell = document.createElement('div');
+                if (dayTrades.length > 0) {
+                    const dayPnL = dayTrades.reduce((acc, c) => acc + c.profit, 0);
+                    mTrades += dayTrades.length;
+                    if (dayPnL >= 0) mWins++;
+                    mNet += dayPnL;
 
-    <!-- Sidebar Navigation -->
-    <aside class="w-64 border-r border-slate-800/80 bg-slate-950/60 p-4 flex flex-col justify-between shrink-0">
-        <div class="space-y-6">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-3 px-2">
-                <div class="w-9 h-9 rounded-xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 font-black">
-                    TW
-                </div>
-                <div>
-                    <h1 class="font-extrabold text-base tracking-wide leading-tight">TraderWell</h1>
-                    <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest">Performance Pro</span>
-                </div>
-            </div>
-
-            <!-- Navigation Links -->
-            <nav class="space-y-1">
-                <button onclick="switchTab('homeTab')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold text-left hover:bg-slate-900 text-slate-300 hover:text-white transition-colors">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-teal-400"></i>
-                    <span>Dashboard</span>
-                </button>
-                <button onclick="switchTab('journalTab')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold text-left hover:bg-slate-900 text-slate-300 hover:text-white transition-colors">
-                    <i data-lucide="book-open" class="w-4 h-4 text-teal-400"></i>
-                    <span>Trade Journal</span>
-                </button>
-                <button onclick="switchTab('galleryTab')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold text-left hover:bg-slate-900 text-slate-300 hover:text-white transition-colors">
-                    <i data-lucide="image" class="w-4 h-4 text-teal-400"></i>
-                    <span>Gallery Wall</span>
-                </button>
-                <button onclick="switchTab('calendarTab')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold text-left hover:bg-slate-900 text-slate-300 hover:text-white transition-colors">
-                    <i data-lucide="calendar" class="w-4 h-4 text-teal-400"></i>
-                    <span>Monthly Calendar</span>
-                </button>
-                <button onclick="switchTab('disciplineTab')" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold text-left hover:bg-slate-900 text-slate-300 hover:text-white transition-colors">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-teal-400"></i>
-                    <span>Discipline & Equity</span>
-                </button>
-            </nav>
-        </div>
-
-        <!-- System Controls -->
-        <div class="space-y-4 pt-4 border-t border-slate-900">
-            <div>
-                <label class="text-[10px] font-bold uppercase tracking-wider opacity-60 mb-1 block">Account Baseline ($)</label>
-                <input type="number" id="baselineInput" value="10000" onchange="updateBaseline(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 font-mono text-xs font-bold text-teal-400 focus:outline-none focus:border-teal-500">
-            </div>
-
-            <div>
-                <label class="text-[10px] font-bold uppercase tracking-wider opacity-60 mb-1 block">UI Theme</label>
-                <select onchange="changeTheme(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:border-teal-500">
-                    <option value="dark">Dark Slate</option>
-                    <option value="monokai">Monokai Pro</option>
-                    <option value="light">Light Slate</option>
-                </select>
-            </div>
-
-            <div class="flex gap-2">
-                <label class="flex-1 cursor-pointer bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 rounded-xl py-2 px-2 text-center text-teal-300 font-bold text-xs transition-colors flex items-center justify-center space-x-1">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                    <span>CSV Import</span>
-                    <input type="file" accept=".csv" onchange="handleFileSelect(event)" class="hidden">
-                </label>
-                <button onclick="exportCSV()" class="flex-1 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl py-2 px-2 text-center font-bold text-xs transition-colors flex items-center justify-center space-x-1">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                    <span>Export</span>
-                </button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Main Content Work Area -->
-    <main class="flex-1 p-8 overflow-y-auto space-y-8">
-        
-        <!-- TOP METRICS OVERVIEW (ADDITIVE) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-slate-950/80 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between">
-                <div>
-                    <div class="text-xs font-bold opacity-60 uppercase tracking-wider">Win Rate</div>
-                    <div id="metricWinRate" class="text-2xl font-black text-teal-400">0.0%</div>
-                </div>
-                <div class="p-3 bg-teal-500/10 rounded-xl text-teal-400">
-                    <i data-lucide="trophy" class="w-6 h-6"></i>
-                </div>
-            </div>
-            <div class="bg-slate-950/80 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between">
-                <div>
-                    <div class="text-xs font-bold opacity-60 uppercase tracking-wider">Profit Factor</div>
-                    <div id="metricProfitFactor" class="text-2xl font-black text-emerald-400">0.00</div>
-                </div>
-                <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
-                    <i data-lucide="trending-up" class="w-6 h-6"></i>
-                </div>
-            </div>
-            <div class="bg-slate-950/80 border border-slate-800/80 p-4 rounded-2xl flex items-center justify-between">
-                <div>
-                    <div class="text-xs font-bold opacity-60 uppercase tracking-wider">Average Risk/Reward</div>
-                    <div id="metricAvgRR" class="text-2xl font-black text-amber-400">1:0.00</div>
-                </div>
-                <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
-                    <i data-lucide="scale" class="w-6 h-6"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 1. DASHBOARD HOME TAB -->
-        <section id="homeTab" class="space-y-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-2xl font-black">Performance Dashboard</h2>
-                    <p class="text-xs opacity-60">Real-time equity curves & high-level trading metrics</p>
-                </div>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 h-80">
-                <canvas id="chartHomeEquity"></canvas>
-            </div>
-        </section>
-
-        <!-- 2. TRADE JOURNAL TAB -->
-        <section id="journalTab" class="space-y-6 hidden">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-black">Trade Execution Log</h2>
-                    <p class="text-xs opacity-60">Full trade history, setup tags, and result attachments</p>
-                </div>
-
-                <!-- GLOBAL FILTER TOOLBAR (ADDITIVE) -->
-                <div class="flex flex-wrap items-center gap-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <label class="text-xs font-bold opacity-70">Symbol:</label>
-                        <select id="filterSymbolSelect" onchange="applyFilters(this.value, document.getElementById('filterStartDate').value, document.getElementById('filterEndDate').value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-teal-500">
-                            <option value="ALL">All Symbols</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <label class="text-xs font-bold opacity-70">From:</label>
-                        <input type="date" id="filterStartDate" onchange="applyFilters(document.getElementById('filterSymbolSelect').value, this.value, document.getElementById('filterEndDate').value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-teal-500">
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <label class="text-xs font-bold opacity-70">To:</label>
-                        <input type="date" id="filterEndDate" onchange="applyFilters(document.getElementById('filterSymbolSelect').value, document.getElementById('filterStartDate').value, this.value)" class="bg-slate-900 border border-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-teal-500">
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-800 text-[11px] uppercase tracking-wider font-extrabold opacity-60 bg-slate-900/40">
-                            <th class="py-3 px-3">Ticket</th>
-                            <th class="py-3 px-3">Close Time (UTC)</th>
-                            <th class="py-3 px-3">Symbol</th>
-                            <th class="py-3 px-3">Type</th>
-                            <th class="py-3 px-3">Lots</th>
-                            <th class="py-3 px-3">Setup Reason</th>
-                            <th class="py-3 px-3">Status</th>
-                            <th class="py-3 px-3">Profit / Loss</th>
-                            <th class="py-3 px-3">Equity</th>
-                            <th class="py-3 px-3">Entry Chart</th>
-                            <th class="py-3 px-3">Result Chart</th>
-                        </tr>
-                    </thead>
-                    <tbody id="journalBody" class="divide-y divide-slate-800/60 font-medium">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- 3. GALLERY WALL TAB -->
-        <section id="galleryTab" class="space-y-6 hidden">
-            <div>
-                <h2 class="text-2xl font-black">Trade Snapshots Wall</h2>
-                <p class="text-xs opacity-60">Visual comparison of setup entries vs. trade results</p>
-            </div>
-
-            <div id="galleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Populated by JavaScript -->
-            </div>
-        </section>
-
-        <!-- 4. MONTHLY CALENDAR TAB -->
-        <section id="calendarTab" class="space-y-6 hidden">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-2xl font-black">Monthly Performance</h2>
-                    <p class="text-xs opacity-60">Daily PnL summary and operational statistics</p>
-                </div>
-                <div class="flex items-center space-x-3 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl">
-                    <button onclick="navMonth(-1)" class="p-1 hover:bg-slate-900 rounded-lg"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                    <span id="calMonthTitle" class="font-black text-sm"></span>
-                    <button onclick="navMonth(1)" class="p-1 hover:bg-slate-900 rounded-lg"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4 mb-4">
-                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl">
-                    <div class="text-[10px] font-bold opacity-60 uppercase">Monthly Trades</div>
-                    <div id="calTrades" class="text-xl font-black text-teal-400">0</div>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl">
-                    <div class="text-[10px] font-bold opacity-60 uppercase">Winning Days</div>
-                    <div id="calWins" class="text-xl font-black text-emerald-400">0</div>
-                </div>
-                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl">
-                    <div class="text-[10px] font-bold opacity-60 uppercase">Monthly Net PnL</div>
-                    <div id="calNetPnL" class="text-xl font-black text-teal-400">$0.00</div>
-                </div>
-            </div>
-
-            <div id="calendarGrid" class="grid grid-cols-7 gap-2 bg-slate-950 p-4 border border-slate-800 rounded-2xl">
-                <!-- Populated by JavaScript -->
-            </div>
-        </section>
-
-        <!-- 5. DISCIPLINE & EQUITY TAB -->
-        <section id="disciplineTab" class="space-y-6 hidden">
-            <div>
-                <h2 class="text-2xl font-black">Discipline vs. Equity</h2>
-                <p class="text-xs opacity-60">Correlate rule compliance with account growth</p>
-            </div>
-
-            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 h-96">
-                <canvas id="chartDisciplinePerformance"></canvas>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MODAL: FOLLOW-UP / LOG OUTCOME -->
-    <div id="followupModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="text-base font-black flex items-center space-x-2">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-amber-400"></i>
-                    <span>Log Trade Outcome</span>
-                </h3>
-                <button onclick="closeFollowupModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-bold opacity-70 block mb-1">Outcome Status</label>
-                    <select id="fuStatusSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-bold focus:outline-none focus:border-amber-500">
-                        <option value="Closed / Target Hit">Target Hit (TP)</option>
-                        <option value="Closed / Stop Hit">Stop Hit (SL)</option>
-                        <option value="Closed / Manual Exit">Manual Early Exit</option>
-                        <option value="Closed / Break Even">Break Even</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold opacity-70 block mb-1">Realized Profit / Loss ($)</label>
-                    <input type="number" id="fuPnLInput" placeholder="0.00" step="0.01" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs font-mono font-bold focus:outline-none focus:border-amber-500">
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold opacity-70 block mb-1">Post-Trade Notes / Lessons</label>
-                    <textarea id="fuNotesInput" rows="3" placeholder="Execution quality, emotions, rule compliance..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-500"></textarea>
-                </div>
-
-                <div>
-                    <label class="text-xs font-bold opacity-70 block mb-1">Result Chart Screenshot</label>
-                    <input type="file" id="fuFileInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500/10 file:text-amber-400 hover:file:bg-amber-500/20 cursor-pointer">
-                </div>
-            </div>
-
-            <div class="flex items-center space-x-3 pt-2">
-                <button onclick="closeFollowupModal()" class="flex-1 py-2.5 rounded-xl border border-slate-800 text-xs font-bold hover:bg-slate-800 transition-colors">Cancel</button>
-                <button onclick="saveFollowup()" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition-colors">Save Outcome</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: IMAGE FULLSCREEN VIEWER -->
-    <div id="imageViewerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 z-50 hidden" onclick="closeImageViewer()">
-        <div class="max-w-4xl w-full space-y-3" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between text-white">
-                <div>
-                    <div id="modalImageLabel" class="text-sm font-black font-mono"></div>
-                    <div id="modalImageSub" class="text-xs opacity-70"></div>
-                </div>
-                <button onclick="closeImageViewer()" class="p-2 hover:bg-slate-800 rounded-xl"><i data-lucide="x" class="w-6 h-6"></i></button>
-            </div>
-            <div class="w-full max-h-[80vh] overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 flex items-center justify-center">
-                <img id="modalFullImage" src="" class="max-w-full max-h-[78vh] object-contain">
-            </div>
-        </div>
-    </div>
-
-    <!-- Application Script -->
-    <script>
-        // Global State
-        const state = {
-            baseline: 10000,
-            trades: [],
-            captures: {},
-            results: {},
-            activePendingTicket: null,
-            currentMonth: new Date(),
-            charts: {},
-            filters: {
-                symbol: 'ALL',
-                startDate: null,
-                endDate: null
-            }
-        };
-
-        // LOCALSTORAGE PERSISTENCE (ADDITIVE)
-        function saveStateToLocalStorage() {
-            try {
-                const payload = {
-                    trades: state.trades,
-                    captures: state.captures,
-                    results: state.results,
-                    baseline: state.baseline
-                };
-                localStorage.setItem('traderWell_appState', JSON.stringify(payload));
-            } catch (e) {
-                console.warn('LocalStorage save failed:', e);
-            }
-        }
-
-        function loadStateFromLocalStorage() {
-            try {
-                const stored = localStorage.getItem('traderWell_appState');
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (parsed.trades) state.trades = parsed.trades;
-                    if (parsed.captures) state.captures = parsed.captures;
-                    if (parsed.results) state.results = parsed.results;
-                    if (parsed.baseline !== undefined) {
-                        state.baseline = parsed.baseline;
-                        document.getElementById('baselineInput').value = parsed.baseline;
-                    }
-                    return true;
+                    cell.className = `h-20 rounded-xl p-2 border flex flex-col justify-between ${dayPnL >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`;
+                    cell.innerHTML = `<div class="font-bold text-[10px] text-slate-300">${d}</div><div class="text-right"><div class="font-bold text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[9px] text-slate-400">${dayTrades.length} trades</div></div>`;
+                } else {
+                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800/50 rounded-xl p-2 text-[10px] text-slate-500 font-semibold';
+                    cell.innerText = d;
                 }
-            } catch (e) {
-                console.warn('LocalStorage load failed:', e);
-            }
-            return false;
-        }
-
-        // ADVANCED METRICS ENGINE (ADDITIVE)
-        function calculateAdvancedMetrics(tradesList = state.trades) {
-            const closedTrades = tradesList.filter(t => t.status !== 'Active Pending / Open');
-            const totalCount = closedTrades.length;
-
-            if (totalCount === 0) {
-                return { winRate: '0.0', profitFactor: '0.00', avgRR: '0.00' };
+                grid.appendChild(cell);
             }
 
-            const wins = closedTrades.filter(t => t.profit > 0);
-            const losses = closedTrades.filter(t => t.profit < 0);
-
-            const winRate = ((wins.length / totalCount) * 100).toFixed(1);
-
-            const grossProfit = wins.reduce((acc, t) => acc + t.profit, 0);
-            const grossLoss = Math.abs(losses.reduce((acc, t) => acc + t.profit, 0));
-            const profitFactor = grossLoss === 0 ? grossProfit.toFixed(2) : (grossProfit / grossLoss).toFixed(2);
-
-            const avgWin = wins.length ? grossProfit / wins.length : 0;
-            const avgLoss = losses.length ? grossLoss / losses.length : 0;
-            const avgRR = avgLoss === 0 ? avgWin.toFixed(2) : (avgWin / avgLoss).toFixed(2);
-
-            return { winRate, profitFactor, avgRR };
+            document.getElementById('calTrades').innerText = mTrades;
+            document.getElementById('calWins').innerText = mWins;
+            document.getElementById('calNetPnL').innerText = (mNet >= 0 ? '+' : '') + '$' + mNet.toFixed(2);
         }
 
-        function renderMetricsDashboard() {
-            const metrics = calculateAdvancedMetrics();
-            
-            const elWinRate = document.getElementById('metricWinRate');
-            const elProfitFactor = document.getElementById('metricProfitFactor');
-            const elAvgRR = document.getElementById('metricAvgRR');
-
-            if (elWinRate) elWinRate.innerText = `${metrics.winRate}%`;
-            if (elProfitFactor) elProfitFactor.innerText = metrics.profitFactor;
-            if (elAvgRR) elAvgRR.innerText = `1:${metrics.avgRR}`;
+        function navMonth(delta) {
+            state.currentMonth.setMonth(state.currentMonth.getMonth() + delta);
+            renderCalendar();
         }
 
-        // FILTER CONTROL UTILITIES (ADDITIVE)
-        function getFilteredTrades() {
-            return state.trades.filter(t => {
-                const tradeDate = (t.closing_time_utc || '').split('T')[0];
-                const matchesSymbol = state.filters.symbol === 'ALL' || t.symbol === state.filters.symbol;
-                const matchesStart = !state.filters.startDate || tradeDate >= state.filters.startDate;
-                const matchesEnd = !state.filters.endDate || tradeDate <= state.filters.endDate;
-                return matchesSymbol && matchesStart && matchesEnd;
+        function renderTable() {
+            const tbody = document.getElementById('journalBody');
+            tbody.innerHTML = state.trades.map(t => {
+                const entryCap = state.captures[t.ticket] || {};
+                const resCap = state.results[t.ticket] || {};
+                const isPending = t.status === 'Active Pending / Open';
+
+                return `
+                <tr class="hover:bg-slate-800/30">
+                    <td class="py-2.5 px-3 font-mono text-slate-400">#${t.ticket}</td>
+                    <td class="py-2.5 px-3 text-slate-300">${t.closing_time_utc.replace('T', ' ')}</td>
+                    <td class="py-2.5 px-3 font-bold text-white">${t.symbol}</td>
+                    <td class="py-2.5 px-3 uppercase text-[10px] font-bold ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-300">${t.lots}</td>
+                    <td class="py-2.5 px-3 font-semibold text-teal-400">${entryCap.reason || t.reason}</td>
+                    <td class="py-2.5 px-3 font-medium">
+                        ${isPending ? `<button onclick="openFollowupModal(${t.ticket})" class="px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-bold flex items-center space-x-1 hover:bg-amber-500/30"><span>Log Follow-up</span></button>` : `<span class="text-slate-400 text-[11px]">${t.status}</span>`}
+                    </td>
+                    <td class="py-2.5 px-3 font-bold ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-500'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="py-2.5 px-3">
+                        ${entryCap.img ? `<img src="${entryCap.img}" onclick="viewFullImage('${entryCap.img}', 'ENTRY PHOTO • #${t.ticket} (${t.symbol})', 'Entry Reason:${entryCap.reason || t.reason}')" class="w-10 h-8 object-cover rounded border border-teal-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No photo</span>'}
+                    </td>
+                    <td class="py-2.5 px-3">
+                        ${resCap.img ? `<img src="${resCap.img}" onclick="viewFullImage('${resCap.img}', 'RESULT PHOTO • #${t.ticket} (${t.symbol})', 'Result Note:${resCap.notes || 'Outcome verified'}')" class="w-10 h-8 object-cover rounded border border-emerald-500/40 cursor-pointer hover:scale-110 transition-transform">` : '<span class="text-slate-600">No photo</span>'}
+                    </td>
+                </tr>
+            `}).join('');
+            lucide.createIcons();
+        }
+
+        function renderGalleryWall() {
+            const grid = document.getElementById('galleryGrid');
+            const items = [];
+
+            state.trades.forEach(t => {
+                const entryCap = state.captures[t.ticket];
+                const resCap = state.results[t.ticket];
+                if ((entryCap && entryCap.img) || (resCap && resCap.img)) {
+                    items.push({
+                        ticket: t.ticket,
+                        symbol: t.symbol,
+                        date: t.closing_time_utc.split('T')[0],
+                        reason: entryCap?.reason || t.reason,
+                        status: t.status,
+                        profit: t.profit,
+                        type: t.type,
+                        entryImg: entryCap?.img || null,
+                        resultImg: resCap?.img || null,
+                        resultNotes: resCap?.notes || 'No result note'
+                    });
+                }
             });
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500 text-xs">
+                        <i data-lucide="image-off" class="w-8 h-8 mx-auto mb-2 text-slate-600"></i>
+                        No chart photos uploaded yet. Upload Entry photos or complete Post-Trade Follow-ups to stack up chart photos on this wall.
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = items.map(item => `
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 hover:border-teal-500/40 transition-all">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+                        <div>
+                            <span class="text-xs font-bold text-white">${item.symbol}</span>
+                            <span class="uppercase text-[10px] font-bold ml-1.5 ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-400 font-mono">#${item.ticket}</span>
+                            <div class="text-[10px] font-bold ${item.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}</div>
+                        </div>
+                    </div>
+
+                    <!-- Dual Photos Container -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- Entry Photo Card -->
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-bold text-teal-400 uppercase tracking-wider">Entry Photo</div>
+                            ${item.entryImg ? `
+                                <div class="h-28 rounded-lg overflow-hidden border border-slate-800 relative bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.entryImg}', 'ENTRY PHOTO • #${item.ticket} (${item.symbol})', 'Entry Reason:${item.reason}')">
+                                    <img src="${item.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                </div>
+                            ` : `<div class="h-28 rounded-lg border border-dashed border-slate-800 flex items-center justify-center text-[10px] text-slate-600">Pending</div>`}
+                            <div class="text-[10px] font-medium text-slate-300 truncate" title="${item.reason}"><span class="text-slate-500">Reason:</span> ${item.reason}</div>
+                        </div>
+
+                        <!-- Result Photo Card -->
+                        <div class="space-y-1">
+                            <div class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Result Photo</div>
+                            ${item.resultImg ? `
+                                <div class="h-28 rounded-lg overflow-hidden border border-slate-800 relative bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.resultImg}', 'RESULT PHOTO • #${item.ticket} (${item.symbol})', 'Result Note:${item.resultNotes}')">
+                                    <img src="${item.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                </div>
+                            ` : `<div class="h-28 rounded-lg border border-dashed border-slate-800 flex items-center justify-center text-[10px] text-slate-600">Pending</div>`}
+                            <div class="text-[10px] font-medium text-slate-300 truncate" title="${item.resultNotes}"><span class="text-slate-500">Result:</span> ${item.resultNotes}</div>
+                        </div>
+                    </div>
+
+                    <div class="text-[9px] text-slate-500 pt-1 border-t border-slate-900 flex justify-between">
+                        <span>Date: ${item.date}</span>
+                        <span>Status: ${item.status}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
         }
 
-        function populateSymbolDropdown() {
-            const select = document.getElementById('filterSymbolSelect');
-            if (!select) return;
-            const currentVal = select.value;
-            const symbols = Array.from(new Set(state.trades.map(t => t.symbol))).filter(Boolean);
-
-            select.innerHTML = '<option value="ALL">All Symbols</option>' + 
-                symbols.map(s => `<option value="${s}">${s}</option>`).join('');
-
-            select.value = currentVal || 'ALL';
+        function viewFullImage(src, title, sub) {
+            document.getElementById('modalFullImage').src = src;
+            document.getElementById('modalImageLabel').innerText = title;
+            document.getElementById('modalImageSub').innerText = sub;
+            document.getElementById('imageViewerModal').classList.remove('hidden');
         }
 
-        function applyFilters(symbol, startDate, endDate) {
-            state.filters.symbol = symbol || 'ALL';
-            state.filters.startDate = startDate || null;
-            state.filters.endDate = endDate || null;
-            
-            renderTable();
-            renderGalleryWall();
+        function closeImageViewer() {
+            document.getElementById('imageViewerModal').classList.add('hidden');
         }
 
-        // Data Processing Routine
-        function processData(rawRows) {
-            let running = state.baseline;
-            state.trades = rawRows.map((r, idx) => {
-                const profit = parseFloat(r.profit || r.Profit || 0);
-                running += profit;
-                return {
-                    ticket: r.ticket || r.Ticket || (1000 + idx),
-                    closing_time_utc: r.closing_time_utc || r.CloseTime || new Date().toISOString(),
-                    symbol: r.symbol || r.Symbol || 'UNKNOWN',
-                    type: (r.type || r.Type || 'buy').toLowerCase(),
-                    lots: parseFloat(r.lots || r.Lots || 0.1),
-                    reason: r.reason || r.Reason || 'Standard Pattern',
-                    status: r.status || r.Status || 'Active Pending / Open',
-                    profit: profit,
-                    calculatedEquity: running,
-                    disciplineScore: parseFloat(r.disciplineScore || 100)
-                };
-            });
+        function renderChecklists() {
+            const preContainer = document.getElementById('preChecklistContainer');
+            preContainer.innerHTML = state.preRules.map(r => `
+                <div class="flex items-start justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+                    <label class="flex items-start space-x-3 cursor-pointer">
+                        <input type="checkbox" ${r.checked ? 'checked' : ''} onchange="togglePreRule(${r.id})" class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
+                        <div>
+                            <div class="text-xs font-bold text-white">${r.text}</div>
+                            <div class="text-[11px] text-slate-400">${r.desc}</div>
+                        </div>
+                    </label>
+                    <button onclick="deletePreRule(${r.id})" class="text-slate-500 hover:text-rose-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+
+            const invContainer = document.getElementById('invalidationContainer');
+            invContainer.innerHTML = state.invalidRules.map(r => `
+                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between text-xs">
+                    <span class="text-slate-300 font-medium">${r.text}</span>
+                    <button onclick="deleteInvalidRule(${r.id})" class="text-slate-600 hover:text-rose-400 ml-2"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+            calcDisciplineScore();
+        }
+
+        function togglePreRule(id) {
+            const rule = state.preRules.find(r => r.id === id);
+            if (rule) rule.checked = !rule.checked;
+            calcDisciplineScore();
+        }
+
+        function deletePreRule(id) {
+            state.preRules = state.preRules.filter(r => r.id !== id);
+            renderChecklists();
+        }
+
+        function deleteInvalidRule(id) {
+            state.invalidRules = state.invalidRules.filter(r => r.id !== id);
+            renderChecklists();
+        }
+
+        function addNewRulePrompt(type) {
+            const text = prompt(`Enter new ${type === 'pre' ? 'pre-trade checklist' : 'invalidation criteria'} rule:`);
+            if (!text) return;
+            if (type === 'pre') {
+                state.preRules.push({ id: Date.now(), text, desc: "Custom criteria.", checked: true });
+            } else {
+                state.invalidRules.push({ id: Date.now(), text });
+            }
+            renderChecklists();
+        }
+
+        function calcDisciplineScore() {
+            if (state.preRules.length === 0) return 100;
+            const checked = state.preRules.filter(r => r.checked).length;
+            const score = ((checked / state.preRules.length) * 100).toFixed(1);
+            document.getElementById('homeDiscipline').innerText = score + '%';
+            return parseFloat(score);
+        }
+
+        function submitNewPosition() {
+            if (state.hasActivePendingPosition) {
+                alert("STRICT DISCIPLINE LOCK: You must close/follow-up on your current open trade before launching a new checklist!");
+                return;
+            }
+
+            const symbol = document.getElementById('newSymbolInput').value || 'XAUUSD';
+            const type = document.getElementById('newTypeInput').value;
+            const lots = parseFloat(document.getElementById('newLotsInput').value) || 0.1;
+            const currentScore = calcDisciplineScore();
+            const newTicket = Math.floor(1000000000 + Math.random() * 9000000000);
+
+            const newTrade = {
+                ticket: newTicket,
+                closing_time_utc: new Date().toISOString().slice(0, 19),
+                symbol,
+                type,
+                lots,
+                profit: 0.00,
+                calculatedEquity: state.trades.length > 0 ? state.trades[state.trades.length - 1].calculatedEquity : state.baseline,
+                reason: 'Pre-Trade Checklist Passed',
+                disciplineScore: currentScore,
+                status: 'Active Pending / Open'
+            };
+
+            state.trades.push(newTrade);
+            state.hasActivePendingPosition = true;
+            state.activePendingTicket = newTicket;
 
             updateAllDisplays();
+            switchTab('journal');
+            openFollowupModal(newTicket);
         }
 
-        function updateAllDisplays() {
-            populateSymbolDropdown();
-            renderTable();
-            renderGalleryWall();
-            renderCalendar();
-            updateCharts();
-            renderMetricsDashboard();
-            saveStateToLocalStorage();
+        function updateLockStatus() {
+            const pending = state.trades.find(t => t.status === 'Active Pending / Open');
+            const banner = document.getElementById('lockNoticeBanner');
+            const btn = document.getElementById('submitOrderBtn');
+
+            if (pending) {
+                state.hasActivePendingPosition = true;
+                state.activePendingTicket = pending.ticket;
+                banner.classList.remove('hidden');
+                document.getElementById('lockedTicketLabel').innerText = `#${pending.ticket}`;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.disabled = true;
+            } else {
+                state.hasActivePendingPosition = false;
+                state.activePendingTicket = null;
+                banner.classList.add('hidden');
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.disabled = false;
+            }
+        }
+
+        function openFollowupModal(ticket) {
+            const trade = state.trades.find(t => t.ticket === ticket);
+            if (!trade) return;
+
+            document.getElementById('fuTicketDisplay').value = `#${trade.ticket} (${trade.symbol})`;
+            const reasonSel = document.getElementById('fuReasonSelect');
+            reasonSel.innerHTML = state.invalidRules.map(r => `<option>${r.text}</option>`).join('');
+
+            document.getElementById('followupModal').classList.remove('hidden');
+        }
+
+        function closeFollowupModal() {
+            document.getElementById('followupModal').classList.add('hidden');
         }
 
         function saveFollowup() {
-            const ticket = state.activePendingTicket || (state.trades[state.trades.length - 1] && state.trades[state.trades.length - 1].ticket);
+            const ticket = state.activePendingTicket || state.trades[state.trades.length - 1].ticket;
             const trade = state.trades.find(t => t.ticket === ticket);
 
             if (trade) {
                 const status = document.getElementById('fuStatusSelect').value;
+                const reason = document.getElementById('fuReasonSelect').value;
                 const pnl = parseFloat(document.getElementById('fuPnLInput').value) || 0;
-                const notes = document.getElementById('fuNotesInput').value || 'Hit Target';
+                const notes = document.getElementById('fuNotesInput').value || 'Hit target';
                 const file = document.getElementById('fuFileInput').files[0];
 
                 trade.status = status;
@@ -489,6 +307,7 @@
                         notes
                     };
 
+                    // Recalculate equities
                     let running = state.baseline;
                     state.trades.forEach(t => {
                         running += t.profit;
@@ -511,199 +330,40 @@
             }
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('journalBody');
-            const displayTrades = getFilteredTrades();
-
-            tbody.innerHTML = displayTrades.map(t => {
-                const entryCap = state.captures[t.ticket] || {};
-                const resCap = state.results[t.ticket] || {};
-                const isPending = t.status === 'Active Pending / Open';
-
-                return `
-                <tr class="hover:bg-slate-900/60 transition-colors">
-                    <td class="py-3 px-3 font-mono font-bold opacity-70">#${t.ticket}</td>
-                    <td class="py-3 px-3 font-bold">${t.closing_time_utc.replace('T', ' ')}</td>
-                    <td class="py-3 px-3 font-extrabold">${t.symbol}</td>
-                    <td class="py-3 px-3 uppercase text-xs font-black ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
-                    <td class="py-3 px-3 font-mono font-bold">${t.lots}</td>
-                    <td class="py-3 px-3 font-bold text-teal-400">${entryCap.reason || t.reason}</td>
-                    <td class="py-3 px-3">
-                        ${isPending ? `<button onclick="openFollowupModal(${t.ticket})" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30">Log Outcome</button>` : `<span class="text-xs font-bold opacity-80">${t.status}</span>`}
-                    </td>
-                    <td class="py-3 px-3 font-black ${t.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
-                    <td class="py-3 px-3 font-mono font-bold">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                    <td class="py-3 px-3">
-                        ${entryCap.img ? `<img src="${entryCap.img}" onclick="viewFullImage('${entryCap.img}', 'ENTRY PHOTO • #${t.ticket} (${t.symbol})', 'Setup:${entryCap.reason || t.reason}')" class="w-10 h-8 object-cover rounded border border-teal-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="opacity-50 text-xs">No photo</span>'}
-                    </td>
-                    <td class="py-3 px-3">
-                        ${resCap.img ? `<img src="${resCap.img}" onclick="viewFullImage('${resCap.img}', 'RESULT PHOTO • #${t.ticket} (${t.symbol})', 'Outcome Note:${resCap.notes || 'Verified'}')" class="w-10 h-8 object-cover rounded border border-amber-500/50 cursor-pointer hover:scale-110 transition-transform">` : '<span class="opacity-50 text-xs">No photo</span>'}
-                    </td>
-                </tr>
-            `}).join('');
-            lucide.createIcons();
+        function changeTheme(theme) {
+            const body = document.getElementById('appBody');
+            body.className = "min-h-screen flex font-sans antialiased ";
+            if (theme === 'monokai') body.classList.add('theme-monokai');
+            else if (theme === 'light') body.classList.add('theme-light');
+            else body.classList.add('bg-[#0b101d]', 'text-slate-200');
         }
 
-        function renderGalleryWall() {
-            const grid = document.getElementById('galleryGrid');
-            const items = [];
-            const displayTrades = getFilteredTrades();
+        function populateTicketSelect() {
+            const sel = document.getElementById('modalTicketSelect');
+            sel.innerHTML = state.trades.map(t => `<option value="${t.ticket}">#${t.ticket} (${t.symbol} - $${t.profit})</option>`).join('');
+        }
 
-            displayTrades.forEach(t => {
-                const entryCap = state.captures[t.ticket];
-                const resCap = state.results[t.ticket];
-                if ((entryCap && entryCap.img) || (resCap && resCap.img)) {
-                    items.push({
-                        ticket: t.ticket,
-                        symbol: t.symbol,
-                        date: t.closing_time_utc.split('T')[0],
-                        reason: entryCap?.reason || t.reason,
-                        status: t.status,
-                        profit: t.profit,
-                        type: t.type,
-                        entryImg: entryCap?.img || null,
-                        resultImg: resCap?.img || null,
-                        resultNotes: resCap?.notes || 'No outcome notes recorded'
-                    });
-                }
-            });
+        function openCaptureModal() { document.getElementById('captureModal').classList.remove('hidden'); }
+        function closeCaptureModal() { document.getElementById('captureModal').classList.add('hidden'); }
 
-            if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-12 text-center opacity-70 text-sm font-bold">No uploaded chart snapshots yet. Upload Entry photos on position launch or complete Result follow-ups to populate this wall.</div>`;
-                return;
+        function saveCapture() {
+            const ticket = document.getElementById('modalTicketSelect').value;
+            const reason = document.getElementById('modalReasonSelect').value;
+            const file = document.getElementById('captureFileInput').files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    state.captures[ticket] = { img: e.target.result, reason };
+                    updateAllDisplays();
+                    closeCaptureModal();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                state.captures[ticket] = { img: state.captures[ticket]?.img || null, reason };
+                updateAllDisplays();
+                closeCaptureModal();
             }
-
-            grid.innerHTML = items.map(item => `
-                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-4 hover:border-teal-500/40 transition-all">
-                    <!-- Card Header -->
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                        <div>
-                            <span class="text-base font-black font-mono">${item.symbol}</span>
-                            <span class="uppercase text-xs font-black ml-2 ${item.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">(${item.type})</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs opacity-70 font-mono">#${item.ticket}</span>
-                            <div class="text-sm font-black ${item.profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.profit >= 0 ? '+' : ''}$${item.profit.toFixed(2)}</div>
-                        </div>
-                    </div>
-
-                    <!-- Single Column Stacked Photos -->
-                    <div class="flex flex-col space-y-4">
-                        
-                        <!-- 1. Entry Photo Column -->
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-black text-teal-400 uppercase tracking-wider">ENTRY PHOTO</span>
-                                <span class="text-xs font-medium truncate max-w-[180px] opacity-80">Setup: ${item.reason}</span>
-                            </div>
-                            ${item.entryImg ? `
-                                <div class="w-full aspect-video rounded-xl overflow-hidden border border-teal-500/40 bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.entryImg}', 'ENTRY PHOTO • #${item.ticket} (${item.symbol})', 'Setup:${item.reason}')">
-                                    <img src="${item.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                </div>
-                            ` : `
-                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs opacity-50 font-bold">
-                                    Pending Entry Chart Snapshot
-                                </div>
-                            `}
-                        </div>
-
-                        <!-- 2. Result Photo Column -->
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-black text-amber-400 uppercase tracking-wider">RESULT PHOTO</span>
-                                <span class="text-xs font-medium truncate max-w-[180px] opacity-80">Outcome: ${item.resultNotes}</span>
-                            </div>
-                            ${item.resultImg ? `
-                                <div class="w-full aspect-video rounded-xl overflow-hidden border border-amber-500/40 bg-slate-900 group cursor-pointer" onclick="viewFullImage('${item.resultImg}', 'RESULT PHOTO • #${item.ticket} (${item.symbol})', 'Outcome Note:${item.resultNotes}')">
-                                    <img src="${item.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                </div>
-                            ` : `
-                                <div class="w-full aspect-video rounded-xl border border-dashed border-slate-800 bg-slate-900/40 flex items-center justify-center text-xs opacity-50 font-bold">
-                                    Pending Result Chart Snapshot
-                                </div>
-                            `}
-                        </div>
-
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="text-xs opacity-70 font-bold pt-2 border-t border-slate-900 flex justify-between">
-                        <span>Date: ${item.date}</span>
-                        <span>Status: ${item.status}</span>
-                    </div>
-                </div>
-            `).join('');
-
-            lucide.createIcons();
-        }
-
-        function viewFullImage(src, title, sub) {
-            document.getElementById('modalFullImage').src = src;
-            document.getElementById('modalImageLabel').innerText = title;
-            document.getElementById('modalImageSub').innerText = sub;
-            document.getElementById('imageViewerModal').classList.remove('hidden');
-        }
-
-        function closeImageViewer() {
-            document.getElementById('imageViewerModal').classList.add('hidden');
-        }
-
-        function renderCalendar() {
-            const year = state.currentMonth.getFullYear();
-            const month = state.currentMonth.getMonth();
-            
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('calMonthTitle').innerText = `${monthNames[month]} ${year}`;
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => {
-                const header = document.createElement('div');
-                header.className = 'text-center text-xs font-black opacity-60 uppercase py-1';
-                header.innerText = d;
-                grid.appendChild(header);
-            });
-
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                const empty = document.createElement('div');
-                empty.className = 'h-20 bg-slate-950/30 rounded-xl border border-slate-900';
-                grid.appendChild(empty);
-            }
-
-            let mTrades = 0, mWins = 0, mNet = 0;
-
-            for (let d = 1; d <= lastDay.getDate(); d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const dayTrades = state.trades.filter(t => (t.closing_time_utc || '').startsWith(dateStr));
-                
-                const cell = document.createElement('div');
-                if (dayTrades.length > 0) {
-                    const dayPnL = dayTrades.reduce((acc, c) => acc + c.profit, 0);
-                    mTrades += dayTrades.length;
-                    if (dayPnL >= 0) mWins++;
-                    mNet += dayPnL;
-
-                    cell.className = `h-20 rounded-xl p-2 border flex flex-col justify-between ${dayPnL >= 0 ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' : 'bg-rose-500/10 border-rose-500/40 text-rose-400'}`;
-                    cell.innerHTML = `<div class="font-black text-xs opacity-90">${d}</div><div class="text-right"><div class="font-black text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[10px] opacity-80 font-bold">${dayTrades.length} trades</div></div>`;
-                } else {
-                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800 rounded-xl p-2 text-xs opacity-50 font-bold';
-                    cell.innerText = d;
-                }
-                grid.appendChild(cell);
-            }
-
-            document.getElementById('calTrades').innerText = mTrades;
-            document.getElementById('calWins').innerText = mWins;
-            document.getElementById('calNetPnL').innerText = (mNet >= 0 ? '+' : '') + '$' + mNet.toFixed(2);
-        }
-
-        function navMonth(delta) {
-            state.currentMonth.setMonth(state.currentMonth.getMonth() + delta);
-            renderCalendar();
         }
 
         function handleFileSelect(event) {
@@ -725,42 +385,26 @@
             a.click();
         }
 
-        function changeTheme(theme) {
-            const body = document.getElementById('appBody');
-            body.className = "min-h-screen flex font-sans antialiased text-sm ";
-            body.style.backgroundColor = "";
-            body.style.color = "";
-            if (theme === 'monokai') body.classList.add('theme-monokai');
-            else if (theme === 'light') body.classList.add('theme-light');
-            else body.classList.add('bg-[#0b101d]', 'text-slate-200');
-        }
-
         function initCharts() {
             const ctxHome = document.getElementById('chartHomeEquity').getContext('2d');
             state.charts.homeEquity = new Chart(ctxHome, {
                 type: 'line',
-                data: { labels: ['Start'], datasets: [{ label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.1)', fill: true, tension: 0.2 }] },
+                data: { labels: ['Start'], datasets: [{ label: 'Equity', data: [state.baseline], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.08)', fill: true, tension: 0.2 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            const ctxDisc = document.getElementById('chartDisciplinePerformance').getContext('2d');
-            state.charts.discipline = new Chart(ctxDisc, {
+            const ctxDiscipline = document.getElementById('chartDisciplineGrade').getContext('2d');
+            state.charts.discipline = new Chart(ctxDiscipline, {
+                type: 'bar',
+                data: { labels: ['Start'], datasets: [{ label: 'Discipline Grade (%)', data: [100], backgroundColor: '#14b8a6' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+            });
+
+            const ctxDD = document.getElementById('chartPerformanceDrawdown').getContext('2d');
+            state.charts.drawdown = new Chart(ctxDD, {
                 type: 'line',
-                data: {
-                    labels: ['Start'],
-                    datasets: [
-                        { label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', yAxisID: 'y' },
-                        { label: 'Discipline Score (%)', data: [100], borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.1)', fill: true, yAxisID: 'y1' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { position: 'left', title: { display: true, text: 'Equity ($)' } },
-                        y1: { position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false }, title: { display: true, text: 'Discipline (%)' } }
-                    }
-                }
+                data: { labels: ['Start'], datasets: [{ label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', yAxisID: 'y' }, { label: 'Drawdown (%)', data: [0], borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,0.1)', fill: true, yAxisID: 'y1' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { position: 'left' }, y1: { position: 'right', grid: { drawOnChartArea: false } } } }
             });
         }
 
@@ -768,63 +412,37 @@
             if (!state.charts.homeEquity) return;
             const labels = ['Start', ...state.trades.map((_, i) => `T${i+1}`)];
             const equityData = [state.baseline, ...state.trades.map(t => t.calculatedEquity)];
-            const disciplineData = [100, ...state.trades.map(t => t.disciplineScore || 100)];
+            const disciplineData = [100, ...state.trades.map(t => t.disciplineScore)];
 
             state.charts.homeEquity.data.labels = labels;
             state.charts.homeEquity.data.datasets[0].data = equityData;
             state.charts.homeEquity.update();
 
             state.charts.discipline.data.labels = labels;
-            state.charts.discipline.data.datasets[0].data = equityData;
-            state.charts.discipline.data.datasets[1].data = disciplineData;
+            state.charts.discipline.data.datasets[0].data = disciplineData;
             state.charts.discipline.update();
+
+            let avgSc = disciplineData.reduce((a,b)=>a+b,0)/disciplineData.length;
+            document.getElementById('avgDisciplineGrade').innerText = `Avg: ${avgSc.toFixed(1)}%`;
+
+            let peak = state.baseline;
+            const ddData = [0];
+            state.trades.forEach(t => {
+                if (t.calculatedEquity > peak) peak = t.calculatedEquity;
+                const dd = ((t.calculatedEquity - peak) / peak) * 100;
+                ddData.push(dd);
+            });
+
+            state.charts.drawdown.data.labels = labels;
+            state.charts.drawdown.data.datasets[0].data = equityData;
+            state.charts.drawdown.data.datasets[1].data = ddData;
+            state.charts.drawdown.update();
         }
 
         function updateBaseline(val) {
             state.baseline = parseFloat(val) || 0;
             processData(state.trades);
         }
-
-        // Modal & View Switchers
-        function openFollowupModal(ticket) {
-            state.activePendingTicket = ticket;
-            const modal = document.getElementById('followupModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-            }
-        }
-
-        function closeFollowupModal() {
-            state.activePendingTicket = null;
-            const modal = document.getElementById('followupModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.getElementById('fuPnLInput').value = '';
-                document.getElementById('fuNotesInput').value = '';
-                document.getElementById('fuFileInput').value = '';
-            }
-        }
-
-        function switchTab(tabId) {
-            const tabs = ['homeTab', 'journalTab', 'galleryTab', 'calendarTab', 'disciplineTab'];
-            tabs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-
-            const activeTab = document.getElementById(tabId);
-            if (activeTab) {
-                activeTab.classList.remove('hidden');
-            }
-        }
-
-        // App Initialization
-        window.addEventListener('DOMContentLoaded', () => {
-            loadStateFromLocalStorage();
-            initCharts();
-            updateAllDisplays();
-            lucide.createIcons();
-        });
     </script>
 </body>
 </html>
