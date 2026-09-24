@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell — Execution Discipline & Analytics Journal</title>
+    <title>TraderWell — Trading Journal & Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,459 +14,437 @@
             theme: {
                 extend: {
                     colors: {
-                        slate: { 850: '#151e2e', 900: '#0f172a', 950: '#090d16' },
-                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669' },
-                        rose: { 500: '#f43f5e', 600: '#e11d48' }
+                        slate: {
+                            850: '#111827',
+                            900: '#0c1322',
+                            950: '#080d19'
+                        },
+                        teal: {
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488'
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(12, 19, 34, 0.6); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.6); border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-[#0b101d] text-slate-200 min-h-screen flex font-sans antialiased">
 
-    <!-- Top Navigation Bar -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-6">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                        <i data-lucide="trending-up" class="w-5 h-5 text-slate-950 font-bold"></i>
-                    </div>
-                    <span class="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">TraderWell</span>
+    <!-- LEFT VERTICAL SIDEBAR NAVIGATION -->
+    <aside class="w-64 border-r border-slate-800/80 bg-[#0c1322] flex flex-col justify-between shrink-0">
+        <div class="p-5">
+            <!-- Brand Header -->
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center shadow-md shadow-teal-500/20">
+                    <i data-lucide="trending-up" class="w-5 h-5 text-slate-950 font-bold"></i>
                 </div>
-
-                <!-- Main Navigation Tabs -->
-                <nav class="hidden md:flex space-x-1 text-xs font-semibold text-slate-400">
-                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3 py-2 rounded-lg bg-slate-800 text-white flex items-center space-x-2">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Dashboard</span>
-                    </button>
-                    <button onclick="switchTab('journal')" id="tab-journal" class="px-3 py-2 rounded-lg hover:bg-slate-800/50 hover:text-white flex items-center space-x-2">
-                        <i data-lucide="book-open" class="w-4 h-4"></i><span>Trade Journal</span>
-                    </button>
-                    <button onclick="switchTab('analytics')" id="tab-analytics" class="px-3 py-2 rounded-lg hover:bg-slate-800/50 hover:text-white flex items-center space-x-2">
-                        <i data-lucide="bar-chart-3" class="w-4 h-4"></i><span>Analytics & Edge</span>
-                    </button>
-                    <button onclick="switchTab('discipline')" id="tab-discipline" class="px-3 py-2 rounded-lg hover:bg-slate-800/50 hover:text-white flex items-center space-x-2">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i><span>Rules & Discipline</span>
-                    </button>
-                </nav>
+                <div>
+                    <h1 class="text-base font-bold text-white leading-tight">TraderWell</h1>
+                    <p class="text-[11px] text-slate-400 font-medium">Trading Journal & Hub</p>
+                </div>
             </div>
 
-            <!-- Top Actions -->
-            <div class="flex items-center space-x-3">
-                <button onclick="openSyncModal()" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-400 border border-indigo-500/20 text-xs font-semibold">
-                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                    <span>Connect Broker</span>
+            <!-- Vertical Navigation Items -->
+            <nav class="space-y-1.5 text-xs font-semibold">
+                <button onclick="switchTab('home')" id="nav-home" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                    <span>Home & Overview</span>
                 </button>
-                
-                <label for="csvInput" class="cursor-pointer flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-                    <i data-lucide="file-up" class="w-3.5 h-3.5"></i>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                    <span>Dashboard Analytics</span>
+                </button>
+                <button onclick="switchTab('journal')" id="nav-journal" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>Trade Journal</span>
+                </button>
+                <button onclick="switchTab('checklist')" id="nav-checklist" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                    <span>Execution Checklist</span>
+                </button>
+                <button onclick="switchTab('brokers')" id="nav-brokers" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="wallet" class="w-4 h-4"></i>
+                    <span>Brokers & Accounts</span>
+                </button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span>Settings & About</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer Status -->
+        <div class="p-4 border-t border-slate-800/60 text-[11px] text-slate-400 flex items-center justify-between">
+            <span class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Broker Connected</span>
+            </span>
+            <span class="text-slate-500">v2.4</span>
+        </div>
+    </aside>
+
+    <!-- MAIN RIGHT CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- TOP BAR (Title + Actions) -->
+        <header class="h-16 border-b border-slate-800/80 px-8 flex items-center justify-between bg-[#0b101d]/80 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h2 id="pageTitle" class="text-lg font-bold text-white">Home & Overview</h2>
+                <p id="pageSubtitle" class="text-xs text-slate-400">Account status, execution metrics, and equity dashboard.</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center space-x-3">
+                <label for="csvInput" class="cursor-pointer flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
                     <span>Import CSV</span>
                 </label>
                 <input type="file" id="csvInput" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
 
-                <button onclick="exportCSV()" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold">
-                    <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
-                    <span>Export CSV</span>
+                <button onclick="exportCSV()" class="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md shadow-teal-600/20 transition-all">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Export</span>
                 </button>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Workspace -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <!-- VIEW AREA -->
+        <main class="p-8 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
 
-        <!-- Top Metric Scorecards -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-                    <span>CURRENT EQUITY</span>
-                    <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
-                </div>
-                <div class="text-xl font-bold text-white" id="statEquity">$100,000.00</div>
-                <div class="text-[10px] text-slate-500 mt-1" id="statReturn">+0.00% Net Return</div>
-            </div>
-
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-                    <span>STARTING BASELINE</span>
-                    <i data-lucide="sliders" class="w-4 h-4 text-indigo-400"></i>
-                </div>
-                <div class="flex items-center space-x-1 mt-0.5">
-                    <span class="text-slate-400 font-bold text-xs">$</span>
-                    <input type="number" id="baselineInput" value="100000" step="1000" onchange="updateBaseline(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-xs font-semibold text-white focus:outline-none focus:border-indigo-500">
-                </div>
-                <div class="text-[10px] text-slate-500 mt-1">Calibrates equity curve starting point</div>
-            </div>
-
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                <div class="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-                    <span>WIN RATE / PROFIT FACTOR</span>
-                    <i data-lucide="target" class="w-4 h-4 text-emerald-400"></i>
-                </div>
-                <div class="text-xl font-bold text-white"><span id="statWinRate">0.0%</span> <span class="text-xs text-slate-400 font-normal">/ <span id="statPF">0.00</span></span></div>
-                <div class="text-[10px] text-slate-500 mt-1" id="statTradesCount">0 Total Executions</div>
-            </div>
-
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                <div class="text-slate-400 text-xs font-medium mb-1">DISCIPLINE GRADE</div>
-                <div class="flex items-baseline space-x-2">
-                    <span class="text-xl font-bold text-emerald-400" id="statDisciplineScore">92.5%</span>
-                    <span class="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">(A+)</span>
-                </div>
-                <div class="text-[10px] text-emerald-400 mt-1">Strict Rule Adherence</div>
-            </div>
-
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-4">
-                <div class="text-slate-400 text-xs font-medium mb-1">POSITION LOCK</div>
-                <div class="text-xl font-bold text-emerald-400">UNLOCKED</div>
-                <div class="text-[10px] text-slate-500 mt-1">Ready for next setup</div>
-            </div>
-        </div>
-
-        <!-- VIEW 1: DASHBOARD TAB -->
-        <div id="view-dashboard" class="space-y-6">
-            <!-- Calendar Section -->
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-4">
-                    <div class="flex items-center space-x-3">
-                        <button onclick="navMonth(-1)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                        <h2 class="text-base font-bold text-white" id="calMonthTitle">September 2026</h2>
-                        <button onclick="navMonth(1)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+            <!-- PAGE 1: HOME & OVERVIEW -->
+            <div id="view-home" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                        <div class="text-xs font-semibold text-slate-400 mb-1">Calculated Equity</div>
+                        <div class="text-2xl font-bold text-white" id="homeEquity">$100,000.00</div>
+                        <div class="text-[11px] text-teal-400 mt-1" id="homeReturn">+0.00% Net Return</div>
                     </div>
-
-                    <div class="flex items-center space-x-6 text-xs">
-                        <div><span class="text-slate-400">Trades: </span><span class="text-white font-bold" id="calTrades">0</span></div>
-                        <div><span class="text-slate-400">Wins: </span><span class="text-emerald-400 font-bold" id="calWins">0</span></div>
-                        <div><span class="text-slate-400">Net P&L: </span><span class="font-bold text-emerald-400" id="calNetPnL">$0.00</span></div>
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                        <div class="text-xs font-semibold text-slate-400 mb-1">Win Rate / Profit Factor</div>
+                        <div class="text-2xl font-bold text-white"><span id="homeWinRate">0.0%</span> <span class="text-xs text-slate-400 font-normal">/ <span id="homePF">0.00</span></span></div>
+                        <div class="text-[11px] text-slate-400 mt-1" id="homeTrades">0 Executed Trades</div>
+                    </div>
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                        <div class="text-xs font-semibold text-slate-400 mb-1">Execution Discipline</div>
+                        <div class="text-2xl font-bold text-teal-400">96.8%</div>
+                        <div class="text-[11px] text-slate-400 mt-1">Rule Compliance Score</div>
+                    </div>
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-4">
+                        <div class="text-xs font-semibold text-slate-400 mb-1">Starting Baseline ($)</div>
+                        <input type="number" id="baselineInput" value="100000" onchange="updateBaseline(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-sm font-bold text-white focus:outline-none focus:border-teal-500">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-7 text-center text-slate-400 text-[10px] font-bold py-2 uppercase">
-                    <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                    <h3 class="text-sm font-bold text-white mb-4">Equity Curve Progress</h3>
+                    <div class="h-64 w-full"><canvas id="chartHomeEquity"></canvas></div>
                 </div>
-
-                <div class="grid grid-cols-7 gap-2" id="calendarGrid"></div>
             </div>
 
-            <!-- Dashboard Dual Charts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-bold text-white">Broker Equity Curve ($)</h3>
-                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Synced Feed</span>
+            <!-- PAGE 2: DASHBOARD ANALYTICS -->
+            <div id="view-dashboard" class="space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                        <h3 class="text-sm font-bold text-white mb-3">Symbol Distribution</h3>
+                        <div class="h-52"><canvas id="chartSymbols"></canvas></div>
                     </div>
-                    <div class="h-60 w-full"><canvas id="chartEquity"></canvas></div>
-                </div>
-
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-bold text-white">Execution Discipline Curve (%)</h3>
-                        <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Rule Compliance</span>
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                        <h3 class="text-sm font-bold text-white mb-3">Exit Reason Breakdown</h3>
+                        <div class="h-52"><canvas id="chartExits"></canvas></div>
                     </div>
-                    <div class="h-60 w-full"><canvas id="chartDiscipline"></canvas></div>
+                    <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5">
+                        <h3 class="text-sm font-bold text-white mb-3">Buy vs. Sell Ratio</h3>
+                        <div class="h-52"><canvas id="chartTypes"></canvas></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- VIEW 2: TRADE JOURNAL TAB -->
-        <div id="view-journal" class="space-y-4 hidden">
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-bold text-white">Complete Executed Trade Journal</h3>
-                    <input type="text" id="journalSearch" placeholder="Filter symbol, reason..." onkeyup="filterJournal()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-xs text-white focus:outline-none focus:border-indigo-500">
-                </div>
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-950/80 uppercase text-[10px] text-slate-400 border-b border-slate-800">
-                            <tr>
-                                <th class="py-2.5 px-3">Ticket</th>
-                                <th class="py-2.5 px-3">Close UTC</th>
-                                <th class="py-2.5 px-3">Symbol</th>
-                                <th class="py-2.5 px-3">Type</th>
-                                <th class="py-2.5 px-3">Lots</th>
-                                <th class="py-2.5 px-3">Open / Close Price</th>
-                                <th class="py-2.5 px-3">Profit ($)</th>
-                                <th class="py-2.5 px-3">Calculated Equity ($)</th>
-                                <th class="py-2.5 px-3">Exit Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody id="journalTableBody" class="divide-y divide-slate-800/50"></tbody>
-                    </table>
+            <!-- PAGE 3: TRADE JOURNAL + SCREEN CAPTURE -->
+            <div id="view-journal" class="space-y-6 hidden">
+                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-white">Trade Journal & Chart Captures</h3>
+                        <button onclick="openCaptureModal()" class="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-semibold flex items-center space-x-1.5">
+                            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                            <span>Attach Screen Capture</span>
+                        </button>
+                    </div>
+
+                    <!-- Journal Table -->
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 uppercase text-[10px] text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-3">Ticket</th>
+                                    <th class="py-3 px-3">Close UTC</th>
+                                    <th class="py-3 px-3">Symbol</th>
+                                    <th class="py-3 px-3">Type</th>
+                                    <th class="py-3 px-3">Lots</th>
+                                    <th class="py-3 px-3">Profit ($)</th>
+                                    <th class="py-3 px-3">Equity ($)</th>
+                                    <th class="py-3 px-3">Screen Capture</th>
+                                </tr>
+                            </thead>
+                            <tbody id="journalBody" class="divide-y divide-slate-800/60"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- VIEW 3: ANALYTICS & EDGE TAB -->
-        <div id="view-analytics" class="space-y-6 hidden">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                    <h3 class="text-sm font-bold text-white mb-3">Symbol Distribution</h3>
-                    <div class="h-52 w-full"><canvas id="chartSymbols"></canvas></div>
-                </div>
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                    <h3 class="text-sm font-bold text-white mb-3">Exit Reasons Breakdown</h3>
-                    <div class="h-52 w-full"><canvas id="chartExits"></canvas></div>
-                </div>
-                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-                    <h3 class="text-sm font-bold text-white mb-3">Trade Type Performance</h3>
-                    <div class="h-52 w-full"><canvas id="chartTypes"></canvas></div>
+            <!-- PAGE 4: EXECUTION CHECKLIST -->
+            <div id="view-checklist" class="space-y-6 hidden">
+                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Pre-Trade Execution Checklist</h3>
+                        <p class="text-xs text-slate-400">Complete all rule requirements prior to placing market positions.</p>
+                    </div>
+
+                    <div class="space-y-3" id="checklistContainer">
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
+                            <input type="checkbox" checked class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
+                            <div>
+                                <div class="text-xs font-bold text-white">Stop Loss Defined & Placed on Order Entry</div>
+                                <div class="text-[11px] text-slate-400">Enforces standard risk parameter per trade setup.</div>
+                            </div>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
+                            <input type="checkbox" checked class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
+                            <div>
+                                <div class="text-xs font-bold text-white">High Impact Economic News Check</div>
+                                <div class="text-[11px] text-slate-400">Ensure no major CPI, FOMC, or NFP releases within 30 minutes.</div>
+                            </div>
+                        </label>
+                        <label class="flex items-start space-x-3 p-3 bg-slate-950 rounded-xl border border-slate-800/80 cursor-pointer hover:border-slate-700">
+                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 text-teal-500 focus:ring-0">
+                            <div>
+                                <div class="text-xs font-bold text-white">Minimum 1:2 Risk-to-Reward Ratio</div>
+                                <div class="text-[11px] text-slate-400">Calculated price distance targeting key structure points.</div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- VIEW 4: RULES & DISCIPLINE TAB -->
-        <div id="view-discipline" class="space-y-6 hidden">
-            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <h3 class="text-sm font-bold text-white">Execution Rules & Adherence</h3>
-                <div class="space-y-3 text-xs">
-                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
-                        <div>
-                            <div class="font-bold text-white">Always set Stop Loss on entry</div>
-                            <div class="text-slate-400 text-[11px]">Enforces strict risk cap per trade</div>
+            <!-- PAGE 5: BROKERS & ACCOUNTS -->
+            <div id="view-brokers" class="space-y-6 hidden">
+                <div class="bg-[#101728] border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-white">Connected Broker Accounts</h3>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center text-teal-400 font-bold text-xs">MT5</div>
+                            <div>
+                                <div class="text-xs font-bold text-white">MetaTrader 5 Live Account</div>
+                                <div class="text-[11px] text-slate-400">Account ID: #50192842 • Server: IC Markets Live</div>
+                            </div>
                         </div>
-                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded">100% Passed</span>
-                    </div>
-                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
-                        <div>
-                            <div class="font-bold text-white">Max Daily Drawdown Ceiling (3.0%)</div>
-                            <div class="text-slate-400 text-[11px]">Locks position execution when limit is breached</div>
-                        </div>
-                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded">Passed</span>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active Sync</span>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </main>
+            <!-- PAGE 6: SETTINGS & ABOUT + EMAIL ALERT FEATURE -->
+            <div id="view-settings" class="space-y-6 hidden">
+                <!-- Screenshot Design Matching Block -->
+                <div class="bg-[#101728] border border-slate-800/90 rounded-2xl p-6 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">About TraderWell</h3>
+                        <p class="text-xs text-slate-400 mt-1">Empowering disciplined traders through quantitative feedback and rule-based tracking.</p>
+                    </div>
+                    <hr class="border-slate-800/80">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider text-slate-300">Mission</h4>
+                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">To convert discretionary emotion into process-oriented consistency by holding traders accountable to their predefined risk checklists.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white uppercase tracking-wider text-slate-300">Vision</h4>
+                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Building the premiere, lightweight web suite for seamless trading journals and real-time execution analytics.</p>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Connect Broker Modal -->
-    <div id="syncModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closeSyncModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h3 class="text-base font-bold text-white mb-2">Connect Broker Sync API</h3>
+                <!-- Email Message / Alerts Settings Section -->
+                <div class="bg-[#101728] border border-slate-800/90 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-white">Email Messages & Journal Report Dispatch</h3>
+                    <p class="text-xs text-slate-400">Receive daily execution summaries or email notifications whenever a drawdown threshold is reached.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Notification Email</label>
+                            <input type="email" id="userEmail" value="trader@traderwell.io" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Report Schedule</label>
+                            <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500">
+                                <option>Daily Post-Market Summary</option>
+                                <option>Weekly Performance Report</option>
+                                <option>Drawdown Alert Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="saveSettings()" class="px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-lg text-xs font-semibold">Save Email Preferences</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: ATTACH SCREEN CAPTURE -->
+    <div id="captureModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#101728] border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 relative shadow-2xl">
+            <button onclick="closeCaptureModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-sm font-bold text-white">Attach Screen Capture to Trade</h3>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Platform</label>
-                    <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200">
-                        <option>MetaTrader 5 (MT5 Expert Advisor)</option>
-                        <option>cTrader (Spotware Open API)</option>
-                    </select>
+                    <label class="block text-slate-300 font-semibold mb-1">Select Trade Ticket</label>
+                    <select id="modalTicketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white"></select>
                 </div>
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Server / Account ID</label>
-                    <input type="text" placeholder="Live Server 01" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200">
+                    <label class="block text-slate-300 font-semibold mb-1">Chart Screenshot (Image File)</label>
+                    <input type="file" id="captureFileInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-300">
                 </div>
-                <button onclick="closeSyncModal()" class="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold mt-2">Connect Account</button>
+                <button onclick="saveCapture()" class="w-full py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-lg">Save Screen Capture</button>
             </div>
         </div>
     </div>
 
     <script>
-        let appState = {
+        let state = {
             trades: [],
             baseline: 100000,
-            currentMonth: new Date(2026, 8, 1),
+            captures: {},
             charts: {}
         };
 
-        const defaultSample = [
-            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, opening_price: 4316.754, closing_price: 4316.522, profit: -3.00, close_reason: 'user' },
-            { ticket: 4146673158, closing_time_utc: '2026-08-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, opening_price: 4356.983, closing_price: 4356.535, profit: -0.50, close_reason: 'sl' },
-            { ticket: 4134360398, closing_time_utc: '2026-08-12T13:56:15', symbol: 'BTCUSDc', type: 'buy', lots: 0.01, opening_price: 63916.67, closing_price: 63816.24, profit: -1.01, close_reason: 'user' },
-            { ticket: 3791804356, closing_time_utc: '2026-06-26T15:00:00', symbol: 'AUDUSDc', type: 'buy', lots: 0.57, opening_price: 0.69129, closing_price: 0.68995, profit: -76.38, close_reason: 'user' },
-            { ticket: 3787037546, closing_time_utc: '2026-06-26T12:58:30', symbol: 'XAUUSDc', type: 'buy', lots: 0.06, opening_price: 4009.032, closing_price: 4057.737, profit: 292.20, close_reason: 'tp' }
+        const sampleTrades = [
+            { ticket: 4419418524, closing_time_utc: '2026-09-23T10:36:55', symbol: 'XAUUSDc', type: 'buy', lots: 0.13, profit: -3.00 },
+            { ticket: 4146673158, closing_time_utc: '2026-08-14T00:00:12', symbol: 'XAUUSDc', type: 'buy', lots: 0.01, profit: -0.50 },
+            { ticket: 4134360398, closing_time_utc: '2026-08-12T13:56:15', symbol: 'BTCUSDc', type: 'buy', lots: 0.01, profit: -1.01 },
+            { ticket: 3787037546, closing_time_utc: '2026-06-26T12:58:30', symbol: 'XAUUSDc', type: 'buy', lots: 0.06, profit: 292.20 }
+        ];
+
+        const tabs = [
+            { id: 'home', title: 'Home & Overview', sub: 'Account status, execution metrics, and equity dashboard.' },
+            { id: 'dashboard', title: 'Dashboard Analytics', sub: 'Quantitative metrics and trade execution analytics.' },
+            { id: 'journal', title: 'Trade Journal', sub: 'Executed trade records with attached screen captures.' },
+            { id: 'checklist', title: 'Execution Checklist', sub: 'Rule compliance and pre-trade criteria verification.' },
+            { id: 'brokers', title: 'Brokers & Accounts', sub: 'Manage live broker API connections.' },
+            { id: 'settings', title: 'Settings & About', sub: 'Application mission, vision, and email notification setup.' }
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             initCharts();
-            processTrades(defaultSample);
+            processData(sampleTrades);
         });
 
-        function switchTab(tab) {
-            ['dashboard', 'journal', 'analytics', 'discipline'].forEach(t => {
-                document.getElementById(`view-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).className = 'px-3 py-2 rounded-lg hover:bg-slate-800/50 hover:text-white flex items-center space-x-2';
+        function switchTab(targetId) {
+            tabs.forEach(t => {
+                document.getElementById(`view-${t.id}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t.id}`);
+                btn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800/40 hover:text-white';
             });
-            document.getElementById(`view-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}`).className = 'px-3 py-2 rounded-lg bg-slate-800 text-white flex items-center space-x-2';
+
+            document.getElementById(`view-${targetId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${targetId}`);
+            activeBtn.className = 'w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20';
+
+            const activeMeta = tabs.find(t => t.id === targetId);
+            document.getElementById('pageTitle').innerText = activeMeta.title;
+            document.getElementById('pageSubtitle').innerText = activeMeta.sub;
         }
 
-        function processTrades(raw) {
-            const sorted = [...raw].sort((a, b) => new Date(a.closing_time_utc || a.opening_time_utc) - new Date(b.closing_time_utc || b.opening_time_utc));
-            let running = appState.baseline;
+        function processData(raw) {
+            const sorted = [...raw].sort((a, b) => new Date(a.closing_time_utc) - new Date(b.closing_time_utc));
+            let running = state.baseline;
 
-            appState.trades = sorted.map(t => {
+            state.trades = sorted.map(t => {
                 const profit = parseFloat(t.profit) || 0;
-                const netPnl = profit + (parseFloat(t.commission) || 0) + (parseFloat(t.swap) || 0);
-                running += netPnl;
-                return { ...t, profit, netPnl, calculatedEquity: running };
+                running += profit;
+                return { ...t, profit, calculatedEquity: running };
             });
 
-            updateUI();
+            updateAllDisplays();
         }
 
-        function updateUI() {
-            const totalTrades = appState.trades.length;
-            const wins = appState.trades.filter(t => t.netPnl > 0);
-            const losses = appState.trades.filter(t => t.netPnl < 0);
-            const grossWin = wins.reduce((acc, c) => acc + c.netPnl, 0);
-            const grossLoss = Math.abs(losses.reduce((acc, c) => acc + c.netPnl, 0));
-            const currentEquity = totalTrades > 0 ? appState.trades[totalTrades - 1].calculatedEquity : appState.baseline;
-            const netReturnPct = (((currentEquity - appState.baseline) / appState.baseline) * 100).toFixed(2);
+        function updateAllDisplays() {
+            const total = state.trades.length;
+            const wins = state.trades.filter(t => t.profit > 0);
+            const losses = state.trades.filter(t => t.profit < 0);
+            const grossWin = wins.reduce((a, b) => a + b.profit, 0);
+            const grossLoss = Math.abs(losses.reduce((a, b) => a + b.profit, 0));
+            const equity = total > 0 ? state.trades[total - 1].calculatedEquity : state.baseline;
+            const retPct = (((equity - state.baseline) / state.baseline) * 100).toFixed(2);
 
-            document.getElementById('statEquity').innerText = '$' + currentEquity.toLocaleString(undefined, { minimumFractionDigits: 2 });
-            document.getElementById('statReturn').innerText = `${netReturnPct >= 0 ? '+' : ''}${netReturnPct}% vs Baseline`;
-            document.getElementById('statWinRate').innerText = totalTrades > 0 ? ((wins.length / totalTrades) * 100).toFixed(1) + '%' : '0.0%';
-            document.getElementById('statPF').innerText = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : (grossWin > 0 ? 'Inf' : '0.00');
-            document.getElementById('statTradesCount').innerText = `${totalTrades} Executions`;
+            document.getElementById('homeEquity').innerText = '$' + equity.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            document.getElementById('homeReturn').innerText = `${retPct >= 0 ? '+' : ''}${retPct}% Net Return`;
+            document.getElementById('homeWinRate').innerText = total > 0 ? ((wins.length / total) * 100).toFixed(1) + '%' : '0.0%';
+            document.getElementById('homePF').innerText = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : (grossWin > 0 ? 'Inf' : '0.00');
+            document.getElementById('homeTrades').innerText = `${total} Executed Trades`;
 
-            renderCalendar();
-            renderCharts();
-            renderJournal();
-            renderAnalyticsCharts();
-            lucide.createIcons();
+            renderTable();
+            updateCharts();
+            populateTicketSelect();
         }
 
         function updateBaseline(val) {
-            appState.baseline = parseFloat(val) || 0;
-            processTrades(appState.trades);
+            state.baseline = parseFloat(val) || 0;
+            processData(state.trades);
         }
 
-        function renderCalendar() {
-            const year = appState.currentMonth.getFullYear();
-            const month = appState.currentMonth.getMonth();
-            document.getElementById('calMonthTitle').innerText = `${["January","February","March","April","May","June","July","August","September","October","November","December"][month]} ${year}`;
-
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            let offset = firstDay.getDay() - 1;
-            if (offset === -1) offset = 6;
-
-            for (let i = 0; i < offset; i++) {
-                grid.appendChild(Object.assign(document.createElement('div'), { className: 'h-20 bg-slate-900/20 rounded-xl opacity-20' }));
-            }
-
-            let mTrades = 0, mWins = 0, mNet = 0;
-
-            for (let d = 1; d <= lastDay.getDate(); d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const dayTrades = appState.trades.filter(t => (t.closing_time_utc || '').startsWith(dateStr));
-                
-                const cell = document.createElement('div');
-                if (dayTrades.length > 0) {
-                    const dayPnL = dayTrades.reduce((acc, c) => acc + c.netPnl, 0);
-                    mTrades += dayTrades.length;
-                    if (dayPnL >= 0) mWins++;
-                    mNet += dayPnL;
-
-                    cell.className = `h-20 rounded-xl p-2 border flex flex-col justify-between ${dayPnL >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'}`;
-                    cell.innerHTML = `<div class="font-bold text-[10px] text-slate-300">${d}</div><div class="text-right"><div class="font-bold text-xs">${dayPnL >= 0 ? '+' : ''}$${dayPnL.toFixed(2)}</div><div class="text-[9px] text-slate-400">${dayTrades.length} trades</div></div>`;
-                } else {
-                    cell.className = 'h-20 bg-slate-900/40 border border-slate-800/50 rounded-xl p-2 text-[10px] text-slate-500 font-semibold';
-                    cell.innerText = d;
-                }
-                grid.appendChild(cell);
-            }
-
-            document.getElementById('calTrades').innerText = mTrades;
-            document.getElementById('calWins').innerText = mWins;
-            document.getElementById('calNetPnL').innerText = (mNet >= 0 ? '+' : '') + '$' + mNet.toFixed(2);
-        }
-
-        function navMonth(delta) {
-            appState.currentMonth.setMonth(appState.currentMonth.getMonth() + delta);
-            renderCalendar();
-        }
-
-        function initCharts() {
-            const ctxEq = document.getElementById('chartEquity').getContext('2d');
-            appState.charts.equity = new Chart(ctxEq, {
-                type: 'line',
-                data: { labels: ['Start'], datasets: [{ label: 'Equity', data: [appState.baseline], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, tension: 0.2 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-
-            const ctxDis = document.getElementById('chartDiscipline').getContext('2d');
-            appState.charts.discipline = new Chart(ctxDis, {
-                type: 'line',
-                data: { labels: ['T1','T2','T3'], datasets: [{ label: 'Discipline', data: [100, 90, 100], borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.08)', fill: true, tension: 0.2 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 50, max: 100 } } }
-            });
-        }
-
-        function renderCharts() {
-            if (!appState.charts.equity) return;
-            appState.charts.equity.data.labels = ['Start', ...appState.trades.map((_, i) => `T${i+1}`)];
-            appState.charts.equity.data.datasets[0].data = [appState.baseline, ...appState.trades.map(t => t.calculatedEquity)];
-            appState.charts.equity.update();
-        }
-
-        function renderJournal() {
-            const tbody = document.getElementById('journalTableBody');
-            tbody.innerHTML = appState.trades.map(t => `
-                <tr class="hover:bg-slate-800/40">
-                    <td class="py-2 px-3 font-mono text-slate-400">${t.ticket || '—'}</td>
-                    <td class="py-2 px-3">${(t.closing_time_utc || '').replace('T', ' ')}</td>
-                    <td class="py-2 px-3 font-bold text-white">${t.symbol || '—'}</td>
-                    <td class="py-2 px-3 uppercase text-[9px] font-bold ${t.type === 'buy' ? 'text-emerald-400' : 'text-rose-400'}">${t.type || 'buy'}</td>
-                    <td class="py-2 px-3 font-mono">${t.lots || 0}</td>
-                    <td class="py-2 px-3 font-mono text-slate-400">${t.opening_price || '—'} / ${t.closing_price || '—'}</td>
-                    <td class="py-2 px-3 font-bold ${t.netPnl >= 0 ? 'text-emerald-400' : 'text-rose-500'}">${t.netPnl >= 0 ? '+' : ''}$${t.netPnl.toFixed(2)}</td>
-                    <td class="py-2 px-3 font-mono font-semibold text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                    <td class="py-2 px-3 text-slate-400 uppercase text-[10px]">${t.close_reason || 'user'}</td>
+        function renderTable() {
+            const tbody = document.getElementById('journalBody');
+            tbody.innerHTML = state.trades.map(t => {
+                const img = state.captures[t.ticket];
+                return `
+                <tr class="hover:bg-slate-800/30">
+                    <td class="py-2.5 px-3 font-mono text-slate-400">${t.ticket}</td>
+                    <td class="py-2.5 px-3 text-slate-300">${t.closing_time_utc.replace('T', ' ')}</td>
+                    <td class="py-2.5 px-3 font-bold text-white">${t.symbol}</td>
+                    <td class="py-2.5 px-3 uppercase text-[10px] font-bold ${t.type === 'buy' ? 'text-teal-400' : 'text-rose-400'}">${t.type}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-300">${t.lots}</td>
+                    <td class="py-2.5 px-3 font-bold ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-500'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-200">$${t.calculatedEquity.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="py-2.5 px-3">
+                        ${img ? `<a href="${img}" target="_blank" class="inline-flex items-center space-x-1 text-teal-400 underline font-semibold text-[11px]"><i data-lucide="image" class="w-3 h-3"></i><span>View Capture</span></a>` : '<span class="text-slate-600">None</span>'}
+                    </td>
                 </tr>
-            `).join('');
+            `}).join('');
+            lucide.createIcons();
         }
 
-        function filterJournal() {
-            const q = document.getElementById('journalSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('#journalTableBody tr');
-            rows.forEach(r => {
-                r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
-            });
+        function populateTicketSelect() {
+            const sel = document.getElementById('modalTicketSelect');
+            sel.innerHTML = state.trades.map(t => `<option value="${t.ticket}">#${t.ticket} (${t.symbol} - $${t.profit})</option>`).join('');
         }
 
-        function renderAnalyticsCharts() {
-            const symbols = {}, exits = {}, types = {};
-            appState.trades.forEach(t => {
-                symbols[t.symbol || 'Other'] = (symbols[t.symbol || 'Other'] || 0) + 1;
-                exits[t.close_reason || 'User'] = (exits[t.close_reason || 'User'] || 0) + 1;
-                types[t.type || 'Buy'] = (types[t.type || 'Buy'] || 0) + 1;
-            });
+        function openCaptureModal() { document.getElementById('captureModal').classList.remove('hidden'); }
+        function closeCaptureModal() { document.getElementById('captureModal').classList.add('hidden'); }
 
-            if (appState.charts.symbols) appState.charts.symbols.destroy();
-            appState.charts.symbols = new Chart(document.getElementById('chartSymbols'), {
-                type: 'doughnut',
-                data: { labels: Object.keys(symbols), datasets: [{ data: Object.values(symbols), backgroundColor: ['#10b981','#38bdf8','#f59e0b','#ec4899'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+        function saveCapture() {
+            const ticket = document.getElementById('modalTicketSelect').value;
+            const file = document.getElementById('captureFileInput').files[0];
+            if (!file) return;
 
-            if (appState.charts.exits) appState.charts.exits.destroy();
-            appState.charts.exits = new Chart(document.getElementById('chartExits'), {
-                type: 'pie',
-                data: { labels: Object.keys(exits), datasets: [{ data: Object.values(exits), backgroundColor: ['#34d399','#f43f5e','#6366f1'] }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.captures[ticket] = e.target.result;
+                renderTable();
+                closeCaptureModal();
+            };
+            reader.readAsDataURL(file);
+        }
 
-            if (appState.charts.types) appState.charts.types.destroy();
-            appState.charts.types = new Chart(document.getElementById('chartTypes'), {
-                type: 'bar',
-                data: { labels: Object.keys(types), datasets: [{ label: 'Trades', data: Object.values(types), backgroundColor: '#6366f1' }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+        function saveSettings() {
+            alert('Email preferences saved! System reports will be sent to ' + document.getElementById('userEmail').value);
         }
 
         function handleFileSelect(event) {
@@ -475,34 +453,34 @@
             Papa.parse(file, {
                 header: true,
                 skipEmptyLines: true,
-                complete: (res) => processTrades(res.data)
+                complete: (res) => processData(res.data)
             });
         }
 
         function exportCSV() {
-            if (!appState.trades.length) return;
-            const csv = Papa.unparse(appState.trades.map(t => ({
-                ticket: t.ticket,
-                opening_time_utc: t.opening_time_utc,
-                closing_time_utc: t.closing_time_utc,
-                type: t.type,
-                lots: t.lots,
-                symbol: t.symbol,
-                opening_price: t.opening_price,
-                closing_price: t.closing_price,
-                profit: t.profit,
-                calculated_equity: t.calculatedEquity,
-                close_reason: t.close_reason
-            })));
+            const csv = Papa.unparse(state.trades);
             const blob = new Blob([csv], { type: 'text/csv' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `TraderWell_FullExport_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'TraderWell_Export.csv';
+            a.click();
         }
 
-        function openSyncModal() { document.getElementById('syncModal').classList.remove('hidden'); }
-        function closeSyncModal() { document.getElementById('syncModal').classList.add('hidden'); }
+        function initCharts() {
+            const ctxHome = document.getElementById('chartHomeEquity').getContext('2d');
+            state.charts.homeEquity = new Chart(ctxHome, {
+                type: 'line',
+                data: { labels: ['Start'], datasets: [{ label: 'Equity', data: [state.baseline], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.08)', fill: true, tension: 0.2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateCharts() {
+            if (!state.charts.homeEquity) return;
+            state.charts.homeEquity.data.labels = ['Start', ...state.trades.map((_, i) => `T${i+1}`)];
+            state.charts.homeEquity.data.datasets[0].data = [state.baseline, ...state.trades.map(t => t.calculatedEquity)];
+            state.charts.homeEquity.update();
+        }
     </script>
 </body>
 </html>
