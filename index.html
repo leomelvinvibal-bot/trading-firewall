@@ -4,422 +4,489 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TraderWell Journal & Performance Platform</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-            --green: #22c55e;
-            --red: #ef4444;
-            --border: #334155;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        h1, h2, h3 {
-            color: var(--text-color);
-        }
-
-        .btn {
-            background-color: var(--accent);
-            color: #000;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-            color: #fff;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid var(--border);
-        }
-
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: #0f172a;
-            color: var(--text-muted);
-        }
-
-        .thumb {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Gallery Wall */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
-        }
-
-        .gallery-card {
-            background-color: #0f172a;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .gallery-images {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            background-color: var(--border);
-        }
-
-        .gallery-img-container {
-            position: relative;
-            height: 150px;
-            background-color: #1e293b;
-        }
-
-        .gallery-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .gallery-label {
-            position: absolute;
-            bottom: 5px;
-            left: 5px;
-            background: rgba(0,0,0,0.7);
-            padding: 2px 6px;
-            font-size: 10px;
-            border-radius: 3px;
-        }
-
-        .gallery-info {
-            padding: 12px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 8px;
-            width: 400px;
-            max-width: 90%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        input, select, textarea {
-            background-color: #0f172a;
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 8px;
-            border-radius: 4px;
-        }
-
-        .win { color: var(--green); }
-        .loss { color: var(--red); }
+        .theme-monokai { background-color: #272822; color: #f8f8f2; }
+        .theme-light { background-color: #f8fafc; color: #0f172a; }
     </style>
 </head>
-<body>
+<body id="appBody" class="bg-[#0b101d] text-slate-200 min-h-screen flex flex-col font-sans antialiased">
 
-<div class="container">
-    <header>
-        <h1>TraderWell Platform</h1>
-        <button class="btn" onclick="openNewTradeModal()">+ Log Trade</button>
+    <!-- NAVIGATION HEADER -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur px-6 py-4 flex items-center justify-between sticky top-0 z-40">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center font-bold text-teal-400">TW</div>
+            <h1 class="text-xl font-bold tracking-tight text-white">TraderWell</h1>
+        </div>
+
+        <nav class="flex items-center space-x-2 bg-slate-800/60 p-1 rounded-xl border border-slate-700/50">
+            <button onclick="switchTab('home')" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-teal-400 bg-slate-700/80 transition-all">Overview</button>
+            <button onclick="switchTab('journal')" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all">Journal Log</button>
+            <button onclick="switchTab('gallery')" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all">Gallery Wall</button>
+        </nav>
+
+        <!-- USER AUTHENTICATION BADGE & LOGOUT -->
+        <div class="flex items-center gap-3">
+            <span id="userBadge" class="hidden font-mono text-xs text-teal-400 bg-teal-500/10 border border-teal-500/30 px-3 py-1 rounded-full"></span>
+            <button onclick="handleLogout()" class="text-xs font-semibold text-rose-400 hover:text-rose-300 border border-rose-500/30 px-3 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 transition-all">Sign Out</button>
+        </div>
     </header>
 
-    <!-- Trade Journal Table -->
-    <div class="card">
-        <h2>Trade Journal</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Ticket</th>
-                    <th>Pair</th>
-                    <th>Type</th>
-                    <th>Entry Photo</th>
-                    <th>Result Photo</th>
-                    <th>PnL ($)</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="tradeTableBody">
-                <!-- Dynamic Content -->
-            </tbody>
-        </table>
+    <!-- LOCK NOTICE BANNER -->
+    <div id="lockNoticeBanner" class="hidden bg-amber-500/10 border-b border-amber-500/30 text-amber-300 px-6 py-2.5 text-xs font-medium items-center justify-between">
+        <span>⚠️ Active Position Locked (<span id="lockedTicketLabel" class="font-bold">#0000</span>). Clear or record results before placing a new entry.</span>
     </div>
 
-    <!-- Chart Evidence Gallery Wall -->
-    <div class="card">
-        <h2>Chart Evidence Gallery Wall</h2>
-        <div class="gallery-grid" id="galleryWall">
-            <!-- Dynamic Content -->
+    <!-- MAIN DASHBOARD CONTENT CONTAINER -->
+    <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- OVERVIEW TAB CONTENT -->
+        <section id="tab-home" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Account Equity</span>
+                    <div class="h-44"><canvas id="chartHomeEquity"></canvas></div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Discipline Grade</span>
+                    <div class="h-44"><canvas id="chartDisciplineGrade"></canvas></div>
+                    <p id="avgDisciplineGrade" class="text-xs text-slate-400 text-center font-mono pt-1">Avg Discipline: --%</p>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Equity & Drawdown</span>
+                    <div class="h-44"><canvas id="chartPerformanceDrawdown"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JOURNAL LOG TAB CONTENT -->
+        <section id="tab-journal" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-100">Trade History Log</h2>
+                <div class="flex gap-2">
+                    <button onclick="exportCSV()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition">Export CSV</button>
+                    <button id="submitOrderBtn" onclick="openFollowupModal()" class="bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg transition">New Followup Log</button>
+                </div>
+            </div>
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-800/80 text-slate-400 uppercase tracking-wider border-b border-slate-700/60 font-mono">
+                        <tr>
+                            <th class="p-3">Ticket</th>
+                            <th class="p-3">Time (UTC)</th>
+                            <th class="p-3">Symbol</th>
+                            <th class="p-3">Type</th>
+                            <th class="p-3">Lots</th>
+                            <th class="p-3">P&L ($)</th>
+                            <th class="p-3">Equity ($)</th>
+                            <th class="p-3">Discipline</th>
+                            <th class="p-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="journalTableBody" class="divide-y divide-slate-800/60 font-mono"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- GALLERY WALL TAB CONTENT (FIXED: LEFT = ENTRY / RIGHT = RESULT) -->
+        <section id="tab-gallery" class="hidden space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-100">Visual Trade Gallery</h2>
+            </div>
+            <div id="galleryGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+    </main>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-5">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-slate-100">TraderWell</h2>
+                <p class="text-xs text-slate-400 mt-1">Sign in to sync your trading firewall & performance data</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input id="authEmail" type="email" placeholder="trader@example.com" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg focus:outline-none focus:border-teal-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input id="authPassword" type="password" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg focus:outline-none focus:border-teal-500">
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="handleLogin()" class="flex-1 bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold py-2 rounded-lg transition-colors">Sign In</button>
+                <button onclick="handleSignUp()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2 rounded-lg border border-slate-700 transition-colors">Register</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Modal: Post-Trade Follow-Up -->
-<div class="modal" id="followupModal">
-    <div class="modal-content">
-        <h3>Post-Trade Follow-Up</h3>
-        <div class="form-group">
-            <label for="fuStatusSelect">Trade Status</label>
-            <select id="fuStatusSelect">
-                <option value="WIN">WIN</option>
-                <option value="LOSS">LOSS</option>
-                <option value="BE">BE (Break Even)</option>
-            </select>
+    <!-- FOLLOW-UP MODAL -->
+    <div id="followupModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-slate-100">Record Follow-up / Outcome</h3>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-400 mb-1">Trade Ticket</label>
+                    <input id="fuTicketDisplay" type="text" readonly class="w-full bg-slate-800 border border-slate-700 text-teal-400 font-mono px-3 py-2 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Status Outcome</label>
+                    <select id="fuStatusSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg">
+                        <option value="Closed Profit">Closed Profit</option>
+                        <option value="Closed Loss">Closed Loss</option>
+                        <option value="Break Even">Break Even</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Rule Reason</label>
+                    <select id="fuReasonSelect" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg"></select>
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Realized P&L ($)</label>
+                    <input id="fuPnLInput" type="number" step="0.01" placeholder="0.00" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Exit Notes</label>
+                    <input id="fuNotesInput" type="text" placeholder="Hit profit target" class="w-full bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-slate-400 mb-1">Result Screenshot</label>
+                    <input id="fuFileInput" type="file" accept="image/*" class="w-full text-slate-400 bg-slate-800 border border-slate-700 p-1.5 rounded-lg">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeFollowupModal()" class="px-4 py-2 bg-slate-800 text-slate-300 text-xs rounded-lg hover:bg-slate-700">Cancel</button>
+                <button onclick="saveFollowup()" class="px-4 py-2 bg-teal-500 text-slate-950 font-bold text-xs rounded-lg hover:bg-teal-400">Save Result</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="fuPnLInput">PnL ($)</label>
-            <input type="number" id="fuPnLInput" placeholder="e.g. 250 or -100">
-        </div>
-        <div class="form-group">
-            <label for="fuFileInput">Result Photo (Chart Screenshot)</label>
-            <input type="file" id="fuFileInput" accept="image/*">
-        </div>
-        <div class="form-group">
-            <label for="fuNotesInput">Notes</label>
-            <textarea id="fuNotesInput" rows="3" placeholder="Trade review notes..."></textarea>
-        </div>
-        <button class="btn" onclick="saveFollowup()">Complete & Unlock</button>
     </div>
-</div>
 
-<script>
-    // Global Application State
-    const state = {
-        baseline: 10000,
-        activePendingTicket: null,
-        trades: [
-            { ticket: "TK-1001", pair: "EURUSD", type: "BUY", profit: 150, status: "WIN" }
-        ],
-        captures: {
-            "TK-1001": { img: "https://via.placeholder.com/300x150/1e293b/38bdf8?text=Entry+Chart" }
-        },
-        results: {
-            "TK-1001": { img: "https://via.placeholder.com/300x150/1e293b/22c55e?text=Result+Chart", notes: "Hit TP cleanly" }
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // SUPABASE CLIENT INITIALIZATION (SAFE PUBLIC KEY ONLY)
+        const SUPABASE_URL = "https://ptyg6zagdmjxu0q2tphwq.supabase.co"; 
+        const SUPABASE_KEY = "sb_publishable_Pty6ZG5azDmjXu0q2tphwQ_mfBJZ..."; 
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // STATE MANAGEMENT
+        const state = {
+            baseline: 10000,
+            trades: [],
+            captures: {},
+            results: {},
+            charts: {},
+            hasActivePendingPosition: false,
+            activePendingTicket: null,
+            invalidRules: [
+                { text: 'Pre-Trade Checklist Passed' },
+                { text: 'Risk Rules Violated' },
+                { text: 'FOMO Entry' }
+            ]
+        };
+
+        // AUTHENTICATION LOGIC
+        window.addEventListener('DOMContentLoaded', async () => {
+            initCharts();
+            
+            const { data: { session } } = await supabase.auth.getSession();
+            handleAuthState(session);
+
+            supabase.auth.onAuthStateChange((_event, session) => {
+                handleAuthState(session);
+            });
+        });
+
+        function handleAuthState(session) {
+            const authModal = document.getElementById('authModal');
+            const userBadge = document.getElementById('userBadge');
+            
+            if (session) {
+                if (authModal) authModal.classList.add('hidden');
+                if (userBadge) {
+                    userBadge.innerText = session.user.email;
+                    userBadge.classList.remove('hidden');
+                }
+            } else {
+                if (authModal) authModal.classList.remove('hidden');
+                if (userBadge) userBadge.classList.add('hidden');
+            }
         }
-    };
 
-    function renderTable() {
-        const tbody = document.getElementById('tradeTableBody');
-        tbody.innerHTML = '';
+        async function handleSignUp() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            if (error) alert('Sign Up Error: ' + error.message);
+            else alert('Account created! Check your email to verify.');
+        }
 
-        state.trades.forEach(trade => {
-            const entryImg = state.captures[trade.ticket]?.img;
-            const resultImg = state.results[trade.ticket]?.img;
+        async function handleLogin() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) alert('Login Error: ' + error.message);
+        }
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${trade.ticket}</td>
-                <td>${trade.pair}</td>
-                <td>${trade.type}</td>
-                <td>${entryImg ? `<img src="${entryImg}" class="thumb" alt="Entry">` : 'No photo'}</td>
-                <td>${resultImg ? `<img src="${resultImg}" class="thumb" alt="Result">` : 'No photo'}</td>
-                <td class="${trade.profit >= 0 ? 'win' : 'loss'}">$${trade.profit || 0}</td>
-                <td>${trade.status}</td>
-                <td>
-                    <button class="btn" style="padding: 4px 8px; font-size: 12px;" onclick="openFollowupModal('${trade.ticket}')">Close/Update</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
+        async function handleLogout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) alert('Logout Error: ' + error.message);
+            else window.location.reload();
+        }
 
-    function renderGalleryWall() {
-        const gallery = document.getElementById('galleryWall');
-        gallery.innerHTML = '';
+        // NAVIGATION TABS
+        function switchTab(tabId) {
+            ['home', 'journal', 'gallery'].forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                if (sec) sec.classList.toggle('hidden', t !== tabId);
+            });
+        }
 
-        state.trades.forEach(trade => {
-            const entryImg = state.captures[trade.ticket]?.img;
-            const resultImg = state.results[trade.ticket]?.img;
+        // GALLERY RENDER LOGIC (FIXED: LEFT = ENTRY / RIGHT = RESULT)
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            if (!grid) return;
 
-            const card = document.createElement('div');
-            card.className = 'gallery-card';
-            card.innerHTML = `
-                <div class="gallery-images">
-                    <div class="gallery-img-container">
-                        ${entryImg ? `<img src="${entryImg}">` : '<div style="padding:10px; color:#666;">No Entry Chart</div>'}
-                        <span class="gallery-label">ENTRY</span>
+            if (state.trades.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-slate-500 py-12">No screenshots or trade entries logged yet.</div>`;
+                return;
+            }
+
+            grid.innerHTML = state.trades.map(trade => {
+                const entryData = state.captures[trade.ticket] || {};
+                const resultData = state.results[trade.ticket] || {};
+
+                const entryImg = entryData.img 
+                    ? `<img src="${entryData.img}" class="w-full h-48 object-cover rounded border border-slate-700/50 hover:scale-[1.02] transition-transform cursor-pointer">`
+                    : `<div class="w-full h-48 rounded border border-dashed border-slate-700/50 flex flex-col items-center justify-center text-slate-500 bg-slate-900/40">
+                        <span class="text-xs">No Entry Screenshot</span>
+                       </div>`;
+
+                const resultImg = resultData.img 
+                    ? `<img src="${resultData.img}" class="w-full h-48 object-cover rounded border border-slate-700/50 hover:scale-[1.02] transition-transform cursor-pointer">`
+                    : `<div class="w-full h-48 rounded border border-dashed border-slate-700/50 flex flex-col items-center justify-center text-slate-500 bg-slate-900/40">
+                        <span class="text-xs">No Result Screenshot</span>
+                       </div>`;
+
+                const profitClass = trade.profit >= 0 ? 'text-teal-400' : 'text-rose-400';
+
+                return `
+                    <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-4 shadow-lg flex flex-col space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-700/40 pb-2">
+                            <div>
+                                <span class="font-mono font-bold text-teal-400">#${trade.ticket}</span>
+                                <span class="ml-2 font-semibold text-slate-200">${trade.symbol} (${trade.type})</span>
+                            </div>
+                            <span class="font-mono font-bold ${profitClass}">${trade.profit >= 0 ? '+' : ''}$${trade.profit.toFixed(2)}</span>
+                        </div>
+
+                        <!-- Side-by-Side Image Layout -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- LEFT SIDE: Entry Placement -->
+                            <div class="flex flex-col space-y-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-teal-400/80">Entry Execution</span>
+                                ${entryImg}
+                                <p class="text-xs text-slate-400 truncate mt-1">${entryData.reason || 'No setup notes'}</p>
+                            </div>
+
+                            <!-- RIGHT SIDE: Result Placement -->
+                            <div class="flex flex-col space-y-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400/80">Trade Result</span>
+                                ${resultImg}
+                                <p class="text-xs text-slate-400 truncate mt-1">${resultData.notes || 'No result notes'}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="gallery-img-container">
-                        ${resultImg ? `<img src="${resultImg}">` : '<div style="padding:10px; color:#666;">Pending Photo</div>'}
-                        <span class="gallery-label">RESULT</span>
-                    </div>
-                </div>
-                <div class="gallery-info">
-                    <strong>${trade.ticket} - ${trade.pair} (${trade.type})</strong>
-                    <div class="${trade.profit >= 0 ? 'win' : 'loss'}">PnL: $${trade.profit || 0}</div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">
-                        ${state.results[trade.ticket]?.notes || 'No notes available.'}
-                    </p>
-                </div>
-            `;
-            gallery.appendChild(card);
-        });
-    }
+                `;
+            }).join('');
+        }
 
-    function openFollowupModal(ticket) {
-        state.activePendingTicket = ticket;
-        document.getElementById('followupModal').style.display = 'flex';
-    }
+        function updateAllDisplays() {
+            renderJournalTable();
+            renderGallery();
+            updateCharts();
+            updateLockStatus();
+        }
 
-    function closeFollowupModal() {
-        document.getElementById('followupModal').style.display = 'none';
-        document.getElementById('fuFileInput').value = '';
-    }
+        function renderJournalTable() {
+            const tbody = document.getElementById('journalTableBody');
+            if (!tbody) return;
 
-    // FIXED: Correctly saves and links result image data
-    function saveFollowup() {
-        const ticket = state.activePendingTicket || (state.trades.length > 0 ? state.trades[state.trades.length - 1].ticket : null);
-        if (!ticket) return;
+            tbody.innerHTML = state.trades.map(t => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 text-teal-400">#${t.ticket}</td>
+                    <td class="p-3 text-slate-400">${t.closing_time_utc}</td>
+                    <td class="p-3 font-bold">${t.symbol}</td>
+                    <td class="p-3">${t.type}</td>
+                    <td class="p-3">${t.lots}</td>
+                    <td class="p-3 ${t.profit >= 0 ? 'text-teal-400' : 'text-rose-400'}">${t.profit >= 0 ? '+' : ''}$${t.profit.toFixed(2)}</td>
+                    <td class="p-3">$${t.calculatedEquity.toFixed(2)}</td>
+                    <td class="p-3">${t.disciplineScore}%</td>
+                    <td class="p-3">${t.status}</td>
+                </tr>
+            `).join('');
+        }
 
-        const trade = state.trades.find(t => t.ticket === ticket);
+        function updateLockStatus() {
+            const pending = state.trades.find(t => t.status === 'Active Pending / Open');
+            const banner = document.getElementById('lockNoticeBanner');
+            const btn = document.getElementById('submitOrderBtn');
 
-        if (trade) {
-            const status = document.getElementById('fuStatusSelect').value;
-            const pnl = parseFloat(document.getElementById('fuPnLInput').value) || 0;
-            const notes = document.getElementById('fuNotesInput').value || 'Hit target';
-            const file = document.getElementById('fuFileInput').files[0];
+            if (pending) {
+                state.hasActivePendingPosition = true;
+                state.activePendingTicket = pending.ticket;
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+                document.getElementById('lockedTicketLabel').innerText = `#${pending.ticket}`;
+                if (btn) {
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    btn.disabled = true;
+                }
+            } else {
+                state.hasActivePendingPosition = false;
+                state.activePendingTicket = null;
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+                if (btn) {
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    btn.disabled = false;
+                }
+            }
+        }
 
-            trade.status = status;
-            trade.profit = pnl;
+        function openFollowupModal(ticket) {
+            const tId = ticket || state.activePendingTicket;
+            const trade = state.trades.find(t => t.ticket === tId);
+            if (!trade) return;
 
-            const finishSave = (imgUrl) => {
-                // Stores uploaded result image or falls back to entry screenshot if unprovided
-                state.results[ticket] = {
-                    img: imgUrl || state.captures[ticket]?.img || null,
-                    notes: notes
+            document.getElementById('fuTicketDisplay').value = `#${trade.ticket} (${trade.symbol})`;
+            const reasonSel = document.getElementById('fuReasonSelect');
+            reasonSel.innerHTML = state.invalidRules.map(r => `<option>${r.text}</option>`).join('');
+
+            document.getElementById('followupModal').classList.remove('hidden');
+        }
+
+        function closeFollowupModal() {
+            document.getElementById('followupModal').classList.add('hidden');
+        }
+
+        function saveFollowup() {
+            const ticket = state.activePendingTicket || (state.trades.length > 0 ? state.trades[state.trades.length - 1].ticket : null);
+            if (!ticket) return;
+
+            const trade = state.trades.find(t => t.ticket === ticket);
+
+            if (trade) {
+                const status = document.getElementById('fuStatusSelect').value;
+                const pnl = parseFloat(document.getElementById('fuPnLInput').value) || 0;
+                const notes = document.getElementById('fuNotesInput').value || 'Hit target';
+                const file = document.getElementById('fuFileInput').files[0];
+
+                trade.status = status;
+                trade.profit = pnl;
+
+                const finishSave = (imgUrl) => {
+                    state.results[ticket] = {
+                        img: imgUrl || state.results[ticket]?.img || null,
+                        notes
+                    };
+
+                    let running = state.baseline;
+                    state.trades.forEach(t => {
+                        running += t.profit;
+                        t.calculatedEquity = running;
+                    });
+
+                    closeFollowupModal();
+                    updateAllDisplays();
                 };
 
-                let running = state.baseline;
-                state.trades.forEach(t => {
-                    running += t.profit;
-                    t.calculatedEquity = running;
-                });
-
-                closeFollowupModal();
-                updateAllDisplays();
-            };
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => finishSave(e.target.result);
-                reader.readAsDataURL(file);
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => finishSave(e.target.result);
+                    reader.readAsDataURL(file);
+                } else {
+                    finishSave(null);
+                }
             } else {
-                finishSave(null);
+                closeFollowupModal();
             }
-        } else {
-            closeFollowupModal();
         }
-    }
 
-    function openNewTradeModal() {
-        const nextId = "TK-" + (1001 + state.trades.length);
-        const newTrade = {
-            ticket: nextId,
-            pair: "GBPUSD",
-            type: "BUY",
-            profit: 0,
-            status: "PENDING"
-        };
-        state.trades.push(newTrade);
-        state.captures[nextId] = { img: "https://via.placeholder.com/300x150/1e293b/38bdf8?text=Entry+Chart" };
-        updateAllDisplays();
-        openFollowupModal(nextId);
-    }
+        function exportCSV() {
+            const csv = Papa.unparse(state.trades);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'TraderWell_Export.csv';
+            a.click();
+        }
 
-    function updateAllDisplays() {
-        renderTable();
-        renderGalleryWall();
-    }
+        function initCharts() {
+            const ctxHome = document.getElementById('chartHomeEquity').getContext('2d');
+            state.charts.homeEquity = new Chart(ctxHome, {
+                type: 'line',
+                data: { labels: ['Start'], datasets: [{ label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', backgroundColor: 'rgba(45,212,191,0.08)', fill: true, tension: 0.2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
 
-    // Initial Render
-    document.addEventListener("DOMContentLoaded", () => {
-        updateAllDisplays();
-    });
-</script>
+            const ctxDiscipline = document.getElementById('chartDisciplineGrade').getContext('2d');
+            state.charts.discipline = new Chart(ctxDiscipline, {
+                type: 'bar',
+                data: { labels: ['Start'], datasets: [{ label: 'Discipline Grade (%)', data: [100], backgroundColor: '#14b8a6' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+            });
 
+            const ctxDD = document.getElementById('chartPerformanceDrawdown').getContext('2d');
+            state.charts.drawdown = new Chart(ctxDD, {
+                type: 'line',
+                data: { labels: ['Start'], datasets: [{ label: 'Equity ($)', data: [state.baseline], borderColor: '#2dd4bf', yAxisID: 'y' }, { label: 'Drawdown (%)', data: [0], borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,0.1)', fill: true, yAxisID: 'y1' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { position: 'left' }, y1: { position: 'right', grid: { drawOnChartArea: false } } } }
+            });
+        }
+
+        function updateCharts() {
+            if (!state.charts.homeEquity) return;
+            const labels = ['Start', ...state.trades.map((_, i) => `T${i+1}`)];
+            const equityData = [state.baseline, ...state.trades.map(t => t.calculatedEquity)];
+            const disciplineData = [100, ...state.trades.map(t => t.disciplineScore)];
+
+            state.charts.homeEquity.data.labels = labels;
+            state.charts.homeEquity.data.datasets[0].data = equityData;
+            state.charts.homeEquity.update();
+
+            state.charts.discipline.data.labels = labels;
+            state.charts.discipline.data.datasets[0].data = disciplineData;
+            state.charts.discipline.update();
+
+            let avgSc = disciplineData.reduce((a,b)=>a+b,0)/disciplineData.length;
+            document.getElementById('avgDisciplineGrade').innerText = `Avg Discipline: ${avgSc.toFixed(1)}%`;
+
+            let peak = state.baseline;
+            const ddData = [0];
+            state.trades.forEach(t => {
+                if (t.calculatedEquity > peak) peak = t.calculatedEquity;
+                const dd = ((t.calculatedEquity - peak) / peak) * 100;
+                ddData.push(dd);
+            });
+
+            state.charts.drawdown.data.labels = labels;
+            state.charts.drawdown.data.datasets[0].data = equityData;
+            state.charts.drawdown.data.datasets[1].data = ddData;
+            state.charts.drawdown.update();
+        }
+    </script>
 </body>
 </html>
