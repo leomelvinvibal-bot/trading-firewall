@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
                 </button>
                 <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Anti-FOMO Guard</span>
+                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Execution Rules</span>
                 </button>
                 <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-calculator w-5"></i> <span>Position Calculator</span>
@@ -166,28 +166,14 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: ANTI-FOMO GUARD WITH LIVE PULSING ENTRY & RESULT WORDS -->
+                <!-- TAB 5: EXECUTION RULES & LOG SETUP WITH LIVE PULSING ENTRY/RESULT BADGES -->
                 <div id="tab-execution" class="tab-content space-y-6">
-                    
-                    <!-- LIVE BEATING / PULSING ENTRY & RESULT HEADER BAR -->
-                    <div class="flex items-center justify-center space-x-6 py-3 px-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-xs">
-                        <!-- Dynamic Pulsing ENTRY Word -->
-                        <div id="badgeEntryStatus" class="px-6 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-sm font-black tracking-widest animate-glow-fast flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            ENTRY
-                        </div>
-                        <span class="text-gray-400 font-bold">→</span>
-                        <!-- Dynamic Pulsing RESULT Word -->
-                        <div id="badgeResultStatus" class="px-6 py-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/30 text-sm font-black tracking-widest flex items-center gap-2.5 opacity-50">
-                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                            RESULT
-                        </div>
-                    </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Pre-Trade Execution Protocol Checklist -->
+                        
+                        <!-- Pre-Trade Execution Protocol Checklist (Left 2 columns) -->
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
+                            <p class="text-xs text-gray-400">Verify all mandatory rules before taking any market entry</p>
                             <div id="criteriaListContainer" class="space-y-3"></div>
                             <div class="pt-4 space-y-3">
                                 <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
@@ -201,19 +187,46 @@
                             </div>
                         </div>
 
-                        <!-- Log New Setup Position Box -->
+                        <!-- Log New Setup Position Box (Right Column with Live Beating ENTRY & RESULT Words) -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <h3 class="font-extrabold text-base">Log New Setup Position</h3>
+                            
+                            <!-- LIVE BEATING ENTRY & RESULT STATUS BAR PLACED EXACTLY IN YOUR SKETCH -->
+                            <div class="flex items-center justify-between p-2 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-200 dark:border-slate-700">
+                                <div id="badgeEntryStatus" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black tracking-widest animate-glow-fast flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ENTRY
+                                </div>
+                                <span class="text-gray-400 font-bold text-xs">→</span>
+                                <div id="badgeResultStatus" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/30 text-xs font-black tracking-widest flex items-center gap-1.5 opacity-50">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> RESULT
+                                </div>
+                            </div>
+
                             <div class="space-y-3">
-                                <input type="text" id="sideSymbol" value="XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                                <select id="sideType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                                    <option>BUY (Long)</option>
-                                    <option>SELL (Short)</option>
-                                </select>
-                                <input type="text" id="sideLot" value="0.10" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                                <input type="text" id="sideReason" value="London Open Sweep + FVG" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Symbol / Pair</label>
+                                    <input type="text" id="sideSymbol" value="XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">Type</label>
+                                        <select id="sideType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
+                                            <option>BUY (Long)</option>
+                                            <option>SELL (Short)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">Lots / Size</label>
+                                        <input type="text" id="sideLot" value="0.10" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Setup / Entry Reason</label>
+                                    <input type="text" id="sideReason" value="London Open Sweep + FVG" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -278,11 +291,11 @@
         let currentYear = 2026;
         let currentMonthIndex = 8; // September
         let equityChartInstance = null;
-        let entryFiled = false; // Controls pulsing beat status
+        let entryFiled = false;
 
         let monthPnLData = {
             2026: {
-                8: { // September
+                8: {
                     1: { pnl: 240.00, trades: 1 },
                     3: { pnl: -110.00, trades: 1 },
                     8: { pnl: 450.00, trades: 1 },
@@ -323,13 +336,11 @@
             const resultBadge = document.getElementById('badgeResultStatus');
             
             if (!entryFiled) {
-                // ENTRY word beats actively until filed
                 entryBadge.classList.add('animate-glow-fast', 'border-emerald-500/40');
                 entryBadge.classList.remove('opacity-50');
                 resultBadge.classList.remove('animate-glow-fast', 'border-amber-500');
                 resultBadge.classList.add('opacity-50');
             } else {
-                // Entry stops beating, RESULT word starts its lively beating until result is logged
                 entryBadge.classList.remove('animate-glow-fast');
                 entryBadge.classList.add('opacity-50');
                 resultBadge.classList.add('animate-glow-fast', 'border-amber-500');
@@ -425,9 +436,9 @@
                 alert('Please provide your trade thesis and attach an entry screenshot chart.');
                 return;
             }
-            entryFiled = true; // Stops ENTRY beat and starts RESULT beat
+            entryFiled = true;
             updateLivePulsingBadges();
-            alert('Execution approved! Entry chart filed successfully. ENTRY beat stopped, RESULT beat is now active until outcome is encoded.');
+            alert('Execution approved! Entry chart filed. ENTRY beat stopped, RESULT beat is now pulsing inside your setup ticket.');
         }
 
         function openLightbox(url) {
@@ -464,7 +475,7 @@
                 monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
             }
 
-            entryFiled = false; // Reset for next trade cycle
+            entryFiled = false;
             updateLivePulsingBadges();
             saveData();
             renderCalendar();
