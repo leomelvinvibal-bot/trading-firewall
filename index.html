@@ -108,6 +108,17 @@
         </div>
     </div>
 
+    <!-- PHOTO ZOOM LIGHTBOX MODAL -->
+    <div id="photoZoomModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4" onclick="closeZoomModal()">
+        <div class="relative max-w-5xl max-h-[90vh] bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-2xl flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeZoomModal()" class="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="zoomModalTitle" class="text-xs font-mono font-bold text-theme mb-3">Chart Evidence Inspection</h3>
+            <img id="zoomModalImage" src="" class="max-h-[75vh] max-w-full object-contain rounded-2xl border border-slate-700 shadow-xl">
+        </div>
+    </div>
+
     <!-- Top Navigation Header -->
     <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-4">
@@ -252,6 +263,7 @@
                                         <th class="p-4">Trade ID</th>
                                         <th class="p-4">Symbol</th>
                                         <th class="p-4">Execution Status</th>
+                                        <th class="p-4">Notes / Thesis</th>
                                         <th class="p-4 text-right">Net PnL</th>
                                     </tr>
                                 </thead>
@@ -265,7 +277,7 @@
                 <div id="tab-gallery" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
-                        <span class="text-xs text-theme font-bold">Newest Uploads Displayed First</span>
+                        <span class="text-xs text-theme font-bold">Click any image to Zoom in</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
                 </div>
@@ -349,8 +361,26 @@
 
                             <div id="resultApprovalPanel" class="hidden space-y-3 transition-all duration-300">
                                 <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-500 font-bold text-center animate-pulse">
-                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT pending. Upload final outcome.
+                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT pending. Complete exit criteria.
                                 </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Exit Outcome Reason (TP / SL / Cancellation)</label>
+                                    <select id="activeExitReasonType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-2.5 text-xs font-bold mb-2">
+                                        <option value="TP Hit">Take Profit (TP) Target Achieved</option>
+                                        <option value="SL Hit">Stop Loss (SL) Triggered</option>
+                                        <option value="Manual Cancel">Manual Cancellation / Breakeven Out</option>
+                                    </select>
+                                    <input type="text" id="activeExitNotes" placeholder="e.g. TP1 reached at key resistance level..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                </div>
+
+                                <!-- FIXED EXIT CRITERIA LIST -->
+                                <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+                                    <span class="text-[10px] font-extrabold text-theme uppercase tracking-wider">Mandatory Exit Criteria Guard</span>
+                                    <div id="exitCriteriaContainer" class="space-y-1.5 text-[11px]">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Net PnL ($)</label>
                                     <input type="number" step="0.01" id="activeTradePnL" placeholder="e.g. 150.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
@@ -370,21 +400,23 @@
                     </div>
                 </div>
 
-                <!-- TAB 7: KNOWLEDGE HUB (Bookshelf & Master Portraits with PDFs) -->
+                <!-- TAB 7: KNOWLEDGE HUB (Bookshelf & Mark Douglas Portrait) -->
                 <div id="tab-knowledge" class="tab-content hidden space-y-6">
-                    <!-- Bookshelf Header Hero with Legendary Traders Background -->
-                    <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-8 overflow-hidden shadow-2xl">
-                        <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80');"></div>
-                        <div class="relative z-10 space-y-4 max-w-2xl">
-                            <span class="px-3 py-1 bg-theme/20 text-theme border border-theme/40 text-[10px] font-mono font-bold rounded-xl uppercase">Master Trader Library &amp; Archives</span>
-                            <h2 class="text-2xl font-black">Trader's Sanctuary &amp; Mindset Library</h2>
+                    <!-- Bookshelf Header Hero with Mark Douglas Featured Portrait -->
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-8 overflow-hidden shadow-2xl flex flex-col md:flex-row items-center gap-6">
+                        <div class="w-32 h-40 rounded-2xl overflow-hidden border-2 border-theme shadow-2xl flex-shrink-0 bg-slate-800">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover" alt="Mark Douglas Portrait">
+                        </div>
+                        <div class="space-y-3 flex-1 text-center md:text-left">
+                            <span class="px-3 py-1 bg-theme/20 text-theme border border-theme/40 text-[10px] font-mono font-bold rounded-xl uppercase">Master Trader Sanctuary</span>
+                            <h2 class="text-2xl font-black">Mark Douglas Mindset &amp; Discipline Legacy</h2>
                             <p class="text-xs text-gray-300 leading-relaxed">
-                                Explore foundational trading psychology masterpieces and historical trader portraits. Master your mental edge like Mark Douglas, Jesse Livermore, and Paul Tudor Jones.
+                                "The market is a random stream of probabilities." Master emotional detachment, accept risk unconditionally, and align your psychology with statistical edge.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Bookshelf & Books Grid with direct PDF links -->
+                    <!-- Books & Library Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Book 1: Trading in the Zone -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
@@ -483,8 +515,8 @@
     <script>
         // State management
         let trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
-            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', entryPhoto: '', resultPhoto: '', criteria: [] },
-            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', entryPhoto: '', resultPhoto: '', criteria: [] }
+            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', exitReason: 'TP Hit', exitNotes: 'Target reached at daily resistance', entryPhoto: '', resultPhoto: '', criteria: [] },
+            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', exitReason: 'SL Hit', exitNotes: 'Momentum broke structure', entryPhoto: '', resultPhoto: '', criteria: [] }
         ];
 
         let criteria = JSON.parse(localStorage.getItem('traderwell_criteria')) || [
@@ -492,6 +524,13 @@
             { text: 'Higher Timeframe (15m/1h) Market Structure alignment', checked: true },
             { text: 'Fixed Risk-to-Reward ratio of at least 1:2', checked: true },
             { text: 'Spread protection & broker execution latency verified', checked: true }
+        ];
+
+        // Fixed Locked Exit Criteria
+        const fixedExitCriteria = [
+            { text: 'Exit execution verified against trading plan (TP/SL or Cancellation correctly logged)' },
+            { text: 'No revenge trading or premature early exit deviation' },
+            { text: 'Risk limits strictly respected on position closure' }
         ];
 
         let editsLeft = parseInt(localStorage.getItem('traderwell_edits')) || 2;
@@ -608,6 +647,18 @@
             }
         }
 
+        // Photo Zoom Lightbox Modal
+        function openZoomModal(imgSrc, title) {
+            if (!imgSrc) return;
+            document.getElementById('zoomModalImage').src = imgSrc;
+            document.getElementById('zoomModalTitle').innerText = title || 'Chart Evidence Inspection';
+            document.getElementById('photoZoomModal').classList.remove('hidden');
+        }
+
+        function closeZoomModal() {
+            document.getElementById('photoZoomModal').classList.add('hidden');
+        }
+
         // Criteria & Discipline Guard
         function renderCriteria() {
             const container = document.getElementById('criteriaListContainer');
@@ -625,6 +676,16 @@
                 container.appendChild(div);
             });
             document.getElementById('editsLeftCount').innerText = editsLeft;
+
+            // Render Exit Criteria Guard
+            const exitContainer = document.getElementById('exitCriteriaContainer');
+            exitContainer.innerHTML = '';
+            fixedExitCriteria.forEach((ec, i) => {
+                const ediv = document.createElement('div');
+                ediv.className = 'flex items-center space-x-2 text-gray-300';
+                ediv.innerHTML = `<input type="checkbox" checked disabled class="w-3.5 h-3.5 rounded text-theme"><span class="text-[10px]">${ec.text}</span>`;
+                exitContainer.appendChild(ediv);
+            });
         }
 
         function toggleCriteriaCheck(index) {
@@ -686,6 +747,8 @@
                 symbol, type, lot, notes, reason,
                 entryPhoto: entryPhotoBase64,
                 resultPhoto: '',
+                exitReason: 'Pending',
+                exitNotes: '',
                 criteria: JSON.parse(JSON.stringify(criteria)),
                 status: 'Pending Result'
             };
@@ -702,9 +765,13 @@
 
         async function approveTradeResult(rulesFollowed) {
             const pnl = parseFloat(document.getElementById('activeTradePnL').value) || 0;
+            const exitReason = document.getElementById('activeExitReasonType').value;
+            const exitNotes = document.getElementById('activeExitNotes').value;
             const resultPhotoBase64 = await fileToBase64(document.getElementById('activeResultFile'));
             
             pendingTradeDraft.pnl = pnl;
+            pendingTradeDraft.exitReason = exitReason;
+            pendingTradeDraft.exitNotes = exitNotes;
             pendingTradeDraft.resultPhoto = resultPhotoBase64;
             pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
             
@@ -872,13 +939,14 @@
                     <td class="p-4 font-mono font-bold">${t.id}</td>
                     <td class="p-4 font-bold">${t.symbol} (${t.type || 'BUY'})</td>
                     <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span></td>
+                    <td class="p-4 text-gray-300 max-w-xs truncate">${t.notes || t.exitNotes || 'No notes logged'}</td>
                     <td class="p-4 text-right font-mono font-extrabold ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Chart Gallery Wall
+        // Chart Gallery Wall with Click-to-Zoom
         function renderGalleryWall() {
             const grid = document.getElementById('galleryWallGrid');
             grid.innerHTML = '';
@@ -888,11 +956,11 @@
                 card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 space-y-3 shadow-xs';
                 
                 let entryImgHtml = t.entryPhoto 
-                    ? `<img src="${t.entryPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
+                    ? `<img src="${t.entryPhoto}" onclick="openZoomModal('${t.entryPhoto}', '${t.symbol} Entry Setup')" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer hover:opacity-90 transition">`
                     : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-chart-line mr-2 text-theme"></i> No Entry Photo</div>`;
 
                 let resultImgHtml = t.resultPhoto 
-                    ? `<img src="${t.resultPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
+                    ? `<img src="${t.resultPhoto}" onclick="openZoomModal('${t.resultPhoto}', '${t.symbol} Outcome Result')" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700 cursor-pointer hover:opacity-90 transition">`
                     : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-flag-checkered mr-2 text-amber-500"></i> No Outcome Photo</div>`;
 
                 card.innerHTML = `
@@ -906,11 +974,14 @@
                             ${entryImgHtml}
                         </div>
                         <div>
-                            <span class="text-[9px] font-bold text-gray-400 uppercase">Outcome Result</span>
+                            <span class="text-[9px] font-bold text-gray-400 uppercase">Outcome (${t.exitReason || 'Result'})</span>
                             ${resultImgHtml}
                         </div>
                     </div>
-                    <p class="text-[11px] text-gray-300"><strong>Notes:</strong> ${t.notes || 'None logged'}</p>
+                    <div class="space-y-1 text-[11px] text-gray-300">
+                        <p><strong>Entry Thesis:</strong> ${t.notes || 'None logged'}</p>
+                        <p><strong>Exit Outcome:</strong> ${t.exitNotes || t.exitReason || 'None logged'}</p>
+                    </div>
                     <div class="flex justify-between items-center pt-1 border-t border-gray-100 dark:border-slate-800">
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span>
                         <span class="text-[10px] font-mono text-gray-400">${t.id}</span>
@@ -976,6 +1047,8 @@
                             pnl: parseFloat(cols[3]) || 100,
                             status: cols[4] ? cols[4].trim() : 'Passed Rules',
                             notes: 'Imported CSV Trade',
+                            exitReason: 'TP Hit',
+                            exitNotes: 'Imported Record',
                             entryPhoto: '',
                             resultPhoto: '',
                             criteria: []
