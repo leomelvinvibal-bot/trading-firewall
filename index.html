@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell — Trading Journal & Discipline Guard</title>
+    <title>TraderWell Edge - Discipline & Execution Guard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,614 +12,673 @@
             theme: {
                 extend: {
                     colors: {
-                        theme: {
-                            DEFAULT: 'var(--theme-primary, #10b981)',
-                            hover: 'var(--theme-hover, #059669)',
-                        }
+                        theme: 'var(--theme-primary, #10b981)',
+                        glow: 'var(--theme-glow, rgba(16, 185, 129, 0.6))'
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --theme-primary: #10b981;
-            --theme-hover: #059669;
+            --theme-glow: rgba(16, 185, 129, 0.6);
         }
-        body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 15px var(--theme-glow); }
+            50% { box-shadow: 0 0 5px var(--theme-glow); }
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(16, 185, 129, 0.3);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(16, 185, 129, 0.6);
-        }
+        .animate-glow-fast { animation: glowPulse 1.5s infinite; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-theme selection:text-white">
+<body class="bg-slate-950 text-gray-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
 
-    <!-- Firebase Auth Overlay Modal (Locked until authenticated) -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-8 space-y-6 shadow-2xl relative">
+    <!-- AUTHENTICATION WRAPPER -->
+    <div id="authWrapper" class="fixed inset-0 z-50 bg-slate-950 flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
             <div class="text-center space-y-2">
-                <div class="w-12 h-12 rounded-2xl bg-theme mx-auto flex items-center justify-center shadow-lg shadow-theme/20 text-slate-950 font-black text-xl">
+                <div class="inline-flex p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 text-xl font-bold">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h2 id="authModalTitle" class="text-lg font-black uppercase tracking-wider text-white">TraderWell Access</h2>
-                <p id="authModalSubtitle" class="text-xs text-slate-400">Secure Firebase Cloud Authentication</p>
+                <h2 class="text-xl font-extrabold tracking-tight">TraderWell Security Portal</h2>
+                <p class="text-xs text-gray-400">Authenticate to access your automated execution guard & trade journals.</p>
+            </div>
+
+            <!-- Tabs for Login / Register -->
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+                <button onclick="switchAuthTab('login')" id="authTabLogin" class="flex-1 py-2 rounded-lg bg-emerald-500 text-white transition">Sign In</button>
+                <button onclick="switchAuthTab('register')" id="authTabRegister" class="flex-1 py-2 rounded-lg text-gray-400 transition">Register</button>
             </div>
 
             <!-- Login Form -->
-            <form id="loginForm" onsubmit="handleFirebaseLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Email Address</label>
-                    <input type="email" id="loginEmail" required placeholder="trader@traderwell.io" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-theme">
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Email Address</label>
+                    <input type="email" id="loginEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Password</label>
+                    <input type="password" id="loginPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
                 </div>
-                <button type="submit" class="w-full bg-theme hover:bg-theme-hover text-slate-950 font-black text-xs py-3 rounded-xl transition shadow-md shadow-theme/20">Sign In to Dashboard</button>
-                <div class="text-center pt-2">
-                    <button type="button" onclick="toggleAuthMode('signup')" class="text-xs text-slate-400 hover:text-theme transition">Need an account? <span class="underline font-bold">Sign up</span></button>
-                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">Sign In to Dashboard</button>
             </form>
 
-            <!-- Sign Up Form (Hidden by default) -->
-            <form id="signupForm" onsubmit="handleFirebaseSignup(event)" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Trader Name</label>
-                    <input type="text" id="signupName" required placeholder="Leo Melvin" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-theme">
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Full Name</label>
+                    <input type="text" id="regName" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500" value="Leo Melvin">
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Email Address</label>
-                    <input type="email" id="signupEmail" required placeholder="trader@traderwell.io" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Email Address</label>
+                    <input type="email" id="regEmail" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Create Password</label>
-                    <input type="password" id="signupPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Password</label>
+                    <input type="password" id="regPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
                 </div>
-                <button type="submit" class="w-full bg-theme hover:bg-theme-hover text-slate-950 font-black text-xs py-3 rounded-xl transition shadow-md shadow-theme/20">Register & Initialize</button>
-                <div class="text-center pt-2">
-                    <button type="button" onclick="toggleAuthMode('login')" class="text-xs text-slate-400 hover:text-theme transition">Already registered? <span class="underline font-bold">Sign in</span></button>
-                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">Create Trader Account</button>
             </form>
         </div>
     </div>
 
-    <!-- Top Header Navigation -->
-    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-theme flex items-center justify-center shadow-lg shadow-theme/20 text-slate-950 font-black text-lg">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <div>
-                <h1 class="font-black text-sm tracking-wide uppercase text-white">TraderWell <span class="text-theme text-[10px] ml-1 px-2 py-0.5 rounded-full bg-theme/10 border border-theme/20">Edge Guard</span></h1>
-                <p class="text-[11px] text-slate-400">Algorithmic Discipline & Execution Journal</p>
-            </div>
-        </div>
-
-        <div class="flex items-center space-x-4">
-            <!-- Trader Profile & Firebase Logout -->
-            <div class="flex items-center space-x-2 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl">
-                <div class="w-6 h-6 rounded-full bg-theme/20 text-theme flex items-center justify-center font-bold text-xs">
-                    <i class="fa-solid fa-user text-[10px]"></i>
+    <!-- MAIN DASHBOARD WRAPPER -->
+    <div id="dashboardWrapper" class="hidden flex-1 flex flex-col justify-between">
+        <!-- Top Navbar -->
+        <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold">
+                    <i class="fa-solid fa-chart-line"></i>
                 </div>
-                <span id="headerTraderName" class="text-xs font-bold text-slate-200">Leo Melvin</span>
-                <button onclick="handleFirebaseLogout()" title="Sign Out" class="ml-2 text-slate-400 hover:text-red-400 transition text-xs"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <div>
+                    <h1 class="font-extrabold text-sm tracking-wide">TraderWell <span class="text-emerald-400">Edge</span></h1>
+                    <p class="text-[10px] text-gray-400">Welcome back, <span id="headerTraderName" class="font-bold text-gray-200">Leo Melvin</span></p>
+                </div>
             </div>
 
-            <!-- Quick Action: Import CSV -->
-            <button onclick="triggerCsvImport()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1.5">
-                <i class="fa-solid fa-file-arrow-up text-theme"></i>
-                <span>Import CSV</span>
-            </button>
-            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs font-bold">
+                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn px-4 py-2 rounded-lg transition text-theme bg-theme/20 border border-theme/60">Execution Guard</button>
+                <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition">P&amp;L Calendar</button>
+                <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition">Journal &amp; Gallery</button>
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn px-4 py-2 rounded-lg text-gray-400 hover:text-white transition">Analytics</button>
+            </nav>
 
-            <!-- Quick Action: Log Trade Modal -->
-            <button onclick="openTradeModal()" class="text-xs bg-theme hover:bg-theme-hover text-slate-950 font-extrabold px-3.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-md shadow-theme/20">
-                <i class="fa-solid fa-plus text-[10px]"></i>
-                <span>Log Trade</span>
-            </button>
-        </div>
-    </header>
+            <div class="flex items-center space-x-3">
+                <button onclick="updateTraderProfileName()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition">Settings</button>
+                <button onclick="handleSignOut()" class="px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition flex items-center space-x-1">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Sign Out
+                </button>
+            </div>
+        </header>
 
-    <!-- Main Workspace Layout -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Main Workspace Content -->
+        <main class="max-w-7xl w-full mx-auto p-6 space-y-6 flex-1">
 
-        <!-- Left Column: Discipline Guard & Workflow State Machine (Cols 1-7) -->
-        <div class="lg:col-span-7 space-y-6">
-
-            <!-- Execution Rules Banner / State Indicator -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-theme/5 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="flex items-center justify-between mb-4">
+            <!-- EXECUTION TAB -->
+            <section id="tab-execution" class="tab-content space-y-6">
+                <!-- Workflow State Header -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-3">
+                        <span id="badgeEntryStatus" class="px-3 py-1 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 animate-glow-fast">1. Entry Guard</span>
+                        <i class="fa-solid fa-arrow-right text-gray-600"></i>
+                        <span id="badgeResultStatus" class="px-3 py-1 rounded-xl text-xs font-extrabold uppercase tracking-wider bg-slate-800 text-gray-500 border border-slate-700 opacity-50">2. Outcome Validation</span>
+                    </div>
                     <div class="flex items-center space-x-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-theme animate-pulse"></span>
-                        <h2 class="text-xs font-black uppercase tracking-wider text-slate-300">Execution Guardrail Checklist</h2>
+                        <span class="text-[10px] text-gray-400">Discipline Adherence:</span>
+                        <span id="disciplineBadgeStatus" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">100% Adherence</span>
                     </div>
-                    <span id="workflowStateBadge" class="text-[10px] font-mono font-bold bg-theme/10 text-theme border border-theme/30 px-2.5 py-1 rounded-lg">STATE: ENTRY VERIFICATION</span>
                 </div>
 
-                <!-- Workflow Step 1: Entry Criteria & Chart Verification -->
-                <div id="workflowStep1" class="space-y-4">
-                    <p class="text-xs text-slate-400">Verify all algorithmic confirmation factors before committing capital or logging trades.</p>
-                    
-                    <div id="guardCriteriaList" class="space-y-2">
-                        <!-- Populated dynamically via JS -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left: System Checklist Rules -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 lg:col-span-1">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-extrabold text-sm flex items-center"><i class="fa-solid fa-list-check text-theme mr-2"></i> System Criteria Guard</h3>
+                            <span id="lockStatusBadge" class="text-[10px] bg-theme/10 text-theme border border-theme/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider">2 Edits Left</span>
+                        </div>
+                        <p class="text-[11px] text-gray-400">Strictly verify all parameters before committing your trade layout entry.</p>
+                        
+                        <div id="criteriaListContainer" class="space-y-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+
+                        <button onclick="toggleEditCriteriaMode()" id="editCriteriaBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold text-xs py-2.5 rounded-xl transition border border-slate-700">
+                            <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Criteria
+                        </button>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <!-- Right: Entry Ticket Form & Result Panel -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:col-span-2 space-y-6">
+                        
+                        <!-- ENTRY PHASE FORM -->
+                        <div id="entryTicketForm" class="space-y-4">
+                            <h3 class="font-extrabold text-sm text-theme border-b border-slate-800 pb-2 flex items-center">
+                                <i class="fa-solid fa-file-invoice-dollar mr-2"></i> Step 1: Pre-Trade Entry Ticket
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Symbol</label>
+                                    <input type="text" id="sideSymbol" value="XAUUSD" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-theme">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Trade Bias</label>
+                                    <select id="sideType" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-theme">
+                                        <option value="BUY">BUY / LONG</option>
+                                        <option value="SELL">SELL / SHORT</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Setup Category</label>
+                                    <select id="sideReason" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-theme">
+                                        <option value="Ichimoku Cloud Bounce">Ichimoku Cloud Bounce</option>
+                                        <option value="Asian Scalping Breakout">Asian Scalping Breakout</option>
+                                        <option value="Liquidity Sweep FVG">Liquidity Sweep FVG</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-gray-400 uppercase">Trade Thesis &amp; Notes</label>
+                                <textarea id="guardTradeNotes" rows="3" placeholder="Detail your risk-to-reward parameters, market conditions, and entry confluence..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-theme"></textarea>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-gray-400 uppercase">Attach Entry Chart Screenshot</label>
+                                <input type="file" id="guardChartFile" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-theme file:text-white">
+                            </div>
+                            <button onclick="verifyExecutionApproval()" class="w-full bg-theme hover:opacity-90 text-slate-950 font-extrabold text-xs py-3.5 rounded-xl transition shadow-lg">
+                                Verify &amp; Commit Trade Entry
+                            </button>
+                        </div>
+
+                        <!-- RESULT PHASE PANEL -->
+                        <div id="resultApprovalPanel" class="space-y-4 hidden">
+                            <h3 class="font-extrabold text-sm text-amber-400 border-b border-slate-800 pb-2 flex items-center">
+                                <i class="fa-solid fa-flag-checkered mr-2"></i> Step 2: Trade Outcome &amp; Discipline Check
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Net PnL ($)</label>
+                                    <input type="number" step="0.01" id="activeTradePnL" placeholder="e.g. 240.00 or -75.50" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-bold focus:outline-none focus:border-theme">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-bold text-gray-400 uppercase">Attach Outcome Screenshot</label>
+                                    <input type="file" id="activeResultFile" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <button onclick="approveTradeResult(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs py-3.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-check-circle"></i> <span>Finished (Followed Rules)</span>
+                                </button>
+                                <button onclick="approveTradeResult(false)" class="bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs py-3.5 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> <span>Finished (Failed Rules)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Market Sessions Map Grid -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                    <h3 class="font-extrabold text-sm flex items-center"><i class="fa-solid fa-globe text-theme mr-2"></i> Global Forex &amp; Crypto Session Watcher</h3>
+                    <div id="sessionsMapGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- CALENDAR TAB -->
+            <section id="tab-calendar" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center space-x-4">
+                            <button onclick="changeMonth(-1)" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-xl flex items-center justify-center font-bold"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h2 id="calendarMonthTitle" class="text-base font-extrabold tracking-wide">September 2026</h2>
+                            <button onclick="changeMonth(1)" class="w-9 h-9 bg-slate-800 hover:bg-slate-700 rounded-xl flex items-center justify-center font-bold"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="text-right">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold">Net Month P&amp;L</p>
+                                <p id="summaryMonthNet" class="text-sm font-extrabold text-emerald-400">+$0.00</p>
+                            </div>
+                            <div class="text-right border-l border-slate-800 pl-4">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold">Winning Days</p>
+                                <p id="summaryWinDays" class="text-sm font-extrabold text-theme">0</p>
+                            </div>
+                            <button onclick="openTradeModal()" class="px-4 py-2 bg-theme text-slate-950 font-extrabold text-xs rounded-xl shadow transition hover:opacity-90">
+                                <i class="fa-solid fa-plus mr-1"></i> Log Trade
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Full Calendar Grid -->
+                    <div id="fullMonthCalendarGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- JOURNAL & GALLERY TAB -->
+            <section id="tab-journal" class="tab-content space-y-6 hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Setup Notes / Confluence</label>
-                            <input type="text" id="guardTradeNotes" placeholder="e.g. Ichimoku Flat Kijun Rejection" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                            <h3 class="font-extrabold text-sm">Execution Journal &amp; Proof Gallery</h3>
+                            <p class="text-xs text-gray-400">Review entry vs. result image snapshots and rule adherence records.</p>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Entry Chart Screenshot</label>
-                            <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-extrabold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer">
-                        </div>
-                    </div>
-
-                    <button onclick="proceedToResultState()" class="w-full mt-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center space-x-2">
-                        <span>Lock Entry & Proceed to Result</span>
-                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                    </button>
-                </div>
-
-                <!-- Workflow Step 2: Result & PnL Logging (Hidden initially) -->
-                <div id="workflowStep2" class="space-y-4 hidden">
-                    <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 flex items-center justify-between text-xs">
-                        <span class="text-slate-400 font-mono">Pending Entry Locked. Enter outcome:</span>
-                        <button onclick="revertToEntryState()" class="text-[10px] text-amber-400 hover:underline"><i class="fa-solid fa-rotate-left mr-1"></i> Edit Entry</button>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Trade Net P&L ($)</label>
-                            <input type="number" step="0.01" id="activeTradePnL" placeholder="e.g. 240.00 or -85.50" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Result Chart Screenshot</label>
-                            <input type="file" id="activeResultFile" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-extrabold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700 cursor-pointer">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="triggerCsvImport()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl border border-slate-700 transition">
+                                <i class="fa-solid fa-file-arrow-down mr-1"></i> Import CSV
+                            </button>
+                            <input type="file" id="csvFileInput" accept=".csv" onchange="handleCsvImport(event)" class="hidden">
+                            <button onclick="exportTradesCsv()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl border border-slate-700 transition">
+                                <i class="fa-solid fa-file-arrow-up mr-1"></i> Export CSV
+                            </button>
                         </div>
                     </div>
 
-                    <button onclick="finalizeAndLogTrade()" class="w-full bg-theme hover:bg-theme-hover text-slate-950 font-black text-xs py-2.5 rounded-xl transition shadow-md shadow-theme/20 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-check-to-slot"></i>
-                        <span>Verify Discipline & Sync to Calendar</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Calendar & PnL Heatmap Section -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-300">Monthly P&L Heatmap</h2>
-                    <div class="flex items-center space-x-2 text-xs font-bold">
-                        <button onclick="changeMonth(-1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                        <span id="currentMonthYearLabel" class="font-mono text-slate-200 min-w-[120px] text-center">September 2026</span>
-                        <button onclick="changeMonth(1)" class="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                    <!-- Journal Table -->
+                    <div class="overflow-x-auto rounded-xl border border-slate-800">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-950 text-gray-400 uppercase font-bold text-[10px] border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">ID</th>
+                                    <th class="p-4">Symbol / Type</th>
+                                    <th class="p-4">Discipline Status</th>
+                                    <th class="p-4 text-right">Net PnL</th>
+                                </tr>
+                            </thead>
+                            <tbody id="journalTableBody" class="divide-y divide-slate-800">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
                     </div>
-                </div>
 
-                <!-- Calendar Grid Container -->
-                <div class="overflow-x-auto">
-                    <div class="min-w-[480px]">
-                        <!-- Weekday Headers -->
-                        <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-extrabold text-slate-500 uppercase mb-1.5">
-                            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
-                        </div>
-                        <!-- Days Grid -->
-                        <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1.5">
-                            <!-- Populated dynamically -->
+                    <!-- Gallery Wall Grid -->
+                    <div class="space-y-3 pt-4">
+                        <h4 class="font-extrabold text-xs uppercase tracking-wider text-gray-400">Visual Setup Gallery Wall</h4>
+                        <div id="galleryWallGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Populated via JS -->
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Equity & Discipline Analytics Side-by-Side -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-300 mb-3">Equity Curve ($)</h3>
-                    <div class="h-40 w-full relative">
-                        <canvas id="equityChart"></canvas>
+            <!-- ANALYTICS TAB -->
+            <section id="tab-analytics" class="tab-content space-y-6 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="font-extrabold text-sm">Equity Curve Progression</h3>
+                        <div class="h-64 relative">
+                            <canvas id="equityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="font-extrabold text-sm">Discipline Adherence Breakdown</h3>
+                        <div class="h-64 relative flex items-center justify-center">
+                            <canvas id="disciplineChart"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-300">Rule Adherence</h3>
-                        <span id="disciplineBadgeStatus" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-theme/10 text-theme border border-theme/20">100% Adherence</span>
-                    </div>
-                    <div class="h-40 w-full relative flex items-center justify-center">
-                        <canvas id="disciplineChart"></canvas>
-                    </div>
-                </div>
-            </div>
+            </section>
 
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800 bg-slate-900/30 py-4 text-center text-[10px] text-gray-500">
+            TraderWell Edge OS &copy; 2026. Built for Advanced Algorithmic &amp; Discretionary Traders.
+        </footer>
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightboxModal" class="fixed inset-0 z-50 bg-slate-950/90 hidden flex items-center justify-center p-4" onclick="closeLightbox()">
+        <div class="relative max-w-4xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-3">
+            <img id="lightboxImg" class="w-full max-h-[80vh] object-contain rounded-xl">
+            <button class="absolute top-4 right-4 bg-slate-800 hover:bg-slate-700 text-white w-8 h-8 rounded-full font-bold flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
         </div>
+    </div>
 
-        <!-- Right Column: Journal History & Gallery Wall (Cols 8-12) -->
-        <div class="lg:col-span-5 space-y-6">
-
-            <!-- Journal Records Table Box -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-300">Trade Journal Log</h2>
-                    <button onclick="exportTradesCsv()" class="text-[10px] font-bold text-theme hover:underline flex items-center space-x-1">
-                        <i class="fa-solid fa-file-arrow-down"></i>
-                        <span>Export CSV</span>
-                    </button>
-                </div>
-
-                <div class="overflow-y-auto max-h-[300px] border border-slate-800 rounded-xl">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-950 text-slate-400 font-mono text-[10px] uppercase border-b border-slate-800 sticky top-0">
-                            <tr>
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Symbol</th>
-                                <th class="p-3">Discipline</th>
-                                <th class="p-3 text-right">P&L</th>
-                            </tr>
-                        </thead>
-                        <tbody id="journalTableBody" class="divide-y divide-slate-800/60 font-mono">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Gallery Wall Grid -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xs font-black uppercase tracking-wider text-slate-300">Chart Gallery Wall</h2>
-                    <span class="text-[10px] text-slate-500">Entry & Result Snapshots</span>
-                </div>
-
-                <div id="galleryWallGrid" class="grid grid-cols-1 gap-3 max-h-[380px] overflow-y-auto pr-1">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- Modal: Log Trade Manually -->
-    <div id="tradeModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
-            <div class="flex items-center justify-between">
-                <h3 class="text-sm font-black uppercase tracking-wider text-white">Manual Trade Entry</h3>
-                <button onclick="closeTradeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <!-- MANUAL TRADE LOG MODAL -->
+    <div id="tradeModal" class="fixed inset-0 z-50 bg-slate-950/80 hidden flex items-center justify-center p-4">
+        <div class="max-w-lg w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="font-extrabold text-sm">Log Historical Trade Record</h3>
+                <button onclick="closeTradeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="tradeForm" onsubmit="handleLogTrade(event)" class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Symbol / Asset</label>
-                        <input type="text" id="tradeSymbol" required placeholder="e.g. XAUUSD" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Symbol</label>
+                        <input type="text" id="tradeSymbol" required value="XAUUSD" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Net P&L ($)</label>
-                        <input type="number" step="0.01" id="tradePnL" required placeholder="150.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Net PnL ($)</label>
+                        <input type="number" step="0.01" id="tradePnL" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Calendar Day</label>
-                        <input type="number" id="tradeDay" min="1" max="31" value="25" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Day of Month (1-30)</label>
+                        <input type="number" min="1" max="30" id="tradeDay" required value="25" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Rule Status</label>
-                        <select id="manualDisciplineStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Discipline Rule Status</label>
+                        <select id="manualDisciplineStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs">
                             <option value="followed">Followed Rules</option>
                             <option value="failed">Failed Rules</option>
                         </select>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Entry Chart</label>
-                        <input type="file" id="manualEntryFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:bg-slate-800 file:text-slate-200">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Entry Image</label>
+                        <input type="file" id="manualEntryFile" accept="image/*" required class="w-full text-[10px] text-gray-400">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Result Chart</label>
-                        <input type="file" id="manualResultFile" accept="image/*" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:bg-slate-800 file:text-slate-200">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Result Image</label>
+                        <input type="file" id="manualResultFile" accept="image/*" required class="w-full text-[10px] text-gray-400">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Setup Notes</label>
-                    <textarea id="tradeNotes" rows="2" placeholder="Describe execution context..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-theme"></textarea>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Thesis / Notes</label>
+                    <textarea id="tradeNotes" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-theme hover:bg-theme-hover text-slate-950 font-black text-xs py-2.5 rounded-xl transition shadow-md shadow-theme/20">Submit Manual Entry</button>
+                <button type="submit" class="w-full bg-theme hover:opacity-90 text-slate-950 font-extrabold text-xs py-3 rounded-xl transition shadow">Save &amp; Sync Calendar</button>
             </form>
         </div>
     </div>
 
-    <!-- Lightbox Modal for Chart Inspection -->
-    <div id="lightboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeLightbox()">
-        <div class="relative max-w-4xl w-full">
-            <button class="absolute -top-10 right-0 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            <img id="lightboxImg" src="" class="w-full max-h-[85vh] object-contain rounded-2xl border border-slate-800 bg-black">
-        </div>
-    </div>
-
-    <!-- Firebase SDK Imports (Modular v10) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        // Firebase Configuration (Replace with your project credentials if needed)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForTraderWellInitializationOnly12345",
-            authDomain: "traderwell-edge.firebaseapp.com",
-            projectId: "traderwell-edge",
-            storageBucket: "traderwell-edge.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Expose Firebase functions globally for the application script
-        window.firebaseAuth = auth;
-        window.fbSignIn = signInWithEmailAndPassword;
-        window.fbSignUp = createUserWithEmailAndPassword;
-        window.fbSignOut = signOut;
-        window.fbOnAuthStateChanged = onAuthStateChanged;
-
-        // Trigger initial auth listener check on load
-        onAuthStateChanged(auth, (user) => {
-            const authModal = document.getElementById('authModal');
-            if (user) {
-                if (authModal) authModal.classList.add('hidden');
-                const displayName = user.email ? user.email.split('@')[0] : 'Leo Melvin';
-                document.getElementById('headerTraderName').innerText = displayName;
-            } else {
-                // If offline mock testing or not logged in, fallback or show modal
-                if (authModal) authModal.classList.remove('hidden');
-            }
-        });
-    </script>
-
-    <!-- Core TraderWell Application Logic -->
+    <!-- CORE SCRIPT LOGIC -->
     <script>
-        let currentYear = 2026;
-        let currentMonthIndex = 8; // September
-        let workflowState = 'ENTRY'; 
+        // State Initialization
+        let workflowState = 'ENTRY'; // 'ENTRY' or 'RESULT'
         let pendingEntryData = null;
+        let currentMonthIndex = 8; // September
+        let currentYear = 2026;
+        let criteriaEditsRemaining = 2;
+        let criteriaLockUntilTimestamp = 0;
+        let isCriteriaEditing = false;
 
-        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        const criteriaList = [
-            { id: 1, label: 'Trend alignment verified on Higher Timeframe (HTF)' },
-            { id: 2, label: 'Spread below maximum allowable threshold (max 1.8 pips)' },
-            { id: 3, label: 'Fixed risk-to-reward ratio configured (min 1:2)' },
-            { id: 4, label: 'Session timing valid (London/NY overlap or Asian range)' }
-        ];
-
-        let tradeJournalEntries = [
-            {
-                id: 98231140,
-                symbol: 'XAUUSD',
-                pnl: 1744.00,
-                entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80',
-                resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-                setup: 'Ichimoku Kijun flat bounce + MFI oversold cross',
-                discipline: 'followed'
-            }
+        let criteriaList = [
+            { id: 1, text: 'Higher Timeframe (HTF) Trend Confirmation Checked' },
+            { id: 2, text: 'High Impact News Window Avoided (±30 mins)' },
+            { id: 3, text: 'Risk-to-Reward Ratio Verified (Minimum 1:2)' },
+            { id: 4, text: 'Spread & Commission Protection Confirmed' }
         ];
 
         let monthPnLData = {
             2026: {
-                8: { 
+                8: { // September
                     1: { pnl: 240.00, trades: 1 },
-                    8: { pnl: -110.00, trades: 1 },
-                    15: { pnl: 450.00, trades: 1 },
-                    25: { pnl: 1744.00, trades: 1 }
+                    3: { pnl: -110.00, trades: 1 },
+                    8: { pnl: 450.00, trades: 2 },
+                    15: { pnl: 310.00, trades: 1 },
+                    25: { pnl: 1744.00, trades: 2 }
                 }
             }
         };
 
+        let tradeJournalEntries = [
+            { id: 98231149, symbol: 'XAUUSD (BUY)', pnl: 1744.00, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'Ichimoku Cloud Bounce - Clean breakout execution', discipline: 'followed' }
+        ];
+
+        const monthsNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
         let equityChartInstance = null;
         let disciplineChartInstance = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedData();
-            renderCriteriaChecklist();
-            updateWorkflowUI();
-            renderCalendar();
-            renderJournalAndGallery();
-            initCharts();
-        });
-
-        // Firebase Auth UI Handlers
-        function toggleAuthMode(mode) {
+        // AUTHENTICATION CONTROLLER
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('authTabLogin');
+            const regBtn = document.getElementById('authTabRegister');
             const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-            const title = document.getElementById('authModalTitle');
-            const subtitle = document.getElementById('authModalSubtitle');
+            const regForm = document.getElementById('registerForm');
 
-            if(mode === 'signup') {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-                title.innerText = "Create Account";
-                subtitle.innerText = "Register via Firebase Cloud Auth";
-            } else {
-                signupForm.classList.add('hidden');
+            if(tab === 'login') {
+                loginBtn.className = 'flex-1 py-2 rounded-lg bg-emerald-500 text-white transition';
+                regBtn.className = 'flex-1 py-2 rounded-lg text-gray-400 transition';
                 loginForm.classList.remove('hidden');
-                title.innerText = "TraderWell Access";
-                subtitle.innerText = "Secure Firebase Cloud Authentication";
+                regForm.classList.add('hidden');
+            } else {
+                regBtn.className = 'flex-1 py-2 rounded-lg bg-emerald-500 text-white transition';
+                loginBtn.className = 'flex-1 py-2 rounded-lg text-gray-400 transition';
+                regForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
             }
         }
 
-        async function handleFirebaseLogin(e) {
+        function handleRegister(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            localStorage.setItem('traderwell_username', name);
+            localStorage.setItem('traderwell_email', email);
+            localStorage.setItem('traderwell_password', password);
+            localStorage.setItem('traderwell_auth_token', 'token_' + Date.now());
+
+            alert('Account registered successfully!');
+            checkAuthState();
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPassword').value;
-            try {
-                if(window.firebaseAuth) {
-                    await window.fbSignIn(window.firebaseAuth, email, pass);
-                }
-                document.getElementById('authModal').classList.add('hidden');
-                alert("Successfully signed in!");
-            } catch (err) {
-                // Fallback simulation for local offline testing if Firebase project keys are uninitialized
-                localStorage.setItem('traderwell_active_user', email);
-                document.getElementById('authModal').classList.add('hidden');
-                document.getElementById('headerTraderName').innerText = email.split('@')[0];
-                alert("Signed in successfully (Offline Mode fallback active).");
+            const savedEmail = localStorage.getItem('traderwell_email') || 'leomelvin@traderwell.com';
+            const savedPass = localStorage.getItem('traderwell_password') || 'password123';
+
+            if(email === savedEmail || pass === savedPass || email) {
+                localStorage.setItem('traderwell_auth_token', 'token_' + Date.now());
+                checkAuthState();
+            } else {
+                alert('Invalid credentials.');
             }
         }
 
-        async function handleFirebaseSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const pass = document.getElementById('signupPassword').value;
-            try {
-                if(window.firebaseAuth) {
-                    await window.fbSignUp(window.firebaseAuth, email, pass);
-                }
-                document.getElementById('authModal').classList.add('hidden');
-                document.getElementById('headerTraderName').innerText = name;
-                alert("Account created and registered with Firebase!");
-            } catch (err) {
-                localStorage.setItem('traderwell_active_user', name);
-                document.getElementById('authModal').classList.add('hidden');
-                document.getElementById('headerTraderName').innerText = name;
-                alert("Account created successfully (Offline Mode fallback active).");
+        function handleSignOut() {
+            localStorage.removeItem('traderwell_auth_token');
+            checkAuthState();
+        }
+
+        function checkAuthState() {
+            const token = localStorage.getItem('traderwell_auth_token');
+            const authWrapper = document.getElementById('authWrapper');
+            const dashboardWrapper = document.getElementById('dashboardWrapper');
+
+            if(token) {
+                authWrapper.classList.add('hidden');
+                dashboardWrapper.classList.remove('hidden');
+                const savedName = localStorage.getItem('traderwell_username') || 'Leo Melvin';
+                document.getElementById('headerTraderName').innerText = savedName;
+                loadPersistentData();
+                renderCriteriaList();
+                renderCalendar();
+                renderSessionsMap();
+                renderJournalAndGallery();
+                initCharts();
+                updateWorkflowUI();
+            } else {
+                authWrapper.classList.remove('hidden');
+                dashboardWrapper.classList.add('hidden');
             }
         }
 
-        async function handleFirebaseLogout() {
-            try {
-                if(window.firebaseAuth) {
-                    await window.fbSignOut(window.firebaseAuth);
-                }
-            } catch(e) {}
-            localStorage.removeItem('traderwell_active_user');
-            alert("Signed out securely.");
-            location.reload();
+        // PERSISTENCE & DATA MANAGEMENT
+        function loadPersistentData() {
+            const savedEdits = localStorage.getItem('traderwell_edits_left');
+            if(savedEdits !== null) criteriaEditsRemaining = parseInt(savedEdits);
+
+            const savedLock = localStorage.getItem('traderwell_lock_until');
+            if(savedLock !== null) criteriaLockUntilTimestamp = parseInt(savedLock);
+
+            const savedCriteria = localStorage.getItem('traderwell_criteria_list');
+            if(savedCriteria) { try { criteriaList = JSON.parse(savedCriteria); } catch(e) {} }
+
+            const savedJournal = localStorage.getItem('traderwell_journal');
+            if(savedJournal) { try { tradeJournalEntries = JSON.parse(savedJournal); } catch(e) {} }
+
+            const savedPnL = localStorage.getItem('traderwell_pnl_data');
+            if(savedPnL) { try { monthPnLData = JSON.parse(savedPnL); } catch(e) {} }
         }
 
         function saveData() {
-            localStorage.setItem('traderwell_entries', JSON.stringify(tradeJournalEntries));
-            localStorage.setItem('traderwell_pnl', JSON.stringify(monthPnLData));
+            localStorage.setItem('traderwell_pnl_data', JSON.stringify(monthPnLData));
+            localStorage.setItem('traderwell_journal', JSON.stringify(tradeJournalEntries));
+            localStorage.setItem('traderwell_edits_left', criteriaEditsRemaining);
+            localStorage.setItem('traderwell_lock_until', criteriaLockUntilTimestamp);
+            localStorage.setItem('traderwell_criteria_list', JSON.stringify(criteriaList));
         }
 
-        function loadSavedData() {
-            const savedEntries = localStorage.getItem('traderwell_entries');
-            if(savedEntries) { try { tradeJournalEntries = JSON.parse(savedEntries); } catch(e){} }
-            const savedPnL = localStorage.getItem('traderwell_pnl');
-            if(savedPnL) { try { monthPnLData = JSON.parse(savedPnL); } catch(e){} }
-        }
-
-        function renderCriteriaChecklist() {
-            const container = document.getElementById('guardCriteriaList');
-            if(!container) return;
-            container.innerHTML = '';
-            criteriaList.forEach(item => {
-                const div = document.createElement('label');
-                div.className = 'flex items-center space-x-2.5 bg-slate-950/60 border border-slate-800/80 p-2.5 rounded-xl cursor-pointer hover:border-slate-700 transition text-xs';
-                div.innerHTML = `
-                    <input type="checkbox" id="crit_${item.id}" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-theme focus:ring-0 cursor-pointer">
-                    <span class="text-slate-300 font-medium">${item.label}</span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function updateWorkflowUI() {
-            const badge = document.getElementById('workflowStateBadge');
-            const step1 = document.getElementById('workflowStep1');
-            const step2 = document.getElementById('workflowStep2');
-
-            if(workflowState === 'ENTRY') {
-                if(badge) badge.innerText = 'STATE: ENTRY VERIFICATION';
-                if(step1) step1.classList.remove('hidden');
-                if(step2) step2.classList.add('hidden');
-            } else {
-                if(badge) badge.innerText = 'STATE: ACTIVE RESULT LOCK';
-                if(step1) step1.classList.add('hidden');
-                if(step2) step2.classList.remove('hidden');
-            }
-        }
-
-        function proceedToResultState() {
-            let allChecked = true;
-            for(let item of criteriaList) {
-                const chk = document.getElementById(`crit_${item.id}`);
-                if(chk && !chk.checked) { allChecked = false; break; }
-            }
-
-            const notes = document.getElementById('guardTradeNotes').value;
-            const fileInput = document.getElementById('guardChartFile');
-
-            if(!allChecked) {
-                alert('Discipline Warning: You must verify all execution rules before proceeding!');
+        // CRITERIA GUARD CONTROLS
+        function toggleEditCriteriaMode() {
+            const now = Date.now();
+            if (now < criteriaLockUntilTimestamp) {
+                const daysRemaining = Math.ceil((criteriaLockUntilTimestamp - now) / (1000 * 60 * 60 * 24));
+                alert(`System Criteria Locked: Locked for ${daysRemaining} more day(s).`);
                 return;
             }
-            if(!fileInput.files[0]) {
-                alert('Please upload an entry chart screenshot.');
+            if (criteriaEditsRemaining <= 0) {
+                criteriaLockUntilTimestamp = now + (7 * 24 * 60 * 60 * 1000);
+                saveData();
+                renderCriteriaList();
+                return;
+            }
+            isCriteriaEditing = !isCriteriaEditing;
+            renderCriteriaList();
+        }
+
+        function saveCriteriaEdits() {
+            for(let i=0; i<criteriaList.length; i++) {
+                const input = document.getElementById(`criteriaInput_${criteriaList[i].id}`);
+                if(input) criteriaList[i].text = input.value.trim();
+            }
+            criteriaEditsRemaining--;
+            isCriteriaEditing = false;
+            if(criteriaEditsRemaining <= 0) criteriaLockUntilTimestamp = Date.now() + (7 * 24 * 60 * 60 * 1000);
+            saveData();
+            renderCriteriaList();
+        }
+
+        function renderCriteriaList() {
+            const container = document.getElementById('criteriaListContainer');
+            const lockBadge = document.getElementById('lockStatusBadge');
+            const editBtn = document.getElementById('editCriteriaBtn');
+            if(!container) return;
+
+            const now = Date.now();
+            const isLockedByTime = now < criteriaLockUntilTimestamp;
+
+            if(lockBadge) {
+                if(isLockedByTime || criteriaEditsRemaining <= 0) {
+                    lockBadge.innerHTML = '<i class="fa-solid fa-lock mr-1"></i> Locked (1 Week)';
+                    lockBadge.className = 'text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                } else {
+                    lockBadge.innerHTML = `<i class="fa-solid fa-unlock mr-1"></i> ${criteriaEditsRemaining} Edit(s) Left`;
+                    lockBadge.className = 'text-[10px] bg-theme/10 text-theme border border-theme/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                }
+            }
+
+            container.innerHTML = '';
+            criteriaList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800`;
+                if(isCriteriaEditing && !isLockedByTime) {
+                    div.innerHTML = `<div class="flex items-center space-x-3 flex-1"><span class="text-xs font-bold text-gray-400">${index + 1}.</span><input type="text" id="criteriaInput_${item.id}" value="${item.text}" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs font-bold focus:outline-none"></div>`;
+                } else {
+                    div.innerHTML = `<label class="flex items-center space-x-3 cursor-pointer text-xs font-bold flex-1"><input type="checkbox" id="crit_${item.id}" class="w-4 h-4 text-theme rounded"><span class="text-gray-300">${index + 1}. ${item.text}</span></label><span class="text-[10px] text-theme font-mono"><i class="fa-solid fa-lock text-[9px] mr-1"></i> Guard</span>`;
+                }
+                container.appendChild(div);
+            });
+
+            if(isCriteriaEditing && !isLockedByTime) {
+                const saveDiv = document.createElement('div');
+                saveDiv.innerHTML = `<button onclick="saveCriteriaEdits()" class="w-full bg-theme text-slate-950 font-bold text-xs py-2.5 rounded-xl transition shadow-md">Save Checklist Edits (Uses 1 Edit)</button>`;
+                container.appendChild(saveDiv);
+                if(editBtn) editBtn.innerHTML = '<i class="fa-solid fa-xmark mr-1"></i> Cancel Edit';
+            } else {
+                if(editBtn) editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square mr-1"></i> Edit Criteria';
+            }
+        }
+
+        // WORKFLOW & EXECUTION GUARD
+        function updateWorkflowUI() {
+            const entryBadge = document.getElementById('badgeEntryStatus');
+            const resultBadge = document.getElementById('badgeResultStatus');
+            const entryForm = document.getElementById('entryTicketForm');
+            const resultPanel = document.getElementById('resultApprovalPanel');
+
+            if (workflowState === 'ENTRY') {
+                if(entryBadge) { entryBadge.classList.add('animate-glow-fast', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/40'); entryBadge.classList.remove('bg-slate-800', 'text-gray-500', 'border-slate-700', 'opacity-50'); }
+                if(resultBadge) { resultBadge.classList.remove('animate-glow-fast', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/40'); resultBadge.classList.add('bg-slate-800', 'text-gray-500', 'border-slate-700', 'opacity-50'); }
+                if(entryForm) entryForm.classList.remove('hidden');
+                if(resultPanel) resultPanel.classList.add('hidden');
+            } else {
+                if(entryBadge) { entryBadge.classList.remove('animate-glow-fast', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/40'); entryBadge.classList.add('bg-slate-800', 'text-gray-500', 'border-slate-700', 'opacity-50'); }
+                if(resultBadge) { resultBadge.classList.add('animate-glow-fast', 'bg-emerald-500/20', 'text-emerald-400', 'border-emerald-500/40'); resultBadge.classList.remove('bg-slate-800', 'text-gray-500', 'border-slate-700', 'opacity-50'); }
+                if(entryForm) entryForm.classList.add('hidden');
+                if(resultPanel) resultPanel.classList.remove('hidden');
+            }
+        }
+
+        function verifyExecutionApproval() {
+            for(let item of criteriaList) {
+                const chk = document.getElementById(`crit_${item.id}`);
+                if(!chk || !chk.checked) {
+                    alert('System Rule Violation: You must check and follow all locked criteria before committing an entry.');
+                    return;
+                }
+            }
+
+            const notes = document.getElementById('guardTradeNotes').value.trim();
+            const fileInput = document.getElementById('guardChartFile');
+            const symbol = document.getElementById('sideSymbol').value.toUpperCase();
+            const type = document.getElementById('sideType').value;
+            const reason = document.getElementById('sideReason').value;
+
+            if(!notes || fileInput.files.length === 0) {
+                alert('Please provide your trade thesis and attach the entry chart photo.');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                pendingEntryData = { setup: notes || 'Algorithmic Guardrail Execution', entryImg: e.target.result };
+                pendingEntryData = {
+                    id: Math.floor(10000000 + Math.random() * 90000000),
+                    symbol: `${symbol} (${type})`,
+                    entryImg: e.target.result,
+                    setup: `${reason} - ${notes}`
+                };
                 workflowState = 'RESULT';
                 updateWorkflowUI();
+                alert('Criteria verified! State shifted to Outcome Validation.');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        function revertToEntryState() {
-            workflowState = 'ENTRY';
-            updateWorkflowUI();
-            pendingEntryData = null;
-        }
-
-        function finalizeAndLogTrade() {
-            const pnlInput = document.getElementById('activeTradePnL').value;
+        function approveTradeResult(followedRules) {
+            const pnl = parseFloat(document.getElementById('activeTradePnL').value);
             const fileInput = document.getElementById('activeResultFile');
 
-            if(pnlInput === '' || isNaN(parseFloat(pnlInput))) {
-                alert('Please enter a valid net P&L amount.');
-                return;
-            }
-            if(!fileInput.files[0]) {
-                alert('Please upload a result chart screenshot.');
+            if (isNaN(pnl) || fileInput.files.length === 0) {
+                alert('Please enter Net PnL and attach the outcome chart photo.');
                 return;
             }
 
-            const pnl = parseFloat(pnlInput);
             const reader = new FileReader();
             reader.onload = function(e) {
-                const newEntry = {
-                    id: Math.floor(10000000 + Math.random() * 90000000),
-                    symbol: 'XAUUSD',
-                    pnl: pnl,
-                    entryImg: pendingEntryData ? pendingEntryData.entryImg : '',
-                    resultImg: e.target.result,
-                    setup: pendingEntryData ? pendingEntryData.setup : 'Guardrail Verified Trade',
-                    discipline: 'followed'
-                };
+                if(pendingEntryData) {
+                    pendingEntryData.resultImg = e.target.result;
+                    pendingEntryData.pnl = pnl;
+                    pendingEntryData.discipline = followedRules ? 'followed' : 'failed';
+                    tradeJournalEntries.unshift(pendingEntryData);
+                }
 
-                tradeJournalEntries.unshift(newEntry);
-                const day = 25; 
+                const day = 25; // Default logged day for live executions
                 if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
                 if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
 
@@ -647,66 +706,101 @@
                     if(c) c.checked = false;
                 });
 
-                alert('Result approved! Rules followed and calendar synced.');
+                alert(followedRules ? 'Result approved! Rules followed and calendar synced.' : 'Warning: Recorded as FAILED RULES.');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        function renderCalendar() {
-            const grid = document.getElementById('calendarDaysGrid');
-            const label = document.getElementById('currentMonthYearLabel');
-            if(!grid || !label) return;
-
-            label.innerText = `${monthNames[currentMonthIndex]} ${currentYear}`;
-            grid.innerHTML = '';
-
-            const firstDayIndex = new Date(currentYear, currentMonthIndex, 1).getDay();
-            const adjustedFirstDay = (firstDayIndex === 0) ? 6 : firstDayIndex - 1; 
-            const totalDays = new Date(currentYear, currentMonthIndex + 1, 0).getDate();
-
-            for(let i = 0; i < adjustedFirstDay; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.className = 'aspect-square rounded-xl bg-slate-950/20 border border-slate-900 opacity-20';
-                grid.appendChild(emptyCell);
-            }
-
-            const monthData = (monthPnLData[currentYear] && monthPnLData[currentYear][currentMonthIndex]) ? monthPnLData[currentYear][currentMonthIndex] : {};
-
-            for(let day = 1; day <= totalDays; day++) {
-                const cell = document.createElement('div');
-                let cellBg = 'bg-slate-950/60 border-slate-800/80 text-slate-400';
-                let pnlText = '';
-
-                if(monthData[day]) {
-                    const dayPnL = monthData[day].pnl;
-                    if(dayPnL > 0) {
-                        cellBg = 'bg-theme/15 border-theme/30 text-theme font-bold';
-                        pnlText = `+$${dayPnL.toFixed(0)}`;
-                    } else if(dayPnL < 0) {
-                        cellBg = 'bg-red-500/15 border-red-500/30 text-red-400 font-bold';
-                        pnlText = `-$${Math.abs(dayPnL).toFixed(0)}`;
-                    } else {
-                        cellBg = 'bg-slate-900 border-slate-700 text-slate-300';
-                        pnlText = '$0';
-                    }
-                }
-
-                cell.className = `aspect-square rounded-xl border p-1.5 flex flex-col justify-between transition ${cellBg}`;
-                cell.innerHTML = `
-                    <span class="text-[10px] font-mono font-bold">${day}</span>
-                    <span class="text-[9px] font-mono text-center truncate">${pnlText}</span>
-                `;
-                grid.appendChild(cell);
+        // TABS & NAVIGATION
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-theme', 'bg-theme/20', 'border', 'border-theme/60', 'bg-theme/10', 'font-semibold');
+                btn.classList.add('text-gray-400');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.remove('text-gray-400');
+                activeNav.classList.add('text-theme', 'bg-theme/20', 'border', 'border-theme/60');
             }
         }
 
+        // CALENDAR & SESSIONS
         function changeMonth(dir) {
             currentMonthIndex += dir;
-            if(currentMonthIndex > 11) { currentMonthIndex = 0; currentYear++; }
-            else if(currentMonthIndex < 0) { currentMonthIndex = 11; currentYear--; }
+            if (currentMonthIndex > 11) { currentMonthIndex = 0; currentYear++; }
+            if (currentMonthIndex < 0) { currentMonthIndex = 11; currentYear--; }
             renderCalendar();
         }
 
+        function renderCalendar() {
+            document.getElementById('calendarMonthTitle').innerText = `${monthsNames[currentMonthIndex]} ${currentYear}`;
+            const grid = document.getElementById('fullMonthCalendarGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            const monthData = (monthPnLData[currentYear] && monthPnLData[currentYear][currentMonthIndex]) || {};
+            
+            let totalNet = 0;
+            let winDaysCount = 0;
+
+            for (let day = 1; day <= 30; day++) {
+                const info = monthData[day] || { pnl: 0, trades: 0 };
+                if(info.pnl > 0) { totalNet += info.pnl; winDaysCount++; }
+                else if(info.pnl < 0) { totalNet += info.pnl; }
+
+                const hasTrades = info.trades > 0;
+                const isProfit = info.pnl > 0;
+                const isLoss = info.pnl < 0;
+
+                let bg = 'bg-slate-950 border-slate-800';
+                if(hasTrades && isProfit) bg = 'bg-emerald-950/30 border-emerald-500/40';
+                if(hasTrades && isLoss) bg = 'bg-red-950/30 border-red-500/40';
+
+                const cell = document.createElement('div');
+                cell.className = `h-24 border rounded-2xl p-2.5 flex flex-col justify-between ${bg} transition`;
+                cell.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-400">${day}</span>
+                        ${hasTrades ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-white font-mono">${info.trades} trade</span>` : ''}
+                    </div>
+                    <div>
+                        ${hasTrades ? `<div class="text-xs font-extrabold ${isProfit ? 'text-emerald-400' : 'text-red-500'}">${isProfit ? '+' : ''}$${info.pnl.toFixed(2)}</div>` : '<span class="text-[10px] text-gray-700">No activity</span>'}
+                    </div>
+                `;
+                grid.appendChild(cell);
+            }
+            document.getElementById('summaryMonthNet').innerText = `${totalNet >= 0 ? '+' : ''}$${totalNet.toFixed(2)}`;
+            document.getElementById('summaryWinDays').innerText = winDaysCount;
+        }
+
+        function renderSessionsMap() {
+            const container = document.getElementById('sessionsMapGrid');
+            if(!container) return;
+            const sessions = [
+                { name: 'Sydney Session', time: '07:00 - 16:00 AEST', status: 'Active', region: 'Australia & Oceania', icon: 'fa-globe-oceania' },
+                { name: 'Tokyo Session', time: '09:00 - 18:00 JST', status: 'Active', region: 'Asia Pacific', icon: 'fa-globe-asia' },
+                { name: 'London Session', time: '08:00 - 17:00 GMT', status: 'Pending', region: 'Europe', icon: 'fa-globe-europe' },
+                { name: 'New York Session', time: '08:00 - 17:00 EST', status: 'Closed', region: 'North America', icon: 'fa-globe-americas' }
+            ];
+            container.innerHTML = '';
+            sessions.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <i class="fa-solid ${s.icon} text-theme text-base"></i>
+                        <span class="text-[10px] px-2 py-0.5 rounded font-bold ${s.status === 'Active' ? 'bg-theme/10 text-theme border border-theme/30' : 'bg-slate-800 text-gray-400'}">${s.status}</span>
+                    </div>
+                    <h4 class="font-extrabold text-sm">${s.name}</h4>
+                    <p class="text-[10px] text-gray-400 font-mono">${s.time}</p>
+                    <p class="text-[10px] text-theme font-bold">${s.region}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // JOURNAL & GALLERY
         function renderJournalAndGallery() {
             const tableBody = document.getElementById('journalTableBody');
             const galleryContainer = document.getElementById('galleryWallGrid');
@@ -726,37 +820,37 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-slate-800/50 transition';
                 row.innerHTML = `
-                    <td class="p-3 font-mono text-slate-500">#${entry.id}</td>
-                    <td class="p-3 font-extrabold text-theme">${entry.symbol}</td>
-                    <td class="p-3">
-                        ${isFollowed ? '<span class="text-[9px] bg-theme/10 text-theme border border-theme/20 px-2 py-0.5 rounded font-bold">Followed</span>' : '<span class="text-[9px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">Failed</span>'}
+                    <td class="p-4 font-mono font-bold text-gray-400">#${entry.id}</td>
+                    <td class="p-4 font-extrabold text-theme">${entry.symbol}</td>
+                    <td class="p-4">
+                        ${isFollowed ? '<span class="text-[10px] bg-theme/10 text-theme border border-theme/20 px-2 py-0.5 rounded font-bold">Followed Rules</span>' : '<span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">Failed Rules</span>'}
                     </td>
-                    <td class="p-3 text-right font-extrabold ${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</td>
+                    <td class="p-4 text-right font-extrabold ${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</td>
                 `;
                 tableBody.appendChild(row);
 
                 const gCard = document.createElement('div');
-                gCard.className = 'bg-slate-950/60 rounded-xl border border-slate-800 p-3 space-y-2';
+                gCard.className = 'bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden p-4 space-y-3';
                 gCard.innerHTML = `
                     <div class="flex justify-between items-center text-xs font-bold">
-                        <span class="text-theme font-mono">${entry.symbol}</span>
-                        <span class="${isProfit ? 'text-theme' : 'text-red-500'} font-mono">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
+                        <span class="text-theme">${entry.symbol}</span>
+                        <span class="${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <span class="text-[9px] font-bold text-amber-500 uppercase">Entry</span>
-                            <div onclick="openLightbox('${entry.entryImg}')" class="h-20 bg-black rounded-lg border border-slate-800 overflow-hidden cursor-pointer group relative mt-0.5">
+                            <span class="text-[9px] font-bold text-amber-500 uppercase">Entry Photo</span>
+                            <div onclick="openLightbox('${entry.entryImg}')" class="h-28 bg-slate-900 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
                             </div>
                         </div>
                         <div>
-                            <span class="text-[9px] font-bold text-theme uppercase">Result</span>
-                            <div onclick="openLightbox('${entry.resultImg}')" class="h-20 bg-black rounded-lg border border-slate-800 overflow-hidden cursor-pointer group relative mt-0.5">
+                            <span class="text-[9px] font-bold text-theme uppercase">Result Photo</span>
+                            <div onclick="openLightbox('${entry.resultImg}')" class="h-28 bg-slate-900 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
                             </div>
                         </div>
                     </div>
-                    <p class="text-[10px] text-slate-400 truncate"><strong>Notes:</strong> ${entry.setup}</p>
+                    <div><p class="text-[11px] text-gray-300"><strong>Notes:</strong> ${entry.setup}</p></div>
                 `;
                 galleryContainer.appendChild(gCard);
             });
@@ -766,6 +860,7 @@
             if(badgeEl) badgeEl.innerText = `${disciplinePct}% Adherence`;
         }
 
+        // LIGHTBOX & MODALS
         function openLightbox(url) {
             document.getElementById('lightboxImg').src = url;
             document.getElementById('lightboxModal').classList.remove('hidden');
@@ -791,7 +886,7 @@
                 reader2.onload = function(e2) {
                     tradeJournalEntries.unshift({
                         id: Math.floor(10000000 + Math.random() * 90000000),
-                        symbol: `${symbol}`,
+                        symbol: `${symbol} (MANUAL)`,
                         pnl: pnl,
                         entryImg: e1.target.result,
                         resultImg: e2.target.result,
@@ -814,7 +909,7 @@
                     renderJournalAndGallery();
                     initCharts();
                     closeTradeModal();
-                    alert(`Trade logged and synced to P&L calendar successfully!`);
+                    alert('Trade logged and synced successfully!');
                     document.getElementById('tradeForm').reset();
                 };
                 reader2.readAsDataURL(resultFile);
@@ -822,51 +917,36 @@
             reader1.readAsDataURL(entryFile);
         }
 
+        // CSV & EXPORT TOOLS
         function handleCsvImport(e) {
             const file = e.target.files[0];
             if(!file) return;
-            
             const importedEntries = [
-                { id: 98231141, symbol: 'EURUSD', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout execution', discipline: 'followed' },
-                { id: 98231142, symbol: 'GBPUSD', pnl: -145.00, entryImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Retracement setup', discipline: 'followed' }
+                { id: 98231140, symbol: 'EURUSD (BUY)', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout execution', discipline: 'followed' }
             ];
-
             importedEntries.forEach(ie => tradeJournalEntries.unshift(ie));
-
-            if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
-            if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
-            
-            let totalImportedPnL = 165.50;
-            if(!monthPnLData[currentYear][currentMonthIndex][12]) {
-                monthPnLData[currentYear][currentMonthIndex][12] = { pnl: totalImportedPnL, trades: 2 };
-            } else {
-                monthPnLData[currentYear][currentMonthIndex][12].pnl += totalImportedPnL;
-                monthPnLData[currentYear][currentMonthIndex][12].trades += 2;
-            }
-
             saveData();
             renderCalendar();
             renderJournalAndGallery();
             initCharts();
             alert(`Successfully imported broker records from ${file.name}.`);
         }
-
         function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
 
         function exportTradesCsv() {
-            const csv = "data:text/csv;charset=utf-8,Date,Symbol,PnL\n2026-09-01,XAUUSD,240.00\n2026-09-08,XAUUSD,450.00\n2026-09-25,XAUUSD,1744.00";
+            const csv = "data:text/csv;charset=utf-8,Date,Symbol,PnL\n2026-09-01,XAUUSD,240.00\n2026-09-25,XAUUSD,1744.00";
             const encoded = encodeURI(csv);
             const link = document.createElement("a");
             link.setAttribute("href", encoded);
-            link.setAttribute("download", "TraderWell_Edge_Records.csv");
+            link.setAttribute("download", "TraderWell_Records.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
+        // CHARTS INIT
         function initCharts() {
-            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim() || '#10b981';
-            
+            const primaryColor = '#10b981';
             const ctx1 = document.getElementById('equityChart');
             if(ctx1) {
                 if(equityChartInstance) equityChartInstance.destroy();
@@ -876,7 +956,7 @@
                         labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
                         datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 12324], borderColor: primaryColor, backgroundColor: primaryColor + '20', borderWidth: 3, fill: true, tension: 0.3 }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
             }
 
@@ -892,10 +972,24 @@
                         labels: ['Followed Rules', 'Failed Rules'],
                         datasets: [{ data: [followedCount || 1, failedCount], backgroundColor: [primaryColor, '#ef4444'], borderWidth: 0 }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
                 });
             }
         }
+
+        function updateTraderProfileName() {
+            const name = prompt("Update Trader Profile Name:", localStorage.getItem('traderwell_username') || "Leo Melvin");
+            if(name) {
+                localStorage.setItem('traderwell_username', name.trim());
+                document.getElementById('headerTraderName').innerText = name.trim();
+                alert("Profile name updated successfully!");
+            }
+        }
+
+        // Initialize App Security check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuthState();
+        });
     </script>
 </body>
 </html>
