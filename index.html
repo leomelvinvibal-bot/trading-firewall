@@ -102,10 +102,6 @@
                 <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" title="Emerald Green" class="w-5 h-5 rounded-full bg-emerald-500 hover:scale-110 transition"></button>
                 <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" title="Luxury Gold" class="w-5 h-5 rounded-full bg-amber-500 hover:scale-110 transition"></button>
                 <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" title="Cyber Light Blue" class="w-5 h-5 rounded-full bg-sky-500 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Cozy Yellow', '#eab308', 'rgba(234, 179, 8, 0.6)')" title="Cozy Yellow" class="w-5 h-5 rounded-full bg-yellow-400 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Clean White', '#ffffff', 'rgba(255, 255, 255, 0.6)')" title="Clean White" class="w-5 h-5 rounded-full bg-white border border-gray-400 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Dark White', '#cbd5e1', 'rgba(203, 213, 225, 0.6)')" title="Dark White" class="w-5 h-5 rounded-full bg-slate-400 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Royal Violet', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" title="Royal Violet" class="w-5 h-5 rounded-full bg-violet-600 hover:scale-110 transition"></button>
             </div>
 
             <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
@@ -129,7 +125,7 @@
             <div class="space-y-1">
                 <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">CRITICAL EXECUTION</p>
                 <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-xs font-extrabold text-theme bg-theme/20 border border-theme/60 animate-pulse-vivid transition shadow-lg mb-4">
-                    <i class="fa-solid fa-shield-halved w-5 text-theme text-base"></i> <span>Execution Rules (Locked)</span>
+                    <i class="fa-solid fa-shield-halved w-5 text-theme text-base"></i> <span>Execution Rules (Guarded)</span>
                 </button>
 
                 <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">MAIN NAVIGATION</p>
@@ -237,7 +233,7 @@
                 <div id="tab-gallery" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
-                        <span class="text-xs text-gray-400 font-bold">Click any photo to inspect</span>
+                        <span class="text-xs text-gray-400 font-bold">Inspect Entry &amp; Outcome Evidence</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
                 </div>
@@ -369,7 +365,7 @@
                             </div>
                         </div>
                         <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 font-bold text-xs py-3 rounded-xl transition">Update Profile Name</button>
-                        <button onclick="if(confirm('Reset all data?')) { localStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl transition">Clear Local Storage</button>
+                        <button onclick="if(confirm('Reset all data?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl transition">Clear Local Storage</button>
                     </div>
                 </div>
 
@@ -381,9 +377,8 @@
     <script>
         // State management
         let trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
-            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', photo: '' },
-            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', photo: '' },
-            { id: 'TW-9003', date: '2026-09-05', symbol: 'EURUSD', type: 'BUY', lot: 0.50, pnl: 210.00, status: 'Passed Rules', notes: 'FVG Mitigation', photo: '' }
+            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', entryPhoto: '', resultPhoto: '', criteria: [] },
+            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', entryPhoto: '', resultPhoto: '', criteria: [] }
         ];
 
         let criteria = JSON.parse(localStorage.getItem('traderwell_criteria')) || [
@@ -401,10 +396,19 @@
         let equityChartInstance = null;
         let disciplineChartInstance = null;
 
+        // Check Session Authentication on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('traderwell_authenticated') === 'true') {
+                document.getElementById('securityLoginOverlay').classList.add('hidden');
+                initApp();
+            }
+        });
+
         // Security Authentication
         function verifyMasterPin() {
             const pin = document.getElementById('masterPinInput').value.trim();
             if (pin === '2026' || pin === '1234') {
+                sessionStorage.setItem('traderwell_authenticated', 'true');
                 document.getElementById('securityLoginOverlay').classList.add('hidden');
                 initApp();
             } else {
@@ -413,6 +417,7 @@
         }
 
         function lockSystemPortal() {
+            sessionStorage.removeItem('traderwell_authenticated');
             document.getElementById('masterPinInput').value = '';
             document.getElementById('securityLoginOverlay').classList.remove('hidden');
         }
@@ -491,7 +496,22 @@
             renderCriteria();
         }
 
-        function verifyExecutionApproval() {
+        // Helper to convert File to Base64
+        function fileToBase64(fileInput) {
+            return new Promise((resolve) => {
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    resolve('');
+                    return;
+                }
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) { resolve(e.target.result); };
+                reader.onerror = function() { resolve(''); };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function verifyExecutionApproval() {
             const unchecked = criteria.filter(c => !c.checked);
             if (unchecked.length > 0) {
                 alert('Discipline Guard Block: You must fulfill all pre-trade checklist rules before committing entry setup.');
@@ -502,11 +522,15 @@
             const type = document.getElementById('sideType').value;
             const lot = document.getElementById('sideLot').value;
             const reason = document.getElementById('sideReason').value;
+            const entryPhotoBase64 = await fileToBase64(document.getElementById('guardChartFile'));
             
             pendingTradeDraft = {
                 id: 'TW-' + Math.floor(1000 + Math.random() * 9000),
                 date: new Date().toISOString().split('T')[0],
                 symbol, type, lot, notes, reason,
+                entryPhoto: entryPhotoBase64,
+                resultPhoto: '',
+                criteria: JSON.parse(JSON.stringify(criteria)),
                 status: 'Pending Result'
             };
 
@@ -520,9 +544,12 @@
             document.getElementById('resultApprovalPanel').classList.remove('hidden');
         }
 
-        function approveTradeResult(rulesFollowed) {
+        async function approveTradeResult(rulesFollowed) {
             const pnl = parseFloat(document.getElementById('activeTradePnL').value) || 0;
+            const resultPhotoBase64 = await fileToBase64(document.getElementById('activeResultFile'));
+            
             pendingTradeDraft.pnl = pnl;
+            pendingTradeDraft.resultPhoto = resultPhotoBase64;
             pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
             
             trades.push(pendingTradeDraft);
@@ -687,7 +714,7 @@
                 tr.className = 'hover:bg-gray-50 dark:hover:bg-slate-800/50 transition';
                 tr.innerHTML = `
                     <td class="p-4 font-mono font-bold">${t.id}</td>
-                    <td class="p-4 font-bold">${t.symbol} (${t.type})</td>
+                    <td class="p-4 font-bold">${t.symbol} (${t.type || 'BUY'})</td>
                     <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span></td>
                     <td class="p-4 text-right font-mono font-extrabold ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}</td>
                 `;
@@ -695,7 +722,7 @@
             });
         }
 
-        // Chart Gallery Wall
+        // Chart Gallery Wall with Entry & Result Photos
         function renderGalleryWall() {
             const grid = document.getElementById('galleryWallGrid');
             grid.innerHTML = '';
@@ -703,15 +730,32 @@
             trades.forEach(t => {
                 const card = document.createElement('div');
                 card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 space-y-3 shadow-xs';
+                
+                let entryImgHtml = t.entryPhoto 
+                    ? `<img src="${t.entryPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
+                    : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-chart-line mr-2 text-theme"></i> No Entry Photo</div>`;
+
+                let resultImgHtml = t.resultPhoto 
+                    ? `<img src="${t.resultPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
+                    : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-flag-checkered mr-2 text-amber-500"></i> No Outcome Photo</div>`;
+
                 card.innerHTML = `
                     <div class="flex justify-between items-center text-xs font-bold">
                         <span>${t.symbol} (${t.date})</span>
                         <span class="font-mono ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl}` : `-$${Math.abs(t.pnl)}`}</span>
                     </div>
-                    <div class="h-36 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono">
-                        <i class="fa-solid fa-chart-line mr-2 text-theme"></i> ${t.notes || 'Setup Execution Screen'}
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <span class="text-[9px] font-bold text-gray-400 uppercase">Entry Setup</span>
+                            ${entryImgHtml}
+                        </div>
+                        <div>
+                            <span class="text-[9px] font-bold text-gray-400 uppercase">Outcome Result</span>
+                            ${resultImgHtml}
+                        </div>
                     </div>
-                    <p class="text-[11px] text-gray-400">Strategy: ${t.reason || 'Asian Liquidity Sweep'}</p>
+                    <p class="text-[11px] text-gray-400"><strong>Notes:</strong> ${t.notes || 'None logged'}</p>
+                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span>
                 `;
                 grid.appendChild(card);
             });
@@ -741,7 +785,10 @@
                             lot: 0.10,
                             pnl: parseFloat(cols[3]) || 100,
                             status: 'Passed Rules',
-                            notes: 'Imported CSV Trade'
+                            notes: 'Imported CSV Trade',
+                            entryPhoto: '',
+                            resultPhoto: '',
+                            criteria: []
                         });
                         importedCount++;
                     }
