@@ -33,8 +33,8 @@
                             '50%': { opacity: '.8', transform: 'scale(1.02)', boxShadow: '0 0 25px var(--theme-glow)' }
                         },
                         fireGlow: {
-                            '0%': { transform: 'scale(0.95) translateY(0)', filter: 'drop-shadow(0 0 4px #10b981)' },
-                            '100%': { transform: 'scale(1.08) translateY(-2px)', filter: 'drop-shadow(0 0 16px #34d399)' }
+                            '0%': { transform: 'scale(0.95) translateY(0)', filter: 'drop-shadow(0 0 4px var(--theme-primary))' },
+                            '100%': { transform: 'scale(1.08) translateY(-2px)', filter: 'drop-shadow(0 0 16px var(--theme-primary))' }
                         }
                     }
                 }
@@ -49,6 +49,9 @@
             --theme-primary: #10b981;
             --theme-glow: rgba(16, 185, 129, 0.6);
         }
+        .bg-theme { background-color: var(--theme-primary) !important; }
+        .text-theme { color: var(--theme-primary) !important; }
+        .border-theme { border-color: var(--theme-primary) !important; }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
@@ -57,18 +60,18 @@
     <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-4">
             <div class="flex items-center space-x-2.5">
-                <!-- Glowing Green Fire Logo -->
-                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 font-black shadow-lg animate-fire">
-                    <i class="fa-solid fa-fire text-lg text-emerald-400"></i>
+                <!-- Glowing Dynamic Fire Logo -->
+                <div class="w-10 h-10 rounded-xl bg-theme/20 border border-theme/50 flex items-center justify-center text-theme font-black shadow-lg animate-fire">
+                    <i class="fa-solid fa-fire text-lg text-theme"></i>
                 </div>
                 <div>
                     <h1 class="font-extrabold text-sm tracking-wide flex items-center gap-2">
                         <span id="headerTraderName">Leo Melvin</span> 
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded font-mono">PRO EDGE</span>
+                        <span class="text-[10px] bg-theme/10 text-theme px-1.5 py-0.5 rounded font-mono">PRO EDGE</span>
                     </h1>
                     <p class="text-[10px] text-gray-400 flex items-center gap-2">
                         <span>Execution Discipline</span> • 
-                        <span id="liveClockDisplay" class="font-mono text-emerald-400 font-bold">--:--:--</span>
+                        <span id="liveClockDisplay" class="font-mono text-theme font-bold">--:--:--</span>
                     </p>
                 </div>
             </div>
@@ -76,7 +79,7 @@
 
         <div class="flex items-center space-x-3">
             <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-file-arrow-up text-emerald-500"></i> Import CSV
+                <i class="fa-solid fa-file-arrow-up text-theme"></i> Import CSV
             </button>
             <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
             
@@ -84,7 +87,7 @@
                 <i class="fa-solid fa-file-arrow-down text-indigo-500"></i> Export CSV
             </button>
             
-            <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
+            <button onclick="openTradeModal()" class="bg-theme hover:opacity-90 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition flex items-center gap-1.5">
                 <i class="fa-solid fa-plus"></i> Record Result
             </button>
         </div>
@@ -95,7 +98,7 @@
         <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 space-y-6 hidden lg:block">
             <div class="space-y-1">
                 <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">Main Navigation</p>
-                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 transition">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-theme bg-theme/10 transition">
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
                 </button>
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
@@ -111,8 +114,8 @@
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
                 </button>
                 <!-- PULSING EXECUTION NAV BUTTON -->
-                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold text-emerald-300 bg-emerald-600/20 border border-emerald-500/50 animate-pulse-vivid transition">
-                    <i class="fa-solid fa-shield-halved w-5 text-emerald-400"></i> <span>Execution Rules (Locked)</span>
+                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold text-theme bg-theme/20 border border-theme/50 animate-pulse-vivid transition">
+                    <i class="fa-solid fa-shield-halved w-5 text-theme"></i> <span>Execution Rules (Locked)</span>
                 </button>
                 <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-graduation-cap w-5"></i> <span>Trader's Knowledge Hub</span>
@@ -136,8 +139,8 @@
                             <button onclick="changeMonth(1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                         </div>
                         <div class="flex items-center space-x-6 text-xs font-bold">
-                            <div>Month Net: <span id="summaryMonthNet" class="text-emerald-500 font-extrabold">+$0.00</span></div>
-                            <div>Win Days: <span id="summaryWinDays" class="text-emerald-500">0</span></div>
+                            <div>Month Net: <span id="summaryMonthNet" class="text-theme font-extrabold">+$0.00</span></div>
+                            <div>Win Days: <span id="summaryWinDays" class="text-theme">0</span></div>
                         </div>
                     </div>
                     <!-- Calendar Grid -->
@@ -154,14 +157,14 @@
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-extrabold text-base">Execution Discipline Performance</h3>
-                                <span id="disciplineBadgeStatus" class="text-[10px] px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-400">100% Adherence</span>
+                                <span id="disciplineBadgeStatus" class="text-[10px] px-2 py-0.5 rounded font-bold bg-theme/10 text-theme">100% Adherence</span>
                             </div>
                             <div class="h-64"><canvas id="disciplineChart"></canvas></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 3: TRADING SESSIONS MAP & TIMELINE -->
+                <!-- TAB 3: TRADING SESSIONS MAP -->
                 <div id="tab-sessions" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                         <div class="flex justify-between items-center">
@@ -169,13 +172,11 @@
                                 <h3 class="font-extrabold text-base">Global Trading Centers &amp; Session Map</h3>
                                 <p class="text-xs text-gray-400">Active hours &amp; liquidity schedules (Manila local time)</p>
                             </div>
-                            <div class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold rounded-xl">
+                            <div class="px-3 py-1 bg-theme/10 border border-theme/30 text-theme text-xs font-mono font-bold rounded-xl">
                                 Live Market Synchronized
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" id="sessionsMapGrid">
-                            <!-- Populated dynamically via JS -->
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" id="sessionsMapGrid"></div>
                     </div>
                 </div>
 
@@ -213,13 +214,12 @@
 
                 <!-- TAB 6: EXECUTION RULES & DISCIPLINE GUARD -->
                 <div id="tab-execution" class="tab-content hidden space-y-6">
-                    <div class="bg-emerald-950/40 border-2 border-emerald-500/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl shadow-emerald-900/20">
-                        <i class="fa-solid fa-shield-halved text-emerald-400 text-xl mt-0.5"></i>
+                    <div class="bg-slate-900 border-2 border-theme/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl">
+                        <i class="fa-solid fa-shield-halved text-theme text-xl mt-0.5"></i>
                         <div class="space-y-1">
-                            <h4 class="font-extrabold text-emerald-300 text-sm tracking-wide">ACTIVE DISCIPLINE GUARD: System Criteria Locked</h4>
-                            <p class="text-emerald-100/90 leading-relaxed">
-                                Changing entry criteria mid-stream destroys your true mathematical edge. TraderWell enforces strict execution rules 
-                                across your sample size. Follow the criteria below before committing your trade setup.
+                            <h4 class="font-extrabold text-theme text-sm tracking-wide">ACTIVE DISCIPLINE GUARD: System Criteria Locked</h4>
+                            <p class="text-gray-300 leading-relaxed">
+                                Changing entry criteria mid-stream destroys your true mathematical edge. You have <span id="editsLeftCount" class="font-bold text-theme">2</span> edits remaining before a 1-week lockout activates.
                             </p>
                         </div>
                     </div>
@@ -228,21 +228,26 @@
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol (Locked System)</h3>
-                                <span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                                    <i class="fa-solid fa-lock mr-1"></i> No Edits Allowed
-                                </span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleEditCriteriaMode()" id="editCriteriaBtn" class="text-[10px] bg-theme/10 text-theme border border-theme/30 px-2.5 py-1 rounded-lg font-bold transition hover:bg-theme/20">
+                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Criteria
+                                    </button>
+                                    <span id="lockStatusBadge" class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                        <i class="fa-solid fa-lock mr-1"></i> Locked
+                                    </span>
+                                </div>
                             </div>
                             <p class="text-xs text-gray-400">All mandatory rules must be checked to confirm strict adherence to your system</p>
                             
                             <div id="criteriaListContainer" class="space-y-3"></div>
 
                             <div class="pt-4 space-y-3">
-                                <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+                                <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-theme"></textarea>
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Secondary Screen Photo Captured on Chart (Entry)</label>
                                     <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs">
                                 </div>
-                                <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/30">
+                                <button onclick="verifyExecutionApproval()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">
                                     Pass Rules &amp; Commit Entry Setup
                                 </button>
                             </div>
@@ -253,8 +258,8 @@
                             <h3 class="font-extrabold text-base">Log New Setup Position</h3>
                             
                             <div class="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-200 dark:border-slate-700">
-                                <div id="badgeEntryStatus" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black tracking-widest animate-glow-fast flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ENTRY
+                                <div id="badgeEntryStatus" class="px-3 py-1.5 rounded-lg bg-theme/20 text-theme border border-theme/40 text-xs font-black tracking-widest animate-glow-fast flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-theme animate-ping"></span> ENTRY
                                 </div>
                                 <span class="text-gray-400 font-bold text-xs">→</span>
                                 <div id="badgeResultStatus" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/30 text-xs font-black tracking-widest flex items-center gap-1.5 opacity-50">
@@ -298,7 +303,7 @@
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Outcome Screen Capture (Result)</label>
                                     <input type="file" id="activeResultFile" accept="image/*" class="w-full text-xs">
                                 </div>
-                                <button onclick="approveTradeResult(true)" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg mb-2">
+                                <button onclick="approveTradeResult(true)" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg mb-2">
                                     Approve Result (Rules Followed)
                                 </button>
                                 <button onclick="approveTradeResult(false)" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-bold text-xs py-3 rounded-xl transition">
@@ -322,14 +327,13 @@
                             </div>
                             <div class="space-y-3 text-xs text-gray-300 leading-relaxed">
                                 <p><strong>1. Accept Risk Completely:</strong> Before placing any trade, define your exact risk. If you accept that any single trade can lose, you eliminate emotional pain, fear, and revenge trading.</p>
-                                <p><strong>2. Think in Probabilities:</strong> The market is a random distribution of outcomes on a micro level, but a consistent statistical edge on a macro sample size (e.g., 50 to 100 trades).</p>
-                                <p><strong>3. The Edge Principle:</strong> An edge simply means that with a defined set of criteria, outcome A will occur more frequently than outcome B over 100 trades.</p>
+                                <p><strong>2. Think in Probabilities:</strong> The market is a random distribution of outcomes on a macro sample size.</p>
                             </div>
                         </div>
 
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold"><i class="fa-solid fa-calculator text-lg"></i></div>
+                                <div class="w-10 h-10 rounded-xl bg-theme/20 text-theme flex items-center justify-center font-bold"><i class="fa-solid fa-calculator text-lg"></i></div>
                                 <div>
                                     <h3 class="font-extrabold text-base">Win Rate &amp; Risk-to-Reward (RRR) Guide</h3>
                                     <p class="text-xs text-gray-400">Simple Math for Newbie Traders</p>
@@ -338,26 +342,29 @@
                             <div class="space-y-3 text-xs text-gray-300 leading-relaxed">
                                 <p><strong>What is RRR?</strong> Risk-to-Reward Ratio measures how much money you risk versus how much you aim to make.</p>
                                 <div class="p-3 bg-gray-50 dark:bg-slate-800 rounded-xl space-y-1 font-mono text-[11px]">
-                                    <div class="text-emerald-400">Example 1: 1:2 RRR at 40% Win Rate</div>
-                                    <div>Risk $100 to make $200. Over 10 trades = <strong class="text-emerald-400">+$200 Net Profit</strong></div>
+                                    <div class="text-theme">Example 1: 1:2 RRR at 40% Win Rate</div>
+                                    <div>Risk $100 to make $200. Over 10 trades = <strong class="text-theme">+$200 Net Profit</strong></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 8: SETTINGS & MULTIPLE THEME COLORS -->
+                <!-- TAB 8: SETTINGS & THEME PALETTE -->
                 <div id="tab-settings" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-5">
                         <h3 class="font-extrabold text-base">Settings &amp; Theme Customization</h3>
                         
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-400">Select Accent Color Theme</label>
-                            <div class="grid grid-cols-4 gap-3">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                 <button onclick="setThemeColor('emerald', '#10b981', 'rgba(16, 185, 129, 0.6)')" class="p-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">Emerald Green</button>
-                                <button onclick="setThemeColor('blue', '#3b82f6', 'rgba(59, 130, 246, 0.6)')" class="p-3 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-md">Cyber Blue</button>
-                                <button onclick="setThemeColor('purple', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" class="p-3 rounded-xl bg-purple-600 text-white text-xs font-bold shadow-md">Amethyst Purple</button>
-                                <button onclick="setThemeColor('crimson', '#ef4444', 'rgba(239, 68, 68, 0.6)')" class="p-3 rounded-xl bg-red-600 text-white text-xs font-bold shadow-md">Crimson Red</button>
+                                <button onclick="setThemeColor('gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" class="p-3 rounded-xl bg-amber-500 text-white text-xs font-bold shadow-md">Luxury Gold</button>
+                                <button onclick="setThemeColor('lightblue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" class="p-3 rounded-xl bg-sky-500 text-white text-xs font-bold shadow-md">Cyber Light Blue</button>
+                                <button onclick="setThemeColor('yellow', '#eab308', 'rgba(234, 179, 8, 0.6)')" class="p-3 rounded-xl bg-yellow-400 text-slate-950 text-xs font-bold shadow-md">Cozy Yellow</button>
+                                <button onclick="setThemeColor('white', '#ffffff', 'rgba(255, 255, 255, 0.6)')" class="p-3 rounded-xl bg-gray-200 text-slate-950 text-xs font-bold shadow-md">Clean White</button>
+                                <button onclick="setThemeColor('darkwhite', '#cbd5e1', 'rgba(203, 213, 225, 0.6)')" class="p-3 rounded-xl bg-slate-700 text-slate-100 text-xs font-bold shadow-md">Dark White</button>
+                                <button onclick="setThemeColor('violet', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" class="p-3 rounded-xl bg-violet-600 text-white text-xs font-bold shadow-md">Royal Violet</button>
                             </div>
                         </div>
 
@@ -375,29 +382,29 @@
         <div id="devChatWindow" class="hidden w-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden mb-3 flex flex-col h-96">
             <div class="bg-slate-900 p-4 border-b border-slate-800 flex justify-between items-center text-white">
                 <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <div class="w-3 h-3 rounded-full bg-theme animate-pulse"></div>
                     <span class="text-xs font-extrabold">Web Developer (Leo Melvin)</span>
                 </div>
                 <button onclick="toggleDevChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="devChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
                 <div class="bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]">
-                    <p class="font-bold text-[10px] text-emerald-400 mb-0.5">Developer Bot</p>
-                    Hello Leo! You are connected directly to your web developer workspace. Send notes or test layout feedback here.
+                    <p class="font-bold text-[10px] text-theme mb-0.5">Developer Bot</p>
+                    Hello Leo! Checklist 2x edit limit and 1-week lockout engine active. All color themes operational.
                 </div>
             </div>
             <div class="p-3 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
-                <input type="text" id="devChatInput" placeholder="Type message to developer..." class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-500" onkeypress="if(event.key==='KeyE'||event.key==='Enter')sendDevMessage()">
-                <button onclick="sendDevMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
+                <input type="text" id="devChatInput" placeholder="Type message to developer..." class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-theme" onkeypress="if(event.key==='Enter')sendDevMessage()">
+                <button onclick="sendDevMessage()" class="bg-theme text-white px-3 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
-        <button onclick="toggleDevChat()" class="w-12 h-12 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl flex items-center justify-center text-lg transition animate-bounce">
+        <button onclick="toggleDevChat()" class="w-12 h-12 bg-theme text-white rounded-full shadow-2xl flex items-center justify-center text-lg transition animate-bounce">
             <i class="fa-solid fa-comments"></i>
         </button>
     </div>
 
-    <!-- Manual Trade Log / Result Modal -->
-    <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    <!-- Manual Trade Log Modal -->
+    <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
             <div class="flex justify-between items-center">
                 <h3 class="font-extrabold text-base">Record Manual Trade &amp; Evidence</h3>
@@ -420,7 +427,7 @@
                     <option value="failed">Rules Failed (Rule Broken)</option>
                 </select>
                 <textarea id="tradeNotes" rows="2" placeholder="Setup thesis &amp; notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Trade &amp; Sync Calendar</button>
+                <button type="submit" class="w-full bg-theme text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Trade &amp; Sync Calendar</button>
             </form>
         </div>
     </div>
@@ -430,15 +437,19 @@
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain">
     </div>
 
-    <!-- Application Script -->
+    <!-- Script Engine -->
     <script>
         const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let currentYear = 2026;
-        let currentMonthIndex = 8; // September
+        let currentMonthIndex = 8;
         let equityChartInstance = null;
         let disciplineChartInstance = null;
         let workflowState = 'ENTRY';
         let pendingEntryData = null;
+
+        let criteriaEditsRemaining = 2;
+        let criteriaLockUntilTimestamp = 0;
+        let isCriteriaEditing = false;
 
         let monthPnLData = {
             2026: {
@@ -467,15 +478,6 @@
                 entryImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
                 resultImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80',
                 setup: 'London Session breakout expansion. Outcome: TP Hit.',
-                discipline: 'followed'
-            },
-            {
-                id: 10012483,
-                symbol: 'XAUUSD (BUY)',
-                pnl: 450.00,
-                entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80',
-                resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-                setup: 'Asian Liquidity Grab & FVG Rejection. Outcome: Closed Profit.',
                 discipline: 'followed'
             }
         ];
@@ -506,16 +508,29 @@
             if (savedJournal) { try { tradeJournalEntries = JSON.parse(savedJournal); } catch(e) {} }
             const savedName = localStorage.getItem('traderwell_username');
             if (savedName) document.getElementById('headerTraderName').innerText = savedName;
+
+            const savedEdits = localStorage.getItem('traderwell_edits_left');
+            if (savedEdits !== null) criteriaEditsRemaining = parseInt(savedEdits);
+
+            const savedLock = localStorage.getItem('traderwell_lock_until');
+            if (savedLock !== null) criteriaLockUntilTimestamp = parseInt(savedLock);
+
             const savedTheme = localStorage.getItem('traderwell_theme_primary');
             if (savedTheme) {
                 document.documentElement.style.setProperty('--theme-primary', savedTheme);
                 document.documentElement.style.setProperty('--theme-glow', localStorage.getItem('traderwell_theme_glow') || 'rgba(16, 185, 129, 0.6)');
             }
+
+            const savedCriteria = localStorage.getItem('traderwell_criteria_list');
+            if (savedCriteria) { try { criteriaList = JSON.parse(savedCriteria); } catch(e) {} }
         }
 
         function saveData() {
             localStorage.setItem('traderwell_pnl_data', JSON.stringify(monthPnLData));
             localStorage.setItem('traderwell_journal', JSON.stringify(tradeJournalEntries));
+            localStorage.setItem('traderwell_edits_left', criteriaEditsRemaining);
+            localStorage.setItem('traderwell_lock_until', criteriaLockUntilTimestamp);
+            localStorage.setItem('traderwell_criteria_list', JSON.stringify(criteriaList));
         }
 
         function setThemeColor(name, color, glow) {
@@ -523,7 +538,106 @@
             document.documentElement.style.setProperty('--theme-glow', glow);
             localStorage.setItem('traderwell_theme_primary', color);
             localStorage.setItem('traderwell_theme_glow', glow);
-            alert(`Theme updated successfully to ${name}!`);
+            alert(`Theme successfully updated to ${name}!`);
+        }
+
+        function toggleEditCriteriaMode() {
+            const now = Date.now();
+            if (now < criteriaLockUntilTimestamp) {
+                const daysRemaining = Math.ceil((criteriaLockUntilTimestamp - now) / (1000 * 60 * 60 * 24));
+                alert(`System Criteria Locked: You have exhausted your 2 edits. The system is locked for ${daysRemaining} more day(s) until next week.`);
+                return;
+            }
+
+            if (criteriaEditsRemaining <= 0) {
+                // Trigger 1 week lock (7 days)
+                criteriaLockUntilTimestamp = now + (7 * 24 * 60 * 60 * 1000);
+                saveData();
+                alert('You have used both allowed edits. The checklist is now locked for 1 full week.');
+                renderCriteriaList();
+                return;
+            }
+
+            isCriteriaEditing = !isCriteriaEditing;
+            renderCriteriaList();
+        }
+
+        function saveCriteriaEdits() {
+            for(let i=0; i<criteriaList.length; i++) {
+                const input = document.getElementById(`criteriaInput_${criteriaList[i].id}`);
+                if(input) {
+                    criteriaList[i].text = input.value.trim();
+                }
+            }
+            criteriaEditsRemaining--;
+            isCriteriaEditing = false;
+            
+            if(criteriaEditsRemaining <= 0) {
+                criteriaLockUntilTimestamp = Date.now() + (7 * 24 * 60 * 60 * 1000);
+            }
+
+            saveData();
+            renderCriteriaList();
+            alert(`Criteria saved successfully! Edits remaining: ${criteriaEditsRemaining}.`);
+        }
+
+        function renderCriteriaList() {
+            const container = document.getElementById('criteriaListContainer');
+            const editsBadge = document.getElementById('editsLeftCount');
+            const lockBadge = document.getElementById('lockStatusBadge');
+            const editBtn = document.getElementById('editCriteriaBtn');
+            if(!container) return;
+
+            const now = Date.now();
+            const isLockedByTime = now < criteriaLockUntilTimestamp;
+
+            if(editsBadge) editsBadge.innerText = criteriaEditsRemaining;
+            if(lockBadge) {
+                if(isLockedByTime || criteriaEditsRemaining <= 0) {
+                    lockBadge.innerHTML = '<i class="fa-solid fa-lock mr-1"></i> Locked (1 Week)';
+                    lockBadge.className = 'text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                } else {
+                    lockBadge.innerHTML = `<i class="fa-solid fa-unlock mr-1"></i> ${criteriaEditsRemaining} Edit(s) Left`;
+                    lockBadge.className = 'text-[10px] bg-theme/10 text-theme border border-theme/30 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                }
+            }
+
+            container.innerHTML = '';
+            criteriaList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-theme/50`;
+                
+                if(isCriteriaEditing && !isLockedByTime) {
+                    div.innerHTML = `
+                        <div class="flex items-center space-x-3 flex-1">
+                            <span class="text-xs font-bold text-gray-400">${index + 1}.</span>
+                            <input type="text" id="criteriaInput_${item.id}" value="${item.text}" class="w-full bg-gray-50 dark:bg-slate-900 border border-theme/50 rounded-lg p-2 text-xs font-bold focus:outline-none">
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <label class="flex items-center space-x-3 cursor-pointer text-xs font-bold flex-1">
+                            <input type="checkbox" id="crit_${item.id}" class="w-4 h-4 text-theme rounded">
+                            <span>${index + 1}. ${item.text}</span>
+                        </label>
+                        <span class="text-[10px] text-theme font-mono"><i class="fa-solid fa-lock text-[9px] mr-1"></i> System Guard</span>
+                    `;
+                }
+                container.appendChild(div);
+            });
+
+            if(isCriteriaEditing && !isLockedByTime) {
+                const saveDiv = document.createElement('div');
+                saveDiv.innerHTML = `
+                    <button onclick="saveCriteriaEdits()" class="w-full bg-theme text-white font-bold text-xs py-2.5 rounded-xl transition shadow-md">
+                        Save Checklist Edits (Uses 1 Edit Allowance)
+                    </button>
+                `;
+                container.appendChild(saveDiv);
+                if(editBtn) editBtn.innerHTML = '<i class="fa-solid fa-xmark mr-1"></i> Cancel Edit';
+            } else {
+                if(editBtn) editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square mr-1"></i> Edit Criteria';
+            }
         }
 
         function updateWorkflowUI() {
@@ -549,7 +663,7 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if(btn.id !== 'nav-execution') {
-                    btn.classList.remove('text-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+                    btn.classList.remove('text-theme', 'bg-theme/10', 'font-semibold');
                     btn.classList.add('text-gray-600', 'dark:text-gray-400');
                 }
             });
@@ -557,10 +671,10 @@
             const activeNav = document.getElementById(`nav-${tabId}`);
             if(activeNav) {
                 if(tabId === 'execution') {
-                    activeNav.classList.add('text-emerald-300', 'bg-emerald-600/20', 'border', 'border-emerald-500/50', 'animate-pulse-vivid');
+                    activeNav.classList.add('text-theme', 'bg-theme/20', 'border', 'border-theme/50', 'animate-pulse-vivid');
                 } else {
                     activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
-                    activeNav.classList.add('text-emerald-500', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+                    activeNav.classList.add('text-theme', 'bg-theme/10', 'font-semibold');
                 }
             }
         }
@@ -591,7 +705,7 @@
                 const isLoss = info.pnl < 0;
 
                 let bg = 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800';
-                if(hasTrades && isProfit) bg = 'bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-500/40';
+                if(hasTrades && isProfit) bg = 'bg-emerald-50/50 dark:bg-emerald-950/30 border-theme/40';
                 if(hasTrades && isLoss) bg = 'bg-red-50/50 dark:bg-red-950/30 border-red-500/40';
 
                 const cell = document.createElement('div');
@@ -602,7 +716,7 @@
                         ${hasTrades ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-white font-mono">${info.trades} trade</span>` : ''}
                     </div>
                     <div>
-                        ${hasTrades ? `<div class="text-xs font-extrabold ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${info.pnl.toFixed(2)}</div>` : '<span class="text-[10px] text-gray-300 dark:text-gray-700">No activity</span>'}
+                        ${hasTrades ? `<div class="text-xs font-extrabold ${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${info.pnl.toFixed(2)}</div>` : '<span class="text-[10px] text-gray-300 dark:text-gray-700">No activity</span>'}
                     </div>
                 `;
                 grid.appendChild(cell);
@@ -626,32 +740,14 @@
                 card.className = 'bg-gray-50 dark:bg-slate-800/80 p-4 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-2';
                 card.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <i class="fa-solid ${s.icon} text-emerald-400 text-base"></i>
-                        <span class="text-[10px] px-2 py-0.5 rounded font-bold ${s.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-gray-500/10 text-gray-400'}">${s.status}</span>
+                        <i class="fa-solid ${s.icon} text-theme text-base"></i>
+                        <span class="text-[10px] px-2 py-0.5 rounded font-bold ${s.status === 'Active' ? 'bg-theme/10 text-theme border border-theme/30' : 'bg-gray-500/10 text-gray-400'}">${s.status}</span>
                     </div>
                     <h4 class="font-extrabold text-sm">${s.name}</h4>
                     <p class="text-[10px] text-gray-400 font-mono">${s.time}</p>
-                    <p class="text-[10px] text-emerald-500/90 font-bold">${s.region}</p>
+                    <p class="text-[10px] text-theme font-bold">${s.region}</p>
                 `;
                 container.appendChild(card);
-            });
-        }
-
-        function renderCriteriaList() {
-            const container = document.getElementById('criteriaListContainer');
-            if(!container) return;
-            container.innerHTML = '';
-            criteriaList.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-emerald-500/50`;
-                div.innerHTML = `
-                    <label class="flex items-center space-x-3 cursor-pointer text-xs font-bold flex-1">
-                        <input type="checkbox" id="crit_${item.id}" class="w-4 h-4 text-emerald-600 rounded">
-                        <span>${index + 1}. ${item.text}</span>
-                    </label>
-                    <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-lock text-[9px] mr-1"></i> Locked</span>
-                `;
-                container.appendChild(div);
             });
         }
 
@@ -762,11 +858,11 @@
                 row.className = 'hover:bg-gray-50 dark:hover:bg-slate-800/55 transition';
                 row.innerHTML = `
                     <td class="p-4 font-mono font-bold text-gray-400">#${entry.id}</td>
-                    <td class="p-4 font-extrabold text-emerald-500">${entry.symbol}</td>
+                    <td class="p-4 font-extrabold text-theme">${entry.symbol}</td>
                     <td class="p-4">
-                        ${isFollowed ? '<span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">Followed Rules</span>' : '<span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">Failed Rules</span>'}
+                        ${isFollowed ? '<span class="text-[10px] bg-theme/10 text-theme border border-theme/20 px-2 py-0.5 rounded font-bold">Followed Rules</span>' : '<span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">Failed Rules</span>'}
                     </td>
-                    <td class="p-4 text-right font-extrabold ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</td>
+                    <td class="p-4 text-right font-extrabold ${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</td>
                 `;
                 tableBody.appendChild(row);
 
@@ -774,22 +870,20 @@
                 gCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-3';
                 gCard.innerHTML = `
                     <div class="flex justify-between items-center text-xs font-bold">
-                        <span class="text-emerald-500">${entry.symbol}</span>
-                        <span class="${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
+                        <span class="text-theme">${entry.symbol}</span>
+                        <span class="${isProfit ? 'text-theme' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <span class="text-[9px] font-bold text-amber-500 uppercase">Entry Photo</span>
                             <div onclick="openLightbox('${entry.entryImg}')" class="h-28 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
                             </div>
                         </div>
                         <div>
-                            <span class="text-[9px] font-bold text-emerald-500 uppercase">Result Photo</span>
+                            <span class="text-[9px] font-bold text-theme uppercase">Result Photo</span>
                             <div onclick="openLightbox('${entry.resultImg}')" class="h-28 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
                             </div>
                         </div>
                     </div>
@@ -865,10 +959,8 @@
             const file = e.target.files[0];
             if(!file) return;
             
-            // Simulating parsing broker CSV and pushing real historical rows
             const importedEntries = [
-                { id: 98231140, symbol: 'EURUSD (BUY)', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout strategy execution', discipline: 'followed' },
-                { id: 98231141, symbol: 'US30 (SELL)', pnl: 520.00, entryImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Index resistance rejection', discipline: 'followed' }
+                { id: 98231140, symbol: 'EURUSD (BUY)', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout strategy execution', discipline: 'followed' }
             ];
 
             importedEntries.forEach(ie => tradeJournalEntries.unshift(ie));
@@ -877,10 +969,10 @@
             if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
             
             if(!monthPnLData[currentYear][currentMonthIndex][12]) {
-                monthPnLData[currentYear][currentMonthIndex][12] = { pnl: 830.50, trades: 2 };
+                monthPnLData[currentYear][currentMonthIndex][12] = { pnl: 310.50, trades: 1 };
             } else {
-                monthPnLData[currentYear][currentMonthIndex][12].pnl += 830.50;
-                monthPnLData[currentYear][currentMonthIndex][12].trades += 2;
+                monthPnLData[currentYear][currentMonthIndex][12].pnl += 310.50;
+                monthPnLData[currentYear][currentMonthIndex][12].trades += 1;
             }
 
             saveData();
@@ -904,6 +996,8 @@
         }
 
         function initCharts() {
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim() || '#10b981';
+            
             const ctx1 = document.getElementById('equityChart');
             if(ctx1) {
                 if(equityChartInstance) equityChartInstance.destroy();
@@ -911,7 +1005,7 @@
                     type: 'line',
                     data: {
                         labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
-                        datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 12324], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
+                        datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 12324], borderColor: primaryColor, backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
@@ -927,7 +1021,7 @@
                     type: 'doughnut',
                     data: {
                         labels: ['Followed Rules', 'Failed Rules'],
-                        datasets: [{ data: [followedCount || 1, failedCount], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 0 }]
+                        datasets: [{ data: [followedCount || 1, failedCount], backgroundColor: [primaryColor, '#ef4444'], borderWidth: 0 }]
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
                 });
@@ -946,8 +1040,8 @@
 
             const userText = input.value.trim();
             const bubble = document.createElement('div');
-            bubble.className = 'bg-emerald-600/20 border border-emerald-500/30 p-2.5 rounded-xl max-w-[85%] ml-auto';
-            bubble.innerHTML = `<p class="font-bold text-[10px] text-emerald-400 mb-0.5">You (Developer)</p>${userText}`;
+            bubble.className = 'bg-theme/20 border border-theme/30 p-2.5 rounded-xl max-w-[85%] ml-auto';
+            bubble.innerHTML = `<p class="font-bold text-[10px] text-theme mb-0.5">You (Developer)</p>${userText}`;
             msgBox.appendChild(bubble);
             input.value = '';
             msgBox.scrollTop = msgBox.scrollHeight;
