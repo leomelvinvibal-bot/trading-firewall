@@ -16,11 +16,16 @@
                     },
                     animation: {
                         'glow-fast': 'glow 1s ease-in-out infinite alternate',
+                        'pulse-vivid': 'pulseVivid 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
                         glow: {
                             '0%': { opacity: '0.3', transform: 'scale(1)' },
                             '100%': { opacity: '1', transform: 'scale(1.06)' },
+                        },
+                        pulseVivid: {
+                            '0%, 100%': { opacity: '1', transform: 'scale(1)', boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)' },
+                            '50%': { opacity: '.8', transform: 'scale(1.02)', boxShadow: '0 0 25px rgba(16, 185, 129, 0.8)' }
                         }
                     }
                 }
@@ -81,8 +86,9 @@
                 <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
                 </button>
-                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Execution Rules (Locked)</span>
+                <!-- HIGHLY VISIBLE PULSING EXECUTION NAV BUTTON -->
+                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold text-emerald-300 bg-emerald-600/20 border border-emerald-500/50 animate-pulse-vivid transition">
+                    <i class="fa-solid fa-shield-halved w-5 text-emerald-400"></i> <span>Execution Rules (Locked)</span>
                 </button>
                 <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-graduation-cap w-5"></i> <span>Trader's Knowledge Hub</span>
@@ -163,16 +169,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
                 </div>
 
-                <!-- TAB 5: EXECUTION RULES & DISCIPLINE GUARD -->
-                <div id="tab-execution" class="tab-content space-y-6">
-                    <!-- CRITICAL WARNING BANNER -->
-                    <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex items-start space-x-3 text-xs">
-                        <i class="fa-solid fa-lock text-amber-500 text-base mt-0.5"></i>
+                <!-- TAB 5: EXECUTION RULES & DISCIPLINE GUARD (HIGHLY HIGHLIGHTED & PULSING) -->
+                <div id="tab-execution" class="tab-content hidden space-y-6">
+                    <!-- VIVID PULSING WARNING BANNER -->
+                    <div class="bg-emerald-950/40 border-2 border-emerald-500/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl shadow-emerald-900/20">
+                        <i class="fa-solid fa-shield-halved text-emerald-400 text-xl mt-0.5"></i>
                         <div class="space-y-1">
-                            <h4 class="font-extrabold text-amber-500">System Criteria Locked: Why Rule Changes Destroy Edge</h4>
-                            <p class="text-gray-300">
-                                Changing entry criteria mid-stream destroys your true mathematical edge and turns trading into pure gambling. 
-                                TraderWell locks these rules to force you to execute faithfully across your sample size, regardless of wins or losses.
+                            <h4 class="font-extrabold text-emerald-300 text-sm tracking-wide">ACTIVE DISCIPLINE GUARD: System Criteria Locked</h4>
+                            <p class="text-emerald-100/90 leading-relaxed">
+                                Changing entry criteria mid-stream destroys your true mathematical edge. TraderWell enforces strict execution rules 
+                                across your sample size. Follow the criteria below before committing your trade setup.
                             </p>
                         </div>
                     </div>
@@ -195,7 +201,7 @@
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Secondary Screen Photo Captured on Chart (Entry)</label>
                                     <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs">
                                 </div>
-                                <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/20">
+                                <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/30">
                                     Pass Rules &amp; Commit Entry Setup
                                 </button>
                             </div>
@@ -431,35 +437,47 @@
             const resultPanel = document.getElementById('resultApprovalPanel');
 
             if (workflowState === 'ENTRY') {
-                entryBadge.classList.add('animate-glow-fast', 'border-emerald-500/40');
-                entryBadge.classList.remove('opacity-50');
-                resultBadge.classList.remove('animate-glow-fast', 'border-amber-500');
-                resultBadge.classList.add('opacity-50');
-
-                entryForm.classList.remove('hidden');
-                resultPanel.classList.add('hidden');
+                if(entryBadge) {
+                    entryBadge.classList.add('animate-glow-fast', 'border-emerald-500/40');
+                    entryBadge.classList.remove('opacity-50');
+                }
+                if(resultBadge) {
+                    resultBadge.classList.remove('animate-glow-fast', 'border-amber-500');
+                    resultBadge.classList.add('opacity-50');
+                }
+                if(entryForm) entryForm.classList.remove('hidden');
+                if(resultPanel) resultPanel.classList.add('hidden');
             } else {
-                entryBadge.classList.remove('animate-glow-fast');
-                entryBadge.classList.add('opacity-50');
-                resultBadge.classList.add('animate-glow-fast', 'border-amber-500');
-                resultBadge.classList.remove('opacity-50');
-
-                entryForm.classList.add('hidden');
-                resultPanel.classList.remove('hidden');
+                if(entryBadge) {
+                    entryBadge.classList.remove('animate-glow-fast');
+                    entryBadge.classList.add('opacity-50');
+                }
+                if(resultBadge) {
+                    resultBadge.classList.add('animate-glow-fast', 'border-amber-500');
+                    resultBadge.classList.remove('opacity-50');
+                }
+                if(entryForm) entryForm.classList.add('hidden');
+                if(resultPanel) resultPanel.classList.remove('hidden');
             }
         }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
-                btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                if(btn.id !== 'nav-execution') {
+                    btn.classList.remove('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                }
             });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             const activeNav = document.getElementById(`nav-${tabId}`);
             if(activeNav) {
-                activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
-                activeNav.classList.add('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+                if(tabId === 'execution') {
+                    activeNav.classList.add('text-emerald-300', 'bg-emerald-600/20', 'border', 'border-emerald-500/50', 'animate-pulse-vivid');
+                } else {
+                    activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    activeNav.classList.add('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+                }
             }
         }
 
