@@ -907,12 +907,14 @@
                 const text = e.target.result;
                 const lines = text.split('\n');
                 let importedCount = 0;
+                
+                const newImportedTrades = [];
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (!line) continue;
                     const cols = line.split(',');
                     if (cols.length >= 4) {
-                        trades.unshift({
+                        newImportedTrades.push({
                             id: cols[0].trim() || 'TW-' + Math.floor(1000 + Math.random() * 9000),
                             date: cols[1].trim() || new Date().toISOString().split('T')[0],
                             symbol: cols[2].trim() || 'XAUUSD',
@@ -928,8 +930,12 @@
                         importedCount++;
                     }
                 }
+
+                // MERGE: Prepend new CSV imports onto existing trades array so gallery photos are preserved
+                trades = [...newImportedTrades, ...trades];
+
                 if (saveTradesToStorage()) {
-                    alert(`Successfully imported ${importedCount} trades from CSV without disturbing existing gallery records!`);
+                    alert(`Successfully imported ${importedCount} trades from CSV! Your existing gallery photos remain safe.`);
                     location.reload();
                 }
             };
