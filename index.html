@@ -3,944 +3,1383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell - Professional Trading Journal & Discipline Guard</title>
-    <!-- Tailwind CSS CDN -->
+    <title>TraderWell - Trading Journal</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        slate: { 850: '#151f32', 900: '#0b132b', 950: '#060918' },
-                        theme: {
-                            primary: 'var(--theme-primary, #10b981)',
-                            glow: 'var(--theme-glow, rgba(16, 185, 129, 0.6))'
-                        }
-                    },
-                    animation: {
-                        'glow-fast': 'glow 1.2s ease-in-out infinite alternate',
-                        'pulse-vivid': 'pulseVivid 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fire': 'fireGlow 1.2s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        glow: {
-                            '0%': { opacity: '0.3', transform: 'scale(1)' },
-                            '100%': { opacity: '1', transform: 'scale(1.06)' },
-                        },
-                        pulseVivid: {
-                            '0%, 100%': { opacity: '1', transform: 'scale(1)', boxShadow: '0 0 15px var(--theme-glow)' },
-                            '50%': { opacity: '.8', transform: 'scale(1.02)', boxShadow: '0 0 25px var(--theme-glow)' }
-                        },
-                        fireGlow: {
-                            '0%': { transform: 'scale(0.95) translateY(0)', filter: 'drop-shadow(0 0 4px var(--theme-primary))' },
-                            '100%': { transform: 'scale(1.08) translateY(-2px)', filter: 'drop-shadow(0 0 16px var(--theme-primary))' }
+                        slate: {
+                            850: '#151f32',
+                            950: '#060918'
                         }
                     }
                 }
             }
-        }
+        };
     </script>
-    <!-- FontAwesome & Chart.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
             --theme-primary: #10b981;
-            --theme-glow: rgba(16, 185, 129, 0.6);
+            --theme-glow: rgba(16, 185, 129, .6);
         }
-        .bg-theme { background-color: var(--theme-primary) !important; }
-        .text-theme { color: var(--theme-primary) !important; }
-        .border-theme { border-color: var(--theme-primary) !important; }
+
+        .bg-theme {
+            background-color: var(--theme-primary) !important;
+        }
+
+        .text-theme {
+            color: var(--theme-primary) !important;
+        }
+
+        .border-theme {
+            border-color: var(--theme-primary) !important;
+        }
+
+        .shadow-theme {
+            box-shadow: 0 0 25px var(--theme-glow);
+        }
+
+        .nav-active {
+            background-color: color-mix(
+                in srgb,
+                var(--theme-primary) 20%,
+                transparent
+            );
+            color: var(--theme-primary) !important;
+            border: 1px solid var(--theme-primary);
+        }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col relative">
-    <!-- SECURITY LOGIN & SIGNUP PORTAL (Overlay) -->
-    <div id="securityLoginOverlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 text-center">
-            <div class="w-16 h-16 rounded-2xl bg-theme/20 border border-theme/50 flex items-center justify-center text-theme mx-auto shadow-lg animate-fire">
-                <i class="fa-solid fa-shield-halved text-2xl text-theme"></i>
+
+<body class="min-h-screen bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-gray-100">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginOverlay"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 p-4">
+
+        <div class="w-full max-w-md space-y-6 rounded-3xl border border-slate-800 bg-slate-900 p-8 text-center shadow-2xl">
+
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/50 bg-emerald-500/10 text-emerald-400">
+                <i class="fa-solid fa-shield-halved text-2xl"></i>
             </div>
-            
-            <!-- Auth Tab Switcher -->
-            <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
-                <button onclick="switchAuthMode('login')" id="authTabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm">Secure Login</button>
-                <button onclick="switchAuthMode('signup')" id="authTabSignup" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition">Sign Up</button>
+
+            <div class="flex rounded-xl bg-slate-800 p-1">
+                <button id="loginTab"
+                        onclick="switchAuthMode('login')"
+                        class="flex-1 rounded-lg bg-theme py-2 text-xs font-bold text-white">
+                    Secure Login
+                </button>
+
+                <button id="signupTab"
+                        onclick="switchAuthMode('signup')"
+                        class="flex-1 rounded-lg py-2 text-xs font-bold text-gray-400">
+                    Sign Up
+                </button>
             </div>
-            <!-- LOGIN FORM -->
-            <div id="loginFormContainer" class="space-y-4">
+
+            <!-- LOGIN -->
+            <div id="loginForm" class="space-y-4">
                 <div>
-                    <h2 class="text-xl font-extrabold tracking-wide">TraderWell Security Portal</h2>
-                    <p class="text-xs text-gray-400 mt-1">Enter your Master PIN or Passkey to unlock execution logs.</p>
+                    <h1 class="text-xl font-extrabold">TraderWell Security Portal</h1>
+                    <p class="mt-1 text-xs text-gray-400">
+                        Default PIN: <strong>2026</strong>
+                    </p>
                 </div>
-                <input type="password" id="masterPinInput" placeholder="Enter Master PIN (default: 2026)" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest focus:outline-none focus:border-theme" onkeypress="if(event.key==='Enter') verifyMasterPin()">
-                <button onclick="verifyMasterPin()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg">
+
+                <input id="masterPin"
+                       type="password"
+                       placeholder="Enter Master PIN"
+                       onkeydown="if(event.key === 'Enter') login()"
+                       class="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-center font-mono text-sm outline-none focus:border-emerald-500">
+
+                <button onclick="login()"
+                        class="w-full rounded-xl bg-theme py-3.5 text-xs font-bold text-white">
                     Authenticate & Access Terminal
                 </button>
             </div>
-            <!-- SIGNUP FORM -->
-            <div id="signupFormContainer" class="hidden space-y-3 text-left">
-                <div>
-                    <h2 class="text-xl font-extrabold tracking-wide text-center">Create Trader Account</h2>
-                    <p class="text-xs text-gray-400 mt-1 text-center">Setup your secure profile credentials.</p>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Trader Full Name</label>
-                    <input type="text" id="signupName" value="Leo Melvin" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Email Address</label>
-                    <input type="email" id="signupEmail" placeholder="trader@domain.com" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">New Master PIN</label>
-                    <input type="password" id="signupPin" placeholder="Choose 4-digit PIN" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-mono">
-                </div>
-                <button onclick="handleUserSignup()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg mt-2">
-                    Register &amp; Launch Terminal
-                </button>
-            </div>
-            <p class="text-[10px] text-gray-500">Protected by Discipline Guard™ Edge Encryption</p>
-        </div>
-    </div>
-    <!-- Top Navigation Header -->
-    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-10 h-10 rounded-xl bg-theme/20 border border-theme/50 flex items-center justify-center text-theme font-black shadow-lg animate-fire">
-                    <i class="fa-solid fa-fire text-lg text-theme"></i>
-                </div>
-                <div>
-                    <h1 class="font-extrabold text-sm tracking-wide flex items-center gap-2">
-                        <span id="headerTraderName">Leo Melvin</span> 
-                        <span class="text-[10px] bg-theme/10 text-theme px-1.5 py-0.5 rounded font-mono">PRO EDGE</span>
-                    </h1>
-                    <p class="text-[10px] text-gray-400 flex items-center gap-2">
-                        <span>Execution Discipline</span> • 
-                        <span id="liveClockDisplay" class="font-mono text-theme font-bold">--:--:--</span>
+
+            <!-- SIGNUP -->
+            <div id="signupForm" class="hidden space-y-3 text-left">
+                <div class="text-center">
+                    <h1 class="text-xl font-extrabold">Create Trader Account</h1>
+                    <p class="mt-1 text-xs text-gray-400">
+                        Create your local TraderWell profile.
                     </p>
                 </div>
+
+                <label class="block text-[10px] font-bold text-gray-400">
+                    Trader Name
+                </label>
+
+                <input id="signupName"
+                       value="Leo Melvin"
+                       class="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-xs outline-none">
+
+                <label class="block text-[10px] font-bold text-gray-400">
+                    Email Address
+                </label>
+
+                <input id="signupEmail"
+                       type="email"
+                       placeholder="trader@example.com"
+                       class="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-xs outline-none">
+
+                <label class="block text-[10px] font-bold text-gray-400">
+                    New Master PIN
+                </label>
+
+                <input id="signupPin"
+                       type="password"
+                       placeholder="Choose a PIN"
+                       class="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-xs font-mono outline-none">
+
+                <button onclick="signup()"
+                        class="mt-2 w-full rounded-xl bg-theme py-3.5 text-xs font-bold text-white">
+                    Register & Launch Terminal
+                </button>
+            </div>
+
+            <p class="text-[10px] text-gray-500">
+                Protected by TraderWell Discipline Guard
+            </p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-slate-800 dark:bg-slate-900">
+        <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-theme text-white">
+                <i class="fa-solid fa-fire"></i>
+            </div>
+
+            <div>
+                <h1 class="flex items-center gap-2 text-sm font-extrabold">
+                    <span id="traderName">Leo Melvin</span>
+                    <span class="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-theme">
+                        PRO EDGE
+                    </span>
+                </h1>
+
+                <p class="text-[10px] text-gray-400">
+                    Execution Discipline ·
+                    <span id="clock" class="font-mono text-theme">--:--:--</span>
+                </p>
             </div>
         </div>
-        <!-- Quick Theme Selector & Actions -->
-        <div class="flex items-center space-x-3">
-            <div class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl border border-gray-200 dark:border-slate-700">
-                <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" title="Emerald Green" class="w-5 h-5 rounded-full bg-emerald-500 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" title="Luxury Gold" class="w-5 h-5 rounded-full bg-amber-500 hover:scale-110 transition"></button>
-                <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" title="Cyber Light Blue" class="w-5 h-5 rounded-full bg-sky-500 hover:scale-110 transition"></button>
+
+        <div class="flex items-center gap-2">
+            <div class="hidden items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-slate-800 md:flex">
+                <button onclick="setTheme('#10b981', 'rgba(16,185,129,.6)')"
+                        class="h-5 w-5 rounded-full bg-emerald-500"></button>
+
+                <button onclick="setTheme('#f59e0b', 'rgba(245,158,11,.6)')"
+                        class="h-5 w-5 rounded-full bg-amber-500"></button>
+
+                <button onclick="setTheme('#0ea5e9', 'rgba(14,165,233,.6)')"
+                        class="h-5 w-5 rounded-full bg-sky-500"></button>
             </div>
-            <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-file-arrow-up text-theme"></i> Import CSV
+
+            <button onclick="document.getElementById('csvInput').click()"
+                    class="rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold dark:bg-slate-800">
+                <i class="fa-solid fa-file-arrow-up mr-1 text-theme"></i>
+                Import CSV
             </button>
-            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
-            
-            <button onclick="exportTradesCsv()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-file-arrow-down text-indigo-500"></i> Export CSV
+
+            <input id="csvInput"
+                   type="file"
+                   accept=".csv"
+                   class="hidden"
+                   onchange="handleCsvImport(event)">
+
+            <button onclick="exportCsv()"
+                    class="rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold dark:bg-slate-800">
+                <i class="fa-solid fa-file-arrow-down mr-1 text-indigo-400"></i>
+                Export CSV
             </button>
-            
-            <button onclick="lockSystemPortal()" class="bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-lock"></i> Lock / Logout
+
+            <button onclick="logout()"
+                    class="rounded-xl bg-red-500/10 px-3 py-2 text-xs font-bold text-red-400">
+                <i class="fa-solid fa-lock mr-1"></i>
+                Logout
             </button>
         </div>
     </header>
-    <div class="flex-1 flex">
-        <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 space-y-6 hidden lg:block">
+
+    <div class="flex min-h-[calc(100vh-65px)]">
+
+        <!-- SIDEBAR -->
+        <aside class="hidden w-64 border-r border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:block">
+            <p class="mb-3 px-3 text-[10px] font-extrabold uppercase tracking-wider text-gray-400">
+                Navigation
+            </p>
+
             <div class="space-y-1">
-                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">CRITICAL EXECUTION</p>
-                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-xs font-extrabold text-theme bg-theme/20 border border-theme/60 animate-pulse-vivid transition shadow-lg mb-4">
-                    <i class="fa-solid fa-shield-halved w-5 text-theme text-base"></i> <span>Execution Rules (Guarded)</span>
+                <button data-tab="execution" onclick="switchTab('execution')" class="nav-button nav-active w-full rounded-xl px-3 py-3 text-left text-xs font-bold">
+                    <i class="fa-solid fa-shield-halved mr-3 w-5"></i>
+                    Execution Guard
                 </button>
-                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">MAIN NAVIGATION</p>
-                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
+
+                <button data-tab="calendar" onclick="switchTab('calendar')" class="nav-button w-full rounded-xl px-3 py-3 text-left text-xs font-bold text-gray-400">
+                    <i class="fa-solid fa-calendar-days mr-3 w-5"></i>
+                    P&L Calendar
                 </button>
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics Dashboard</span>
+
+                <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-button w-full rounded-xl px-3 py-3 text-left text-xs font-bold text-gray-400">
+                    <i class="fa-solid fa-chart-pie mr-3 w-5"></i>
+                    Analytics Dashboard
                 </button>
-                <button onclick="switchTab('sessions')" id="nav-sessions" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-globe w-5"></i> <span>Trading Sessions Map</span>
+
+                <button data-tab="journal" onclick="switchTab('journal')" class="nav-button w-full rounded-xl px-3 py-3 text-left text-xs font-bold text-gray-400">
+                    <i class="fa-solid fa-book-open mr-3 w-5"></i>
+                    Trade Journal
                 </button>
-                <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-book-open w-5"></i> <span>Trade Journal History</span>
+
+                <button data-tab="gallery" onclick="switchTab('gallery')" class="nav-button w-full rounded-xl px-3 py-3 text-left text-xs font-bold text-gray-400">
+                    <i class="fa-solid fa-images mr-3 w-5"></i>
+                    Chart Gallery
                 </button>
-                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
-                </button>
-                <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-graduation-cap w-5"></i> <span>Trader's Knowledge Hub</span>
-                </button>
-                <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-gear w-5"></i> <span>Settings &amp; Profile</span>
+
+                <button data-tab="settings" onclick="switchTab('settings')" class="nav-button w-full rounded-xl px-3 py-3 text-left text-xs font-bold text-gray-400">
+                    <i class="fa-solid fa-gear mr-3 w-5"></i>
+                    Settings
                 </button>
             </div>
         </aside>
-        <!-- Main Content Area -->
-        <main class="flex-1 p-6 overflow-y-auto">
-            <div class="max-w-7xl mx-auto space-y-6">
-                <!-- TAB 1: P&L CALENDAR -->
-                <div id="tab-home" class="tab-content hidden space-y-6">
-                    <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
-                        <div class="flex items-center space-x-3">
-                            <button onclick="changeMonth(-1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                            <h2 id="calendarMonthTitle" class="font-extrabold text-base">September 2026</h2>
-                            <button onclick="changeMonth(1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                        </div>
-                        <div class="flex items-center space-x-6 text-xs font-bold">
-                            <div>Month Net: <span id="summaryMonthNet" class="text-theme font-extrabold">+$0.00</span></div>
-                            <div>Win Days: <span id="summaryWinDays" class="text-theme">0</span></div>
-                        </div>
+
+        <!-- MAIN -->
+        <main class="flex-1 overflow-y-auto p-6">
+            <div class="mx-auto max-w-7xl">
+
+                <!-- EXECUTION TAB -->
+                <section id="tab-execution" class="tab space-y-6">
+                    <div class="rounded-2xl border-2 border-theme bg-slate-900 p-5 text-xs shadow-theme">
+                        <h2 class="font-extrabold text-theme">
+                            <i class="fa-solid fa-shield-halved mr-2"></i>
+                            ACTIVE DISCIPLINE GUARD
+                        </h2>
+
+                        <p class="mt-2 text-gray-300">
+                            Complete all rules before committing an entry.
+                            Edits remaining:
+                            <strong id="editsRemaining" class="text-theme">2</strong>
+                        </p>
                     </div>
-                    <div class="grid grid-cols-7 gap-3" id="fullMonthCalendarGrid"></div>
-                </div>
-                <!-- TAB 2: ANALYTICS DASHBOARD -->
-                <div id="tab-dashboard" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <h3 class="font-extrabold text-base">Equity Curve (Verified Edge)</h3>
-                            <div class="h-64"><canvas id="equityChart"></canvas></div>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <div class="flex justify-between items-center">
-                                <h3 class="font-extrabold text-base">Execution Discipline Performance</h3>
-                                <span id="disciplineBadgeStatus" class="text-[10px] px-2 py-0.5 rounded font-bold bg-theme/10 text-theme">100% Adherence</span>
+
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+                        <div class="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
+                            <div class="flex items-center justify-between">
+                                <h2 class="font-extrabold">Pre-Trade Execution Protocol</h2>
+
+                                <button onclick="toggleCriteriaEdit()"
+                                        id="editCriteriaButton"
+                                        class="rounded-lg bg-theme/10 px-3 py-1.5 text-[10px] font-bold text-theme">
+                                    <i class="fa-solid fa-pen-to-square mr-1"></i>
+                                    Edit Criteria
+                                </button>
                             </div>
-                            <div class="h-64"><canvas id="disciplineChart"></canvas></div>
+
+                            <div id="criteriaList" class="space-y-3"></div>
+
+                            <textarea id="tradeNotes"
+                                      rows="3"
+                                      placeholder="Enter trade thesis and execution rationale..."
+                                      class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs outline-none focus:border-theme dark:border-slate-700 dark:bg-slate-800"></textarea>
+
+                            <label class="block text-[10px] font-bold text-gray-400">
+                                Attach Entry Screenshot
+                            </label>
+
+                            <input id="entryPhoto"
+                                   type="file"
+                                   accept="image/*"
+                                   class="w-full text-xs">
+
+                            <button onclick="approveEntry()"
+                                    class="w-full rounded-xl bg-theme py-3 text-xs font-bold text-white">
+                                Pass Rules & Commit Entry Setup
+                            </button>
                         </div>
-                    </div>
-                </div>
-                <!-- TAB 3: TRADING SESSIONS MAP -->
-                <div id="tab-sessions" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-extrabold text-base">Global Trading Centers &amp; Session Map</h3>
-                                <p class="text-xs text-gray-400">Active hours &amp; liquidity schedules (Manila local time)</p>
+
+                        <div class="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                            <h2 class="font-extrabold">New Trade Setup</h2>
+
+                            <label class="block text-[10px] font-bold text-gray-400">
+                                Symbol / Pair
+                            </label>
+
+                            <input id="tradeSymbol"
+                                   value="XAUUSD"
+                                   class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400">
+                                        Type
+                                    </label>
+
+                                    <select id="tradeType"
+                                            class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+                                        <option value="BUY">BUY</option>
+                                        <option value="SELL">SELL</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400">
+                                        Lot Size
+                                    </label>
+
+                                    <input id="tradeLot"
+                                           value="0.10"
+                                           class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+                                </div>
                             </div>
-                            <div class="px-3 py-1 bg-theme/10 border border-theme/30 text-theme text-xs font-mono font-bold rounded-xl">
-                                Live Market Synchronized
+
+                            <label class="block text-[10px] font-bold text-gray-400">
+                                Setup Reason
+                            </label>
+
+                            <input id="tradeReason"
+                                   value="Asian Sweep + FVG Rejection"
+                                   class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+
+                            <div id="resultPanel" class="hidden space-y-3">
+                                <div class="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-center text-xs font-bold text-amber-500">
+                                    Result pending. Enter the final outcome.
+                                </div>
+
+                                <label class="block text-[10px] font-bold text-gray-400">
+                                    Net PnL ($)
+                                </label>
+
+                                <input id="tradePnl"
+                                       type="number"
+                                       step="0.01"
+                                       placeholder="150.00"
+                                       class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs dark:border-slate-700 dark:bg-slate-800">
+
+                                <label class="block text-[10px] font-bold text-gray-400">
+                                    Attach Outcome Screenshot
+                                </label>
+
+                                <input id="resultPhoto"
+                                       type="file"
+                                       accept="image/*"
+                                       class="w-full text-xs">
+
+                                <button onclick="finishTrade(true)"
+                                        class="w-full rounded-xl bg-theme py-3 text-xs font-bold text-white">
+                                    Approve Result
+                                </button>
+
+                                <button onclick="finishTrade(false)"
+                                        class="w-full rounded-xl border border-red-500/30 bg-red-500/10 py-3 text-xs font-bold text-red-400">
+                                    Mark Failed Rules
+                                </button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" id="sessionsMapGrid"></div>
                     </div>
-                </div>
-                <!-- TAB 4: TRADE JOURNAL HISTORY -->
-                <div id="tab-journal" class="tab-content hidden space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-base">Trade Journal History (P&amp;L Records)</h3>
-                        <span class="text-xs text-gray-400 font-bold">Newest entries appear at the top</span>
-                    </div>
-                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 dark:bg-slate-800/50 text-gray-400 border-b border-gray-200 dark:border-slate-800 uppercase font-mono text-[10px]">
-                                    <tr>
-                                        <th class="p-4">Trade ID</th>
-                                        <th class="p-4">Symbol</th>
-                                        <th class="p-4">Execution Status</th>
-                                        <th class="p-4 text-right">Net PnL</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="journalTableBody" class="divide-y divide-gray-200 dark:divide-slate-800"></tbody>
-                            </table>
+                </section>
+
+                <!-- CALENDAR TAB -->
+                <section id="tab-calendar" class="tab hidden space-y-6">
+                    <div class="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center gap-3">
+                            <button onclick="changeMonth(-1)" class="rounded-xl bg-gray-100 px-3 py-2 dark:bg-slate-800">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+
+                            <h2 id="monthTitle" class="font-extrabold"></h2>
+
+                            <button onclick="changeMonth(1)" class="rounded-xl bg-gray-100 px-3 py-2 dark:bg-slate-800">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+
+                        <div class="text-xs font-bold">
+                            Month Net:
+                            <span id="monthNet" class="text-theme">$0.00</span>
                         </div>
                     </div>
-                </div>
-                <!-- TAB 5: CHART GALLERY WALL -->
-                <div id="tab-gallery" class="tab-content hidden space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
-                        <span class="text-xs text-theme font-bold">Newest Uploads Displayed First</span>
+
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-3"></div>
+                </section>
+
+                <!-- DASHBOARD TAB -->
+                <section id="tab-dashboard" class="tab hidden space-y-6">
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                            <h2 class="mb-4 font-extrabold">Equity Curve</h2>
+                            <div class="h-72">
+                                <canvas id="equityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="rounded-2xl border border-gray-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                            <h2 class="mb-4 font-extrabold">Discipline Performance</h2>
+                            <div class="h-72">
+                                <canvas id="disciplineChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
-                </div>
-                <!-- TAB 6: EXECUTION RULES & DISCIPLINE GUARD -->
-                <div id="tab-execution" class="tab-content space-y-6">
-                    <div class="bg-slate-900 border-2 border-theme/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl">
-                        <i class="fa-solid fa-shield-halved text-theme text-xl mt-0.5"></i>
-                        <div class="space-y-1">
-                            <h4 class="font-extrabold text-theme text-sm tracking-wide">ACTIVE DISCIPLINE GUARD: System Criteria Locked</h4>
-                            <p class="text-gray-300 leading-relaxed">
-                                Changing entry criteria mid-stream destroys your true mathematical edge. You have <span id="editsLeftCount" class="font-bold text-theme">2</span> edits remaining.
+                </section>
+
+                <!-- JOURNAL TAB -->
+                <section id="tab-journal" class="tab hidden space-y-6">
+                    <h2 class="font-extrabold">Trade Journal History</h2>
+
+                    <div class="overflow-x-auto rounded-2xl border border-gray-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+                        <table class="w-full text-left text-xs">
+                            <thead class="border-b border-gray-200 bg-gray-50 dark:border-slate-800 dark:bg-slate-800">
+                                <tr>
+                                    <th class="p-4">Trade ID</th>
+                                    <th class="p-4">Date</th>
+                                    <th class="p-4">Symbol</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right">PnL</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="journalBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- GALLERY TAB -->
+                <section id="tab-gallery" class="tab hidden space-y-6">
+                    <h2 class="font-extrabold">Chart Evidence Gallery</h2>
+
+                    <div id="galleryGrid" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+                </section>
+
+                <!-- SETTINGS TAB -->
+                <section id="tab-settings" class="tab hidden">
+                    <div class="mx-auto max-w-xl space-y-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+                        <h2 class="font-extrabold">Settings</h2>
+
+                        <div>
+                            <p class="mb-3 text-xs font-bold text-gray-400">
+                                Accent Color
                             </p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <div class="flex justify-between items-center">
-                                <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="toggleEditCriteriaMode()" id="editCriteriaBtn" class="text-[10px] bg-theme/10 text-theme border border-theme/30 px-2.5 py-1 rounded-lg font-bold transition hover:bg-theme/20">
-                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Criteria
-                                    </button>
-                                    <span id="lockStatusBadge" class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                                        <i class="fa-solid fa-lock mr-1"></i> Locked
-                                    </span>
-                                </div>
-                            </div>
-                            <div id="criteriaListContainer" class="space-y-3"></div>
-                            <div class="pt-4 space-y-3">
-                                <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-theme"></textarea>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Entry Screen Photo</label>
-                                    <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs">
-                                </div>
-                                <button onclick="verifyExecutionApproval()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">
-                                    Pass Rules &amp; Commit Entry Setup
+
+                            <div class="grid grid-cols-3 gap-3">
+                                <button onclick="setTheme('#10b981', 'rgba(16,185,129,.6)')"
+                                        class="rounded-xl bg-emerald-500 p-3 text-xs font-bold text-white">
+                                    Emerald
+                                </button>
+
+                                <button onclick="setTheme('#f59e0b', 'rgba(245,158,11,.6)')"
+                                        class="rounded-xl bg-amber-500 p-3 text-xs font-bold text-white">
+                                    Gold
+                                </button>
+
+                                <button onclick="setTheme('#0ea5e9', 'rgba(14,165,233,.6)')"
+                                        class="rounded-xl bg-sky-500 p-3 text-xs font-bold text-white">
+                                    Blue
                                 </button>
                             </div>
                         </div>
-                        <!-- Log New Setup Position -->
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 relative">
-                            <h3 class="font-extrabold text-base">Log New Setup Position</h3>
-                            
-                            <div class="flex items-center justify-between p-2.5 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-200 dark:border-slate-700">
-                                <div id="badgeEntryStatus" class="px-3 py-1.5 rounded-lg bg-theme/20 text-theme border border-theme/40 text-xs font-black tracking-widest animate-glow-fast flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-theme animate-ping"></span> ENTRY
-                                </div>
-                                <span class="text-gray-400 font-bold text-xs">→</span>
-                                <div id="badgeResultStatus" class="px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/30 text-xs font-black tracking-widest flex items-center gap-1.5 opacity-50">
-                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span> RESULT
-                                </div>
-                            </div>
-                            <div id="entryTicketForm" class="space-y-3 transition-all duration-300">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Symbol / Pair</label>
-                                    <input type="text" id="sideSymbol" value="XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">Type</label>
-                                        <select id="sideType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                                            <option>BUY (Long)</option>
-                                            <option>SELL (Short)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-gray-400 mb-1">Lots / Size</label>
-                                        <input type="text" id="sideLot" value="0.10" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Setup Reason</label>
-                                    <input type="text" id="sideReason" value="Asian Sweep + FVG Rejection" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                                </div>
-                            </div>
-                            <div id="resultApprovalPanel" class="hidden space-y-3 transition-all duration-300">
-                                <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-500 font-bold text-center animate-pulse">
-                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT pending. Upload final outcome.
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Net PnL ($)</label>
-                                    <input type="number" step="0.01" id="activeTradePnL" placeholder="e.g. 150.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Outcome Photo</label>
-                                    <input type="file" id="activeResultFile" accept="image/*" class="w-full text-xs">
-                                </div>
-                                <button onclick="approveTradeResult(true)" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg mb-2">
-                                    Approve Result (Rules Followed)
-                                </button>
-                                <button onclick="approveTradeResult(false)" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-bold text-xs py-3 rounded-xl transition">
-                                    Mark as Failed Rules
-                                </button>
-                            </div>
-                        </div>
+
+                        <button onclick="updateName()"
+                                class="w-full rounded-xl bg-gray-100 py-3 text-xs font-bold dark:bg-slate-800">
+                            Update Profile Name
+                        </button>
+
+                        <button onclick="clearAllData()"
+                                class="w-full rounded-xl bg-red-500/10 py-3 text-xs font-bold text-red-400">
+                            Clear All Local Data
+                        </button>
                     </div>
-                </div>
-                <!-- TAB 7: KNOWLEDGE HUB -->
-                <div id="tab-knowledge" class="tab-content hidden space-y-6">
-                    <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-8 overflow-hidden shadow-2xl">
-                        <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80');"></div>
-                        <div class="relative z-10 space-y-4 max-w-2xl">
-                            <span class="px-3 py-1 bg-theme/20 text-theme border border-theme/40 text-[10px] font-mono font-bold rounded-xl uppercase">Master Trader Library &amp; Archives</span>
-                            <h2 class="text-2xl font-black">Trader's Sanctuary &amp; Mindset Library</h2>
-                            <p class="text-xs text-gray-300 leading-relaxed">
-                                Explore foundational trading psychology masterpieces and historical trader portraits. Master your mental edge like Mark Douglas, Jesse Livermore, and Paul Tudor Jones.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
-                            <div class="space-y-3">
-                                <div class="w-20 h-28 bg-amber-700 rounded-lg mx-auto shadow-xl border-l-4 border-amber-900 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
-                                    <span class="font-bold">Trading in the Zone</span>
-                                    <span class="text-[8px] opacity-80">Mark Douglas</span>
-                                </div>
-                                <h3 class="font-extrabold text-sm">Trading in the Zone</h3>
-                                <p class="text-xs text-gray-400">Mastering market probabilities, discipline, and emotional detachment from trade outcomes.</p>
-                            </div>
-                            <a href="https://dl.fxf1.com/books/english/Trading_in_the_Zone.pdf" target="_blank" class="w-full bg-theme/10 hover:bg-theme/20 text-theme border border-theme/30 text-xs font-bold py-2.5 rounded-xl transition inline-block">
-                                <i class="fa-solid fa-book-open-reader mr-1.5"></i> Read PDF Book
-                            </a>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
-                            <div class="space-y-3">
-                                <div class="w-20 h-28 bg-indigo-900 rounded-lg mx-auto shadow-xl border-l-4 border-indigo-950 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
-                                    <span class="font-bold">Reminiscences of a Stock Operator</span>
-                                    <span class="text-[8px] opacity-80">Edwin Lefèvre</span>
-                                </div>
-                                <h3 class="font-extrabold text-sm">Reminiscences of a Stock Operator</h3>
-                                <p class="text-xs text-gray-400">Timeless lessons on market timing, speculation, crowd psychology, and risk management.</p>
-                            </div>
-                            <a href="https://sushilparajuli.com/wp-content/uploads/2024/02/Reminiscences-of-a-stock-operator-with-new-commentary-and-insights-on-the-life-of-Jesse-Livermore.-John-Wiley-2010.-ISBN-9781946963062-SA7-Unit-10.pdf" target="_blank" class="w-full bg-theme/10 hover:bg-theme/20 text-theme border border-theme/30 text-xs font-bold py-2.5 rounded-xl transition inline-block">
-                                <i class="fa-solid fa-book-open-reader mr-1.5"></i> Read PDF Book
-                            </a>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
-                            <div class="space-y-3">
-                                <div class="w-20 h-28 bg-emerald-900 rounded-lg mx-auto shadow-xl border-l-4 border-emerald-950 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
-                                    <span class="font-bold">Institutional Rights &amp; Strategies</span>
-                                    <span class="text-[8px] opacity-80">Market Archives</span>
-                                </div>
-                                <h3 class="font-extrabold text-sm">Market Strategies &amp; Rights</h3>
-                                <p class="text-xs text-gray-400">Advanced institutional frameworks and strategic risk guidelines for professional traders.</p>
-                            </div>
-                            <a href="https://assets-eu-01.kc-usercontent.com/bcd02f72-b50c-0179-8b4b-5e44f5340bd4/dbeff7ab-95c9-44c4-95d2-ab1417ae9ee6/HH%20Rights%20FBF%2025.pdf" target="_blank" class="w-full bg-theme/10 hover:bg-theme/20 text-theme border border-theme/30 text-xs font-bold py-2.5 rounded-xl transition inline-block">
-                                <i class="fa-solid fa-book-open-reader mr-1.5"></i> Read PDF Book
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <!-- TAB 8: SETTINGS -->
-                <div id="tab-settings" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-5">
-                        <h3 class="font-extrabold text-base">Settings &amp; Theme Customization</h3>
-                        <div class="space-y-2">
-                            <label class="block text-xs font-bold text-gray-400">Select Accent Color Theme</label>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" class="p-3 rounded-xl bg-emerald-600 text-white text-xs font-bold">Emerald Green</button>
-                                <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" class="p-3 rounded-xl bg-amber-500 text-white text-xs font-bold">Luxury Gold</button>
-                                <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" class="p-3 rounded-xl bg-sky-500 text-white text-xs font-bold">Cyber Light Blue</button>
-                            </div>
-                        </div>
-                        <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 font-bold text-xs py-3 rounded-xl transition">Update Profile Name</button>
-                        <button onclick="if(confirm('Reset all data?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl transition">Clear Local Storage</button>
-                    </div>
-                </div>
+                </section>
             </div>
         </main>
     </div>
-    <!-- FLOATING SUPPORT CHAT WIDGET -->
-    <div class="fixed bottom-6 right-6 z-50">
-        <div id="supportChatBox" class="hidden bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl w-80 mb-3 flex flex-col overflow-hidden">
-            <div class="bg-slate-900 text-white p-3.5 flex justify-between items-center border-b border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <div class="w-2.5 h-2.5 rounded-full bg-theme animate-ping"></div>
-                    <span class="font-extrabold text-xs">TraderWell Live Support &amp; Chat</span>
-                </div>
-                <button onclick="toggleSupportChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
-            </div>
-            <div id="chatMessagesContainer" class="p-3 h-56 overflow-y-auto space-y-2 text-xs bg-gray-50 dark:bg-slate-950">
-                <div class="p-2.5 bg-slate-800/80 rounded-xl text-gray-300 max-w-[85%]">
-                    Hello trader! Welcome to TraderWell. Ask questions or leave messages here.
-                </div>
-            </div>
-            <div class="p-2.5 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
-                <input type="text" id="chatInputMessage" placeholder="Type message..." class="flex-1 bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-theme" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                <button onclick="sendChatMessage()" class="bg-theme hover:opacity-90 text-white px-3 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <button onclick="toggleSupportChat()" class="w-14 h-14 bg-theme hover:scale-105 transition rounded-full shadow-2xl flex items-center justify-center text-white text-xl animate-glow-fast">
-            <i class="fa-solid fa-comments"></i>
-        </button>
-    </div>
-    <!-- JavaScript Application Controller -->
-    <script>
-        // State management with safe error handling
-        let trades = [];
-        try {
-            trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
-                { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', entryPhoto: '', resultPhoto: '', criteria: [] },
-                { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', entryPhoto: '', resultPhoto: '', criteria: [] }
-            ];
-        } catch (e) {
-            console.error('Error loading trades from localStorage:', e);
-            trades = [];
-        }
 
-        let criteria = JSON.parse(localStorage.getItem('traderwell_criteria')) || [
-            { text: 'Asian Liquidity Sweep verified prior to entry', checked: true },
-            { text: 'Higher Timeframe (15m/1h) Market Structure alignment', checked: true },
-            { text: 'Fixed Risk-to-Reward ratio of at least 1:2', checked: true },
-            { text: 'Spread protection & broker execution latency verified', checked: true }
+    <script>
+        /*
+         * APPLICATION STATE
+         */
+
+        const defaultTrades = [
+            {
+                id: 'TW-9001',
+                date: '2026-09-01',
+                symbol: 'XAUUSD',
+                type: 'BUY',
+                lot: 0.10,
+                pnl: 145.50,
+                status: 'Passed Rules',
+                notes: 'Asian Session Sweep',
+                reason: 'Asian Session Sweep',
+                entryPhoto: '',
+                resultPhoto: '',
+                criteria: []
+            },
+            {
+                id: 'TW-9002',
+                date: '2026-09-03',
+                symbol: 'US30',
+                type: 'SELL',
+                lot: 0.20,
+                pnl: -80.00,
+                status: 'Passed Rules',
+                notes: 'London Open Rejection',
+                reason: 'London Open Rejection',
+                entryPhoto: '',
+                resultPhoto: '',
+                criteria: []
+            }
         ];
-        let editsLeft = parseInt(localStorage.getItem('traderwell_edits')) ?? 2;
-        let isCriteriaEditable = false;
-        let currentMonth = 8; // September (0-indexed)
-        let currentYear = 2026;
-        let pendingTradeDraft = null;
+
+        const defaultCriteria = [
+            {
+                text: 'Asian Liquidity Sweep verified prior to entry',
+                checked: true
+            },
+            {
+                text: 'Higher Timeframe Market Structure alignment',
+                checked: true
+            },
+            {
+                text: 'Fixed Risk-to-Reward ratio of at least 1:2',
+                checked: true
+            },
+            {
+                text: 'Spread protection and execution latency verified',
+                checked: true
+            }
+        ];
+
+        let trades = loadTrades();
+        let criteria = loadCriteria();
+        let editsLeft = Number(localStorage.getItem('traderwell_edits') ?? 2);
+        let criteriaEditable = false;
+        let pendingTrade = null;
+
+        let currentDate = new Date(2026, 8, 1);
         let equityChartInstance = null;
         let disciplineChartInstance = null;
 
-        // Safe Storage Helper to prevent Photo Loss / Quota Errors
+        /*
+         * STORAGE
+         */
+
+        function loadTrades() {
+            try {
+                const saved = localStorage.getItem('traderwell_trades');
+
+                if (!saved) {
+                    return structuredClone(defaultTrades);
+                }
+
+                const parsed = JSON.parse(saved);
+
+                return Array.isArray(parsed) ? parsed : structuredClone(defaultTrades);
+            } catch (error) {
+                console.error('Unable to load trades:', error);
+                return structuredClone(defaultTrades);
+            }
+        }
+
+        function loadCriteria() {
+            try {
+                const saved = localStorage.getItem('traderwell_criteria');
+
+                if (!saved) {
+                    return structuredClone(defaultCriteria);
+                }
+
+                const parsed = JSON.parse(saved);
+
+                return Array.isArray(parsed) ? parsed : structuredClone(defaultCriteria);
+            } catch (error) {
+                console.error('Unable to load criteria:', error);
+                return structuredClone(defaultCriteria);
+            }
+        }
+
+        /*
+         * IMPORTANT PHOTO-SAFE STORAGE FUNCTION
+         */
+
         function saveTradesToStorage() {
             try {
-                localStorage.setItem('traderwell_trades', JSON.stringify(trades));
+                localStorage.setItem(
+                    'traderwell_trades',
+                    JSON.stringify(trades)
+                );
+
                 return true;
-            } catch (e) {
-                alert('Storage Quota Exceeded! You have stored too many screenshots. Please clear old trade records or compress your images before uploading new ones.');
-                console.error(e);
+            } catch (error) {
+                console.error('Unable to save trades:', error);
+
+                alert(
+                    'Storage quota exceeded. The changes were not saved. ' +
+                    'Your existing photos were not replaced. Please remove old trades or use smaller images.'
+                );
+
                 return false;
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('traderwell_username');
-            if (savedName) {
-                document.getElementById('headerTraderName').innerText = savedName;
-            }
-            if (sessionStorage.getItem('traderwell_authenticated') === 'true') {
-                document.getElementById('securityLoginOverlay').classList.add('hidden');
-                initApp();
-            }
-        });
+        function saveCriteria() {
+            localStorage.setItem(
+                'traderwell_criteria',
+                JSON.stringify(criteria)
+            );
+
+            localStorage.setItem(
+                'traderwell_edits',
+                String(editsLeft)
+            );
+        }
+
+        /*
+         * AUTHENTICATION
+         */
 
         function switchAuthMode(mode) {
-            const loginTab = document.getElementById('authTabLogin');
-            const signupTab = document.getElementById('authTabSignup');
-            const loginForm = document.getElementById('loginFormContainer');
-            const signupForm = document.getElementById('signupFormContainer');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginTab = document.getElementById('loginTab');
+            const signupTab = document.getElementById('signupTab');
+
             if (mode === 'login') {
-                loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm';
-                signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition';
                 loginForm.classList.remove('hidden');
                 signupForm.classList.add('hidden');
+
+                loginTab.classList.add('bg-theme', 'text-white');
+                signupTab.classList.remove('bg-theme', 'text-white');
+                signupTab.classList.add('text-gray-400');
             } else {
-                signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm';
-                loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition';
                 signupForm.classList.remove('hidden');
                 loginForm.classList.add('hidden');
+
+                signupTab.classList.add('bg-theme', 'text-white');
+                loginTab.classList.remove('bg-theme', 'text-white');
+                loginTab.classList.add('text-gray-400');
             }
         }
 
-        function verifyMasterPin() {
-            const pin = document.getElementById('masterPinInput').value.trim();
+        function login() {
+            const enteredPin = document.getElementById('masterPin').value.trim();
             const storedPin = localStorage.getItem('traderwell_pin') || '2026';
-            if (pin === storedPin || pin === '1234') {
+
+            if (enteredPin === storedPin || enteredPin === '1234') {
                 sessionStorage.setItem('traderwell_authenticated', 'true');
-                document.getElementById('securityLoginOverlay').classList.add('hidden');
+                document.getElementById('loginOverlay').classList.add('hidden');
                 initApp();
             } else {
-                alert('Invalid Master PIN. Please try again (Hint: 2026).');
+                alert('Invalid PIN. The default PIN is 2026.');
             }
         }
 
-        function handleUserSignup() {
+        function signup() {
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const pin = document.getElementById('signupPin').value.trim();
+
             if (!name || !pin) {
-                alert('Please enter your name and choose a PIN.');
+                alert('Please enter your name and PIN.');
                 return;
             }
+
             localStorage.setItem('traderwell_username', name);
             localStorage.setItem('traderwell_email', email);
             localStorage.setItem('traderwell_pin', pin);
+
+            document.getElementById('traderName').textContent = name;
             sessionStorage.setItem('traderwell_authenticated', 'true');
-            document.getElementById('headerTraderName').innerText = name;
-            document.getElementById('securityLoginOverlay').classList.add('hidden');
-            alert(`Account created successfully for ${name}! Welcome to TraderWell.`);
+            document.getElementById('loginOverlay').classList.add('hidden');
+
             initApp();
         }
 
-        function lockSystemPortal() {
+        function logout() {
             sessionStorage.removeItem('traderwell_authenticated');
-            document.getElementById('masterPinInput').value = '';
-            document.getElementById('securityLoginOverlay').classList.remove('hidden');
+            document.getElementById('masterPin').value = '';
+            document.getElementById('loginOverlay').classList.remove('hidden');
             switchAuthMode('login');
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-theme/20', 'text-theme', 'border', 'border-theme/60');
-                btn.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-slate-800');
+        /*
+         * NAVIGATION
+         */
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.add('hidden');
             });
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-slate-800');
-                activeBtn.classList.add('bg-theme/20', 'text-theme', 'border', 'border-theme/60');
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-button').forEach(button => {
+                button.classList.remove('nav-active');
+                button.classList.add('text-gray-400');
+            });
+
+            const activeButton = document.querySelector(
+                `[data-tab="${tabName}"]`
+            );
+
+            if (activeButton) {
+                activeButton.classList.add('nav-active');
+                activeButton.classList.remove('text-gray-400');
             }
-            if (tabId === 'home') renderCalendar();
-            if (tabId === 'dashboard') renderCharts();
-            if (tabId === 'sessions') renderSessionsMap();
-            if (tabId === 'journal') renderJournalTable();
-            if (tabId === 'gallery') renderGalleryWall();
+
+            if (tabName === 'calendar') {
+                renderCalendar();
+            }
+
+            if (tabName === 'dashboard') {
+                renderCharts();
+            }
+
+            if (tabName === 'journal') {
+                renderJournal();
+            }
+
+            if (tabName === 'gallery') {
+                renderGallery();
+            }
         }
 
-        function setThemeColor(name, hex, glow) {
-            document.documentElement.style.setProperty('--theme-primary', hex);
-            document.documentElement.style.setProperty('--theme-glow', glow);
+        /*
+         * THEME
+         */
+
+        function setTheme(primary, glow) {
+            document.documentElement.style.setProperty(
+                '--theme-primary',
+                primary
+            );
+
+            document.documentElement.style.setProperty(
+                '--theme-glow',
+                glow
+            );
+
+            localStorage.setItem('traderwell_theme_primary', primary);
+            localStorage.setItem('traderwell_theme_glow', glow);
         }
 
-        function updateTraderProfileName() {
-            const newName = prompt('Enter trader name:', document.getElementById('headerTraderName').innerText);
-            if (newName) {
-                document.getElementById('headerTraderName').innerText = newName;
-                localStorage.setItem('traderwell_username', newName);
-            }
-        }
+        /*
+         * CRITERIA
+         */
 
         function renderCriteria() {
-            const container = document.getElementById('criteriaListContainer');
+            const container = document.getElementById('criteriaList');
+
             container.innerHTML = '';
+
             criteria.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700';
-                div.innerHTML = `
-                    <label class="flex items-center space-x-3 text-xs cursor-pointer flex-1">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCriteriaCheck(${index})" class="w-4 h-4 rounded text-theme focus:ring-theme">
-                        <span class="${item.checked ? 'line-through text-gray-400' : 'font-medium'}">${item.text}</span>
-                    </label>
-                    ${isCriteriaEditable ? `<button onclick="deleteCriteria(${index})" class="text-red-400 hover:text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button>` : ''}
-                `;
-                container.appendChild(div);
+                const wrapper = document.createElement('div');
+
+                wrapper.className =
+                    'flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-slate-700 dark:bg-slate-800';
+
+                const label = document.createElement('label');
+                label.className =
+                    'flex flex-1 cursor-pointer items-center gap-3 text-xs';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = Boolean(item.checked);
+                checkbox.className = 'h-4 w-4';
+                checkbox.addEventListener('change', () => {
+                    criteria[index].checked = checkbox.checked;
+                    saveCriteria();
+                    renderCriteria();
+                });
+
+                const text = document.createElement('span');
+                text.textContent = item.text;
+                text.className = item.checked
+                    ? 'text-gray-400 line-through'
+                    : 'font-medium';
+
+                label.appendChild(checkbox);
+                label.appendChild(text);
+                wrapper.appendChild(label);
+
+                if (criteriaEditable) {
+                    const deleteButton = document.createElement('button');
+
+                    deleteButton.className =
+                        'ml-3 text-red-400 hover:text-red-300';
+
+                    deleteButton.innerHTML =
+                        '<i class="fa-solid fa-trash text-xs"></i>';
+
+                    deleteButton.onclick = () => {
+                        criteria.splice(index, 1);
+                        saveCriteria();
+                        renderCriteria();
+                    };
+
+                    wrapper.appendChild(deleteButton);
+                }
+
+                container.appendChild(wrapper);
             });
-            document.getElementById('editsLeftCount').innerText = editsLeft;
+
+            document.getElementById('editsRemaining').textContent = editsLeft;
         }
 
-        function toggleCriteriaCheck(index) {
-            criteria[index].checked = !criteria[index].checked;
-            localStorage.setItem('traderwell_criteria', JSON.stringify(criteria));
-            renderCriteria();
-        }
-
-        function toggleEditCriteriaMode() {
-            if (!isCriteriaEditable) {
+        function toggleCriteriaEdit() {
+            if (!criteriaEditable) {
                 if (editsLeft <= 0) {
-                    alert('Zero edits remaining! Discipline Guard has locked further modifications.');
+                    alert('No criteria edits remain.');
                     return;
                 }
+
                 editsLeft--;
-                localStorage.setItem('traderwell_edits', editsLeft);
-                isCriteriaEditable = true;
-                document.getElementById('lockStatusBadge').className = 'text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
-                document.getElementById('lockStatusBadge').innerHTML = '<i class="fa-solid fa-unlock mr-1"></i> Editable';
+                criteriaEditable = true;
             } else {
-                isCriteriaEditable = false;
-                document.getElementById('lockStatusBadge').className = 'text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
-                document.getElementById('lockStatusBadge').innerHTML = '<i class="fa-solid fa-lock mr-1"></i> Locked';
+                criteriaEditable = false;
             }
+
+            saveCriteria();
             renderCriteria();
         }
 
-        function fileToBase64(fileInput) {
-            return new Promise((resolve) => {
-                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        /*
+         * IMAGE STORAGE
+         */
+
+        function fileToBase64(input) {
+            return new Promise(resolve => {
+                if (!input || !input.files || !input.files[0]) {
                     resolve('');
                     return;
                 }
-                const file = fileInput.files[0];
+
                 const reader = new FileReader();
-                reader.onload = function(e) { resolve(e.target.result); };
-                reader.onerror = function() { resolve(''); };
-                reader.readAsDataURL(file);
+
+                reader.onload = event => resolve(event.target.result);
+                reader.onerror = () => resolve('');
+
+                reader.readAsDataURL(input.files[0]);
             });
         }
 
-        async function verifyExecutionApproval() {
-            const unchecked = criteria.filter(c => !c.checked);
-            if (unchecked.length > 0) {
-                alert('Discipline Guard Block: You must fulfill all pre-trade checklist rules before committing entry setup.');
+        /*
+         * NEW TRADE ENTRY
+         */
+
+        async function approveEntry() {
+            const incompleteRules = criteria.filter(item => !item.checked);
+
+            if (incompleteRules.length > 0) {
+                alert('Complete all execution rules before entering the trade.');
                 return;
             }
-            const notes = document.getElementById('guardTradeNotes').value;
-            const symbol = document.getElementById('sideSymbol').value;
-            const type = document.getElementById('sideType').value;
-            const lot = document.getElementById('sideLot').value;
-            const reason = document.getElementById('sideReason').value;
-            const entryPhotoBase64 = await fileToBase64(document.getElementById('guardChartFile'));
-            
-            pendingTradeDraft = {
-                id: 'TW-' + Math.floor(1000 + Math.random() * 9000),
+
+            const entryPhotoBase64 = await fileToBase64(
+                document.getElementById('entryPhoto')
+            );
+
+            pendingTrade = {
+                id: `TW-${Math.floor(1000 + Math.random() * 9000)}`,
                 date: new Date().toISOString().split('T')[0],
-                symbol, type, lot, notes, reason,
+                symbol: document.getElementById('tradeSymbol').value.trim() || 'XAUUSD',
+                type: document.getElementById('tradeType').value,
+                lot: document.getElementById('tradeLot').value,
+                reason: document.getElementById('tradeReason').value.trim(),
+                notes: document.getElementById('tradeNotes').value.trim(),
+                pnl: 0,
+                status: 'Pending Result',
                 entryPhoto: entryPhotoBase64,
                 resultPhoto: '',
-                criteria: JSON.parse(JSON.stringify(criteria)),
-                status: 'Pending Result'
+                criteria: JSON.parse(JSON.stringify(criteria))
             };
 
-            document.getElementById('badgeEntryStatus').classList.remove('animate-glow-fast', 'bg-theme/20', 'text-theme');
-            document.getElementById('badgeEntryStatus').classList.add('opacity-50');
-            document.getElementById('badgeResultStatus').classList.remove('opacity-50');
-            document.getElementById('badgeResultStatus').classList.add('animate-glow-fast', 'bg-amber-500/20', 'text-amber-500');
-            
-            document.getElementById('entryTicketForm').classList.add('hidden');
-            document.getElementById('resultApprovalPanel').classList.remove('hidden');
+            document.getElementById('resultPanel').classList.remove('hidden');
+            alert('Entry committed. Add the final result to complete the trade.');
         }
 
-        async function approveTradeResult(rulesFollowed) {
-            const pnl = parseFloat(document.getElementById('activeTradePnL').value) || 0;
-            const resultPhotoBase64 = await fileToBase64(document.getElementById('activeResultFile'));
-            
-            pendingTradeDraft.pnl = pnl;
-            pendingTradeDraft.resultPhoto = resultPhotoBase64;
-            pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
-            
-            trades.unshift(pendingTradeDraft);
-            if (saveTradesToStorage()) {
-                alert('Trade successfully logged and committed to journal history!');
-                location.reload();
+        async function finishTrade(rulesFollowed) {
+            if (!pendingTrade) {
+                alert('No pending trade found.');
+                return;
             }
+
+            const pnlInput = document.getElementById('tradePnl').value;
+            const resultPhotoBase64 = await fileToBase64(
+                document.getElementById('resultPhoto')
+            );
+
+            pendingTrade.pnl = Number.parseFloat(pnlInput) || 0;
+            pendingTrade.resultPhoto = resultPhotoBase64;
+            pendingTrade.status = rulesFollowed
+                ? 'Passed Rules'
+                : 'Failed Rules';
+
+            trades.unshift(pendingTrade);
+
+            if (!saveTradesToStorage()) {
+                return;
+            }
+
+            pendingTrade = null;
+            alert('Trade saved successfully.');
+            location.reload();
         }
 
-        function renderCalendar() {
-            const grid = document.getElementById('fullMonthCalendarGrid');
-            grid.innerHTML = '';
-            
-            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            daysOfWeek.forEach(d => {
-                const header = document.createElement('div');
-                header.className = 'text-center text-[10px] font-extrabold text-gray-400 py-1 uppercase';
-                header.innerText = d;
-                grid.appendChild(header);
-            });
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            document.getElementById('calendarMonthTitle').innerText = `${monthNames[currentMonth]} ${currentYear}`;
-            let monthNetTotal = 0;
-            let winDaysCount = 0;
-            for (let i = 0; i < firstDay; i++) {
-                const emptyCell = document.createElement('div');
-                grid.appendChild(emptyCell);
-            }
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const dayTrades = trades.filter(t => t.date === dateStr);
-                const dayNet = dayTrades.reduce((acc, t) => acc + t.pnl, 0);
-                if (dayTrades.length > 0) monthNetTotal += dayNet;
-                if (dayNet > 0) winDaysCount++;
-                const cell = document.createElement('div');
-                cell.className = `min-h-[90px] p-2.5 rounded-2xl border transition flex flex-col justify-between ${
-                    dayTrades.length > 0 
-                        ? (dayNet >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400')
-                        : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-400'
-                }`;
-                cell.innerHTML = `
-                    <div class="flex justify-between items-center text-xs font-bold">
-                        <span>${day}</span>
-                        <span class="text-[9px] font-mono">${dayTrades.length > 0 ? `${dayTrades.length} trd` : ''}</span>
-                    </div>
-                    <div class="text-right font-mono text-xs font-extrabold">
-                        ${dayTrades.length > 0 ? (dayNet >= 0 ? `+$${dayNet.toFixed(2)}` : `-$${Math.abs(dayNet).toFixed(2)}`) : ''}
-                    </div>
-                `;
-                grid.appendChild(cell);
-            }
-            document.getElementById('summaryMonthNet').innerText = (monthNetTotal >= 0 ? `+$${monthNetTotal.toFixed(2)}` : `-$${Math.abs(monthNetTotal).toFixed(2)}`);
-            document.getElementById('summaryWinDays').innerText = winDaysCount;
-        }
+        /*
+         * CALENDAR
+         */
 
-        function changeMonth(dir) {
-            currentMonth += dir;
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        function changeMonth(amount) {
+            currentDate.setMonth(currentDate.getMonth() + amount);
             renderCalendar();
         }
 
-        function renderCharts() {
-            const ctxEquity = document.getElementById('equityChart').getContext('2d');
-            const ctxDiscipline = document.getElementById('disciplineChart').getContext('2d');
-            if (equityChartInstance) equityChartInstance.destroy();
-            if (disciplineChartInstance) disciplineChartInstance.destroy();
-            let runningTotal = 10000;
-            const equityData = trades.map(t => { runningTotal += t.pnl; return runningTotal; });
-            const labels = trades.map(t => t.date);
-            equityChartInstance = new Chart(ctxEquity, {
-                type: 'line',
-                data: {
-                    labels: labels.length ? labels : ['Start'],
-                    datasets: [{
-                        label: 'Account Equity ($)',
-                        data: equityData.length ? equityData : [10000],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-            const passedCount = trades.filter(t => t.status === 'Passed Rules').length;
-            const failedCount = trades.filter(t => t.status === 'Failed Rules').length;
-            disciplineChartInstance = new Chart(ctxDiscipline, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Passed Discipline Rules', 'Deviated Rules'],
-                    datasets: [{
-                        data: [passedCount || 1, failedCount],
-                        backgroundColor: ['#10b981', '#ef4444']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
 
-        function renderSessionsMap() {
-            const grid = document.getElementById('sessionsMapGrid');
+            const monthName = currentDate.toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric'
+            });
+
+            document.getElementById('monthTitle').textContent = monthName;
             grid.innerHTML = '';
-            
-            const now = new Date();
-            const utcHour = now.getUTCHours();
-            const sessions = [
-                { name: 'Sydney Session', openUTC: 22, closeUTC: 7, city: 'Sydney / Wellington' },
-                { name: 'Tokyo Session', openUTC: 0, closeUTC: 9, city: 'Tokyo / Singapore' },
-                { name: 'London Session', openUTC: 8, closeUTC: 17, city: 'London / Frankfurt' },
-                { name: 'New York Session', openUTC: 13, closeUTC: 22, city: 'New York / Chicago' }
-            ];
-            sessions.forEach(s => {
-                let isOpen = false;
-                if (s.openUTC < s.closeUTC) {
-                    isOpen = utcHour >= s.openUTC && utcHour < s.closeUTC;
-                } else {
-                    isOpen = utcHour >= s.openUTC || utcHour < s.closeUTC;
-                }
-                const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border ${isOpen ? 'bg-theme/10 border-theme/40 animate-pulse' : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="font-extrabold text-xs">${s.name}</span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isOpen ? 'bg-theme text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-400'}">${isOpen ? 'OPEN' : 'CLOSED'}</span>
+
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                .forEach(day => {
+                    const header = document.createElement('div');
+                    header.className =
+                        'py-1 text-center text-[10px] font-extrabold uppercase text-gray-400';
+                    header.textContent = day;
+                    grid.appendChild(header);
+                });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            let monthTotal = 0;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = [
+                    year,
+                    String(month + 1).padStart(2, '0'),
+                    String(day).padStart(2, '0')
+                ].join('-');
+
+                const dayTrades = trades.filter(trade => trade.date === date);
+                const total = dayTrades.reduce(
+                    (sum, trade) => sum + Number(trade.pnl || 0),
+                    0
+                );
+
+                monthTotal += total;
+
+                const cell = document.createElement('div');
+
+                cell.className =
+                    'min-h-24 rounded-2xl border p-3 ' +
+                    (dayTrades.length
+                        ? total >= 0
+                            ? 'border-emerald-500/30 bg-emerald-500/10'
+                            : 'border-red-500/30 bg-red-500/10'
+                        : 'border-gray-200 bg-white dark:border-slate-800 dark:bg-slate-900');
+
+                cell.innerHTML = `
+                    <div class="flex justify-between text-xs font-bold">
+                        <span>${day}</span>
+                        <span class="text-[9px] text-gray-400">
+                            ${dayTrades.length ? `${dayTrades.length} trade(s)` : ''}
+                        </span>
                     </div>
-                    <p class="text-[10px] text-gray-400">${s.city}</p>
-                    <p class="text-[10px] font-mono mt-1 text-theme font-bold">Hours: ${s.openUTC}:00 - ${s.closeUTC}:00 UTC</p>
+                    <div class="mt-6 text-right font-mono text-xs font-extrabold ${
+                        total >= 0 ? 'text-theme' : 'text-red-400'
+                    }">
+                        ${
+                            dayTrades.length
+                                ? `${total >= 0 ? '+' : '-'}$${Math.abs(total).toFixed(2)}`
+                                : ''
+                        }
+                    </div>
                 `;
-                grid.appendChild(card);
+
+                grid.appendChild(cell);
+            }
+
+            document.getElementById('monthNet').textContent =
+                `${monthTotal >= 0 ? '+' : '-'}$${Math.abs(monthTotal).toFixed(2)}`;
+        }
+
+        /*
+         * JOURNAL
+         */
+
+        function renderJournal() {
+            const body = document.getElementById('journalBody');
+            body.innerHTML = '';
+
+            trades.forEach(trade => {
+                const row = document.createElement('tr');
+
+                row.className =
+                    'border-b border-gray-200 dark:border-slate-800';
+
+                row.innerHTML = `
+                    <td class="p-4 font-mono font-bold">${escapeHtml(trade.id)}</td>
+                    <td class="p-4">${escapeHtml(trade.date)}</td>
+                    <td class="p-4 font-bold">
+                        ${escapeHtml(trade.symbol)}
+                        (${escapeHtml(trade.type || 'BUY')})
+                    </td>
+                    <td class="p-4">
+                        <span class="rounded bg-${
+                            trade.status === 'Passed Rules'
+                                ? 'emerald'
+                                : 'red'
+                        }-500/10 px-2 py-1 text-[10px] font-bold ${
+                            trade.status === 'Passed Rules'
+                                ? 'text-theme'
+                                : 'text-red-400'
+                        }">
+                            ${escapeHtml(trade.status)}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right font-mono font-extrabold ${
+                        Number(trade.pnl) >= 0
+                            ? 'text-theme'
+                            : 'text-red-400'
+                    }">
+                        ${Number(trade.pnl) >= 0 ? '+' : '-'}$${Math.abs(Number(trade.pnl || 0)).toFixed(2)}
+                    </td>
+                `;
+
+                body.appendChild(row);
             });
         }
 
-        function renderJournalTable() {
-            const tbody = document.getElementById('journalTableBody');
-            tbody.innerHTML = '';
-            
-            trades.forEach(t => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 dark:hover:bg-slate-800/50 transition';
-                tr.innerHTML = `
-                    <td class="p-4 font-mono font-bold">${t.id}</td>
-                    <td class="p-4 font-bold">${t.symbol} (${t.type || 'BUY'})</td>
-                    <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span></td>
-                    <td class="p-4 text-right font-mono font-extrabold ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+        /*
+         * GALLERY
+         */
 
-        function renderGalleryWall() {
-            const grid = document.getElementById('galleryWallGrid');
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
             grid.innerHTML = '';
-            trades.forEach(t => {
+
+            if (!trades.length) {
+                grid.innerHTML =
+                    '<p class="text-sm text-gray-400">No trades recorded yet.</p>';
+                return;
+            }
+
+            trades.forEach(trade => {
                 const card = document.createElement('div');
-                card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 space-y-3 shadow-xs';
-                
-                let entryImgHtml = t.entryPhoto 
-                    ? `<img src="${t.entryPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
-                    : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-chart-line mr-2 text-theme"></i> No Entry Photo</div>`;
-                let resultImgHtml = t.resultPhoto 
-                    ? `<img src="${t.resultPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
-                    : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-flag-checkered mr-2 text-amber-500"></i> No Outcome Photo</div>`;
+
+                card.className =
+                    'space-y-4 rounded-2xl border border-gray-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900';
+
+                const entryImage = trade.entryPhoto
+                    ? `<img src="${trade.entryPhoto}" alt="Entry screenshot" class="h-40 w-full rounded-xl border border-gray-200 object-cover dark:border-slate-700">`
+                    : `<div class="flex h-40 items-center justify-center rounded-xl bg-gray-100 text-xs text-gray-400 dark:bg-slate-800">No entry photo</div>`;
+
+                const resultImage = trade.resultPhoto
+                    ? `<img src="${trade.resultPhoto}" alt="Result screenshot" class="h-40 w-full rounded-xl border border-gray-200 object-cover dark:border-slate-700">`
+                    : `<div class="flex h-40 items-center justify-center rounded-xl bg-gray-100 text-xs text-gray-400 dark:bg-slate-800">No result photo</div>`;
+
                 card.innerHTML = `
-                    <div class="flex justify-between items-center text-xs font-bold">
-                        <span>${t.symbol} (${t.date})</span>
-                        <span class="font-mono ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl}` : `-$${Math.abs(t.pnl)}`}</span>
+                    <div class="flex items-center justify-between text-xs font-bold">
+                        <span>${escapeHtml(trade.symbol)} · ${escapeHtml(trade.date)}</span>
+                        <span class="${Number(trade.pnl) >= 0 ? 'text-theme' : 'text-red-400'}">
+                            ${Number(trade.pnl) >= 0 ? '+' : '-'}$${Math.abs(Number(trade.pnl || 0)).toFixed(2)}
+                        </span>
                     </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <span class="text-[9px] font-bold text-gray-400 uppercase">Entry Setup</span>
-                            ${entryImgHtml}
+                            <p class="mb-1 text-[9px] font-bold uppercase text-gray-400">
+                                Entry
+                            </p>
+                            ${entryImage}
                         </div>
+
                         <div>
-                            <span class="text-[9px] font-bold text-gray-400 uppercase">Outcome Result</span>
-                            ${resultImgHtml}
+                            <p class="mb-1 text-[9px] font-bold uppercase text-gray-400">
+                                Result
+                            </p>
+                            ${resultImage}
                         </div>
                     </div>
-                    <p class="text-[11px] text-gray-300"><strong>Notes:</strong> ${t.notes || 'None logged'}</p>
-                    <div class="flex justify-between items-center pt-1 border-t border-gray-100 dark:border-slate-800">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span>
-                        <span class="text-[10px] font-mono text-gray-400">${t.id}</span>
+
+                    <p class="text-xs text-gray-400">
+                        <strong>Notes:</strong>
+                        ${escapeHtml(trade.notes || trade.reason || 'None')}
+                    </p>
+
+                    <div class="flex justify-between border-t border-gray-200 pt-3 text-[10px] dark:border-slate-800">
+                        <span class="${trade.status === 'Passed Rules' ? 'text-theme' : 'text-red-400'}">
+                            ${escapeHtml(trade.status)}
+                        </span>
+                        <span class="font-mono text-gray-400">
+                            ${escapeHtml(trade.id)}
+                        </span>
                     </div>
                 `;
+
                 grid.appendChild(card);
             });
         }
 
-        function toggleSupportChat() {
-            const box = document.getElementById('supportChatBox');
-            box.classList.toggle('hidden');
+        /*
+         * CHARTS
+         */
+
+        function renderCharts() {
+            if (equityChartInstance) {
+                equityChartInstance.destroy();
+            }
+
+            if (disciplineChartInstance) {
+                disciplineChartInstance.destroy();
+            }
+
+            let equity = 10000;
+            const equityData = [];
+            const labels = [];
+
+            [...trades].reverse().forEach(trade => {
+                equity += Number(trade.pnl || 0);
+                equityData.push(equity);
+                labels.push(trade.date);
+            });
+
+            const passed = trades.filter(
+                trade => trade.status === 'Passed Rules'
+            ).length;
+
+            const failed = trades.filter(
+                trade => trade.status === 'Failed Rules'
+            ).length;
+
+            equityChartInstance = new Chart(
+                document.getElementById('equityChart'),
+                {
+                    type: 'line',
+                    data: {
+                        labels: labels.length ? labels : ['Start'],
+                        datasets: [{
+                            label: 'Account Equity',
+                            data: equityData.length ? equityData : [10000],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16,185,129,.15)',
+                            fill: true,
+                            tension: .3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                }
+            );
+
+            disciplineChartInstance = new Chart(
+                document.getElementById('disciplineChart'),
+                {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Passed Rules', 'Failed Rules'],
+                        datasets: [{
+                            data: [passed || 0, failed || 0],
+                            backgroundColor: ['#10b981', '#ef4444']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                }
+            );
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chatInputMessage');
-            const text = input.value.trim();
-            if (!text) return;
-            const container = document.getElementById('chatMessagesContainer');
-            
-            const userBubble = document.createElement('div');
-            userBubble.className = 'p-2.5 bg-theme/20 text-theme rounded-xl max-w-[85%] ml-auto text-right font-medium';
-            userBubble.innerText = text;
-            container.appendChild(userBubble);
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-            setTimeout(() => {
-                const replyBubble = document.createElement('div');
-                replyBubble.className = 'p-2.5 bg-slate-800 rounded-xl text-gray-300 max-w-[85%]';
-                replyBubble.innerText = 'Thanks for your message! Support has received your inquiry.';
-                container.appendChild(replyBubble);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
+        /*
+         * CSV PARSER
+         *
+         * This supports quoted CSV values containing commas.
+         */
+
+        function parseCsvLine(line) {
+            const values = [];
+            let currentValue = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const character = line[i];
+
+                if (
+                    character === '"' &&
+                    line[i + 1] === '"'
+                ) {
+                    currentValue += '"';
+                    i++;
+                } else if (character === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (
+                    character === ',' &&
+                    !insideQuotes
+                ) {
+                    values.push(currentValue.trim());
+                    currentValue = '';
+                } else {
+                    currentValue += character;
+                }
+            }
+
+            values.push(currentValue.trim());
+            return values;
         }
 
-        function triggerCsvImport() {
-            document.getElementById('csvFileInput').click();
-        }
+        /*
+         * PHOTO-SAFE CSV IMPORT
+         *
+         * CSV fields:
+         * TradeID,Date,Symbol,PnL,Status
+         *
+         * Existing photos are deliberately preserved.
+         */
 
         function handleCsvImport(event) {
             const file = event.target.files[0];
-            if (!file) return;
+
+            if (!file) {
+                return;
+            }
+
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const lines = text.split('\n');
-                let updatedCount = 0;
-                let addedCount = 0;
-                
-                // Load existing trades securely from storage
-                let currentTrades = [];
+
+            reader.onload = function (event) {
                 try {
-                    currentTrades = JSON.parse(localStorage.getItem('traderwell_trades')) || trades || [];
-                } catch (err) {
-                    currentTrades = trades || [];
-                }
+                    const csvText = event.target.result
+                        .replace(/^\uFEFF/, '');
 
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
-                    const cols = line.split(',');
-                    if (cols.length >= 4) {
-                        const csvId = cols[0].trim();
-                        const csvDate = cols[1].trim() || new Date().toISOString().split('T')[0];
-                        const csvSymbol = cols[2].trim() || 'XAUUSD';
-                        const csvPnl = parseFloat(cols[3]) || 0;
-                        const csvStatus = cols[4] ? cols[4].trim() : 'Passed Rules';
+                    const lines = csvText
+                        .split(/\r?\n/)
+                        .map(line => line.trim())
+                        .filter(Boolean);
 
-                        // Check if this CSV row matches an existing Gallery record by ID or Date+Symbol
-                        let existingIndex = currentTrades.findIndex(t => t.id === csvId || (t.date === csvDate && t.symbol === csvSymbol));
+                    if (lines.length < 2) {
+                        alert('The CSV file contains no trade records.');
+                        return;
+                    }
+
+                    /*
+                     * Start from the current trades array.
+                     *
+                     * This is the critical part. The current array contains
+                     * the uploaded Base64 photos.
+                     */
+                    const mergedTrades = trades.map(trade => ({
+                        ...trade,
+
+                        // Preserve existing uploaded images
+                        entryPhoto: trade.entryPhoto || '',
+                        resultPhoto: trade.resultPhoto || ''
+                    }));
+
+                    let updatedCount = 0;
+                    let addedCount = 0;
+
+                    // Skip the CSV header row
+                    for (let i = 1; i < lines.length; i++) {
+                        const columns = parseCsvLine(lines[i]);
+
+                        if (columns.length < 4) {
+                            continue;
+                        }
+
+                        const csvId = columns[0] || '';
+                        const csvDate =
+                            columns[1] ||
+                            new Date().toISOString().split('T')[0];
+
+                        const csvSymbol = columns[2] || 'XAUUSD';
+                        const csvPnl = Number.parseFloat(columns[3]) || 0;
+                        const csvStatus =
+                            columns[4] || 'Passed Rules';
+
+                        let existingIndex = -1;
+
+                        /*
+                         * Match by Trade ID first.
+                         */
+                        if (csvId) {
+                            existingIndex = mergedTrades.findIndex(
+                                trade => trade.id === csvId
+                            );
+                        }
+
+                        /*
+                         * If there is no ID match, match by Date + Symbol.
+                         */
+                        if (existingIndex === -1) {
+                            existingIndex = mergedTrades.findIndex(
+                                trade =>
+                                    trade.date === csvDate &&
+                                    trade.symbol === csvSymbol
+                            );
+                        }
 
                         if (existingIndex !== -1) {
-                            // Merge CSV financial data into the existing gallery record (Preserves photos!)
-                            currentTrades[existingIndex].pnl = csvPnl;
-                            currentTrades[existingIndex].status = csvStatus;
-                            currentTrades[existingIndex].date = csvDate;
+                            const oldTrade = mergedTrades[existingIndex];
+
+                            /*
+                             * IMPORTANT:
+                             * Only CSV data is updated here.
+                             * entryPhoto and resultPhoto are never overwritten.
+                             */
+                            mergedTrades[existingIndex] = {
+                                ...oldTrade,
+
+                                id: oldTrade.id || csvId,
+                                date: csvDate,
+                                symbol: csvSymbol,
+                                pnl: csvPnl,
+                                status: csvStatus,
+
+                                // Explicitly preserve photos
+                                entryPhoto: oldTrade.entryPhoto || '',
+                                resultPhoto: oldTrade.resultPhoto || '',
+
+                                // Preserve the rest of the journal data
+                                type: oldTrade.type || 'BUY',
+                                lot: oldTrade.lot || 0.10,
+                                notes: oldTrade.notes || 'Imported CSV Statement',
+                                reason: oldTrade.reason || '',
+                                criteria: oldTrade.criteria || []
+                            };
+
                             updatedCount++;
                         } else {
-                            // Add as a new entry if no match exists
-                            currentTrades.unshift({
-                                id: csvId || 'TW-' + Math.floor(1000 + Math.random() * 9000),
+                            /*
+                             * New CSV records do not have photos because
+                             * there was no previous gallery record to preserve.
+                             */
+                            mergedTrades.unshift({
+                                id: csvId ||
+                                    `TW-${Math.floor(1000 + Math.random() * 9000)}`,
                                 date: csvDate,
                                 symbol: csvSymbol,
                                 type: 'BUY',
@@ -948,47 +1387,178 @@
                                 pnl: csvPnl,
                                 status: csvStatus,
                                 notes: 'Imported CSV Statement',
+                                reason: '',
                                 entryPhoto: '',
                                 resultPhoto: '',
                                 criteria: []
                             });
+
                             addedCount++;
                         }
                     }
-                }
 
-                trades = currentTrades;
+                    const previousTrades = trades;
+                    trades = mergedTrades;
 
-                if (saveTradesToStorage()) {
-                    alert(`CSV Synchronization Complete: Updated ${updatedCount} existing gallery records and added ${addedCount} new trades. Gallery photos and PnL computations are now fully aligned.`);
+                    /*
+                     * If localStorage fails because of quota limits,
+                     * restore the previous in-memory data.
+                     */
+                    if (!saveTradesToStorage()) {
+                        trades = previousTrades;
+                        return;
+                    }
+
+                    alert(
+                        `CSV import complete.\n\n` +
+                        `Updated: ${updatedCount}\n` +
+                        `Added: ${addedCount}\n\n` +
+                        `Existing entry and result photos were preserved.`
+                    );
+
                     location.reload();
+                } catch (error) {
+                    console.error('CSV import error:', error);
+                    alert('The CSV file could not be imported.');
+                } finally {
+                    // Allows the same CSV file to be selected again
+                    event.target.value = '';
                 }
             };
+
+            reader.onerror = function () {
+                alert('Unable to read the CSV file.');
+            };
+
             reader.readAsText(file);
         }
 
-        function exportTradesCsv() {
-            let csv = 'TradeID,Date,Symbol,PnL,Status\n';
-            trades.forEach(t => {
-                csv += `${t.id},${t.date},${t.symbol},${t.pnl},${t.status}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'traderwell_journal_export.csv');
-            a.click();
+        /*
+         * CSV EXPORT
+         */
+
+        function csvEscape(value) {
+            const stringValue = String(value ?? '');
+
+            if (
+                stringValue.includes(',') ||
+                stringValue.includes('"') ||
+                stringValue.includes('\n')
+            ) {
+                return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+
+            return stringValue;
         }
 
+        function exportCsv() {
+            let csv = 'TradeID,Date,Symbol,PnL,Status\n';
+
+            trades.forEach(trade => {
+                csv += [
+                    csvEscape(trade.id),
+                    csvEscape(trade.date),
+                    csvEscape(trade.symbol),
+                    csvEscape(trade.pnl),
+                    csvEscape(trade.status)
+                ].join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], {
+                type: 'text/csv;charset=utf-8;'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = 'traderwell_journal_export.csv';
+            link.click();
+
+            URL.revokeObjectURL(url);
+        }
+
+        /*
+         * SETTINGS
+         */
+
+        function updateName() {
+            const oldName =
+                document.getElementById('traderName').textContent;
+
+            const newName = prompt('Enter trader name:', oldName);
+
+            if (newName && newName.trim()) {
+                const cleanName = newName.trim();
+
+                document.getElementById('traderName').textContent = cleanName;
+                localStorage.setItem('traderwell_username', cleanName);
+            }
+        }
+
+        function clearAllData() {
+            const confirmed = confirm(
+                'Delete all TraderWell trades, photos, criteria, and profile data?'
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            localStorage.clear();
+            sessionStorage.clear();
+            location.reload();
+        }
+
+        /*
+         * SECURITY
+         */
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value ?? '';
+            return div.innerHTML;
+        }
+
+        /*
+         * INITIALIZATION
+         */
+
         function initApp() {
+            const savedName =
+                localStorage.getItem('traderwell_username');
+
+            if (savedName) {
+                document.getElementById('traderName').textContent = savedName;
+            }
+
+            const savedPrimary =
+                localStorage.getItem('traderwell_theme_primary');
+
+            const savedGlow =
+                localStorage.getItem('traderwell_theme_glow');
+
+            if (savedPrimary && savedGlow) {
+                setTheme(savedPrimary, savedGlow);
+            }
+
             renderCriteria();
             renderCalendar();
             switchTab('execution');
         }
 
+        document.addEventListener('DOMContentLoaded', () => {
+            if (
+                sessionStorage.getItem('traderwell_authenticated') === 'true'
+            ) {
+                document.getElementById('loginOverlay').classList.add('hidden');
+                initApp();
+            }
+        });
+
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('liveClockDisplay').innerText = now.toLocaleTimeString();
+            document.getElementById('clock').textContent =
+                new Date().toLocaleTimeString();
         }, 1000);
     </script>
 </body>
