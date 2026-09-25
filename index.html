@@ -19,7 +19,7 @@
                         }
                     },
                     animation: {
-                        'glow-fast': 'glow 1s ease-in-out infinite alternate',
+                        'glow-fast': 'glow 1.2s ease-in-out infinite alternate',
                         'pulse-vivid': 'pulseVivid 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'fire': 'fireGlow 1.2s ease-in-out infinite alternate',
                     },
@@ -56,22 +56,54 @@
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col relative">
 
-    <!-- SECURITY LOGIN PORTAL (Overlay) -->
+    <!-- SECURITY LOGIN & SIGNUP PORTAL (Overlay) -->
     <div id="securityLoginOverlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 text-center">
             <div class="w-16 h-16 rounded-2xl bg-theme/20 border border-theme/50 flex items-center justify-center text-theme mx-auto shadow-lg animate-fire">
                 <i class="fa-solid fa-shield-halved text-2xl text-theme"></i>
             </div>
-            <div>
-                <h2 class="text-xl font-extrabold tracking-wide">TraderWell Security Portal</h2>
-                <p class="text-xs text-gray-400 mt-1">Enter your Master PIN or Passkey to unlock execution logs.</p>
+            
+            <!-- Auth Tab Switcher -->
+            <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+                <button onclick="switchAuthMode('login')" id="authTabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm">Secure Login</button>
+                <button onclick="switchAuthMode('signup')" id="authTabSignup" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition">Sign Up</button>
             </div>
-            <div class="space-y-4">
-                <input type="password" id="masterPinInput" placeholder="Enter Master PIN (default: 2026)" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest focus:outline-none focus:border-theme">
+
+            <!-- LOGIN FORM -->
+            <div id="loginFormContainer" class="space-y-4">
+                <div>
+                    <h2 class="text-xl font-extrabold tracking-wide">TraderWell Security Portal</h2>
+                    <p class="text-xs text-gray-400 mt-1">Enter your Master PIN or Passkey to unlock execution logs.</p>
+                </div>
+                <input type="password" id="masterPinInput" placeholder="Enter Master PIN (default: 2026)" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest focus:outline-none focus:border-theme" onkeypress="if(event.key==='Enter') verifyMasterPin()">
                 <button onclick="verifyMasterPin()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg">
                     Authenticate & Access Terminal
                 </button>
             </div>
+
+            <!-- SIGNUP FORM -->
+            <div id="signupFormContainer" class="hidden space-y-3 text-left">
+                <div>
+                    <h2 class="text-xl font-extrabold tracking-wide text-center">Create Trader Account</h2>
+                    <p class="text-xs text-gray-400 mt-1 text-center">Setup your secure profile credentials.</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Trader Full Name</label>
+                    <input type="text" id="signupName" value="Leo Melvin" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="trader@domain.com" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">New Master PIN</label>
+                    <input type="password" id="signupPin" placeholder="Choose 4-digit PIN" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-mono">
+                </div>
+                <button onclick="handleUserSignup()" class="w-full bg-theme hover:opacity-90 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg mt-2">
+                    Register &amp; Launch Terminal
+                </button>
+            </div>
+
             <p class="text-[10px] text-gray-500">Protected by Discipline Guard™ Edge Encryption</p>
         </div>
     </div>
@@ -114,7 +146,7 @@
             </button>
             
             <button onclick="lockSystemPortal()" class="bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-lock"></i> Lock
+                <i class="fa-solid fa-lock"></i> Lock / Logout
             </button>
         </div>
     </header>
@@ -434,7 +466,7 @@
             </div>
             <div id="chatMessagesContainer" class="p-3 h-56 overflow-y-auto space-y-2 text-xs bg-gray-50 dark:bg-slate-950">
                 <div class="p-2.5 bg-slate-800/80 rounded-xl text-gray-300 max-w-[85%]">
-                    Hello trader! Welcome to TraderWell. Ask questions or leave messages for Leo Melvin &amp; the portal team here.
+                    Hello trader! Welcome to TraderWell. Ask questions or leave messages here.
                 </div>
             </div>
             <div class="p-2.5 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
@@ -472,16 +504,41 @@
 
         // Check Session Authentication on Load
         window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('traderwell_username');
+            if (savedName) {
+                document.getElementById('headerTraderName').innerText = savedName;
+            }
             if (sessionStorage.getItem('traderwell_authenticated') === 'true') {
                 document.getElementById('securityLoginOverlay').classList.add('hidden');
                 initApp();
             }
         });
 
+        // Auth Tab Switcher (Login vs Signup)
+        function switchAuthMode(mode) {
+            const loginTab = document.getElementById('authTabLogin');
+            const signupTab = document.getElementById('authTabSignup');
+            const loginForm = document.getElementById('loginFormContainer');
+            const signupForm = document.getElementById('signupFormContainer');
+
+            if (mode === 'login') {
+                loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm';
+                signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition';
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            } else {
+                signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm';
+                loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition';
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+        }
+
         // Security Authentication
         function verifyMasterPin() {
             const pin = document.getElementById('masterPinInput').value.trim();
-            if (pin === '2026' || pin === '1234') {
+            const storedPin = localStorage.getItem('traderwell_pin') || '2026';
+            if (pin === storedPin || pin === '1234') {
                 sessionStorage.setItem('traderwell_authenticated', 'true');
                 document.getElementById('securityLoginOverlay').classList.add('hidden');
                 initApp();
@@ -490,10 +547,32 @@
             }
         }
 
+        function handleUserSignup() {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const pin = document.getElementById('signupPin').value.trim();
+
+            if (!name || !pin) {
+                alert('Please enter your name and choose a PIN.');
+                return;
+            }
+
+            localStorage.setItem('traderwell_username', name);
+            localStorage.setItem('traderwell_email', email);
+            localStorage.setItem('traderwell_pin', pin);
+            sessionStorage.setItem('traderwell_authenticated', 'true');
+
+            document.getElementById('headerTraderName').innerText = name;
+            document.getElementById('securityLoginOverlay').classList.add('hidden');
+            alert(`Account created successfully for ${name}! Welcome to TraderWell.`);
+            initApp();
+        }
+
         function lockSystemPortal() {
             sessionStorage.removeItem('traderwell_authenticated');
             document.getElementById('masterPinInput').value = '';
             document.getElementById('securityLoginOverlay').classList.remove('hidden');
+            switchAuthMode('login');
         }
 
         // Navigation Switcher
@@ -523,7 +602,10 @@
 
         function updateTraderProfileName() {
             const newName = prompt('Enter trader name:', document.getElementById('headerTraderName').innerText);
-            if (newName) document.getElementById('headerTraderName').innerText = newName;
+            if (newName) {
+                document.getElementById('headerTraderName').innerText = newName;
+                localStorage.setItem('traderwell_username', newName);
+            }
         }
 
         // Criteria & Discipline Guard
@@ -626,7 +708,6 @@
             pendingTradeDraft.resultPhoto = resultPhotoBase64;
             pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
             
-            // Push to start of trades array so newest is always first
             trades.unshift(pendingTradeDraft);
             localStorage.setItem('traderwell_trades', JSON.stringify(trades));
             
@@ -797,7 +878,7 @@
             });
         }
 
-        // Chart Gallery Wall (Newest First, with full notes and criteria reflections)
+        // Chart Gallery Wall
         function renderGalleryWall() {
             const grid = document.getElementById('galleryWallGrid');
             grid.innerHTML = '';
@@ -862,13 +943,13 @@
             setTimeout(() => {
                 const replyBubble = document.createElement('div');
                 replyBubble.className = 'p-2.5 bg-slate-800 rounded-xl text-gray-300 max-w-[85%]';
-                replyBubble.innerText = 'Thanks for your message! Leo Melvin & support have received your inquiry.';
+                replyBubble.innerText = 'Thanks for your message! Support has received your inquiry.';
                 container.appendChild(replyBubble);
                 container.scrollTop = container.scrollHeight;
             }, 1000);
         }
 
-        // CSV Import / Export (Safe Append: Preserves existing photo records)
+        // CSV Import / Export
         function triggerCsvImport() {
             document.getElementById('csvFileInput').click();
         }
@@ -922,7 +1003,6 @@
             a.click();
         }
 
-        // Initialization
         function initApp() {
             renderCriteria();
             renderCalendar();
