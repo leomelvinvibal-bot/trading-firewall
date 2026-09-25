@@ -52,7 +52,22 @@
         .bg-theme { background-color: var(--theme-primary) !important; }
         .text-theme { color: var(--theme-primary) !important; }
         .border-theme { border-color: var(--theme-primary) !important; }
-    </style>
+    </style<!-- Firebase App (Core) and Auth SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "traderwell-c4f2c.firebaseapp.com",
+    projectId: "traderwell-c4f2c",
+    storageBucket: "traderwell-c4f2c.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>>
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
 
@@ -77,7 +92,17 @@
             </div>
         </div>
 
-        <!-- Quick Theme Selector & Actions -->
+        <!-- Quick Theme Selector & Actions --><!-- Authentication Nav Controls -->
+  <div id="auth-buttons" class="flex space-x-2">
+      <button onclick="openLoginModal()" class="px-3 py-1.5 text-xs bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-900 dark:text-white rounded-xl border border-gray-200 dark:border-slate-700 transition font-bold">Log In</button>
+      <button onclick="openSignUpModal()" class="px-3 py-1.5 text-xs bg-theme text-white rounded-xl transition font-bold shadow-md">Sign Up</button>
+  </div>
+
+  <!-- Logged In View (Hidden until authenticated) -->
+  <div id="user-profile" class="hidden flex items-center space-x-3">
+      <span id="user-email-display" class="text-xs text-gray-400 font-medium"></span>
+      <button onclick="handleLogout()" class="px-3 py-1.5 text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl transition font-bold">Log Out</button>
+  </div>
         <div class="flex items-center space-x-3">
             <div class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl border border-gray-200 dark:border-slate-700">
                 <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" title="Emerald Green" class="w-5 h-5 rounded-full bg-emerald-500 hover:scale-110 transition"></button>
@@ -383,75 +408,133 @@
 
                         <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 font-bold text-xs py-3 rounded-xl transition">Update Profile Name</button>
                         <button onclick="if(confirm('Reset all stored data?')) { localStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl transition">Clear Local Storage</button>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Web Developer Live Chat Floating Widget -->
-    <div class="fixed bottom-5 right-5 z-50">
-        <div id="devChatWindow" class="hidden w-80 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden mb-3 flex flex-col h-96">
-            <div class="bg-slate-900 p-4 border-b border-slate-800 flex justify-between items-center text-white">
-                <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 rounded-full bg-theme animate-pulse"></div>
-                    <span class="text-xs font-extrabold">Web Developer (Leo Melvin)</span>
-                </div>
-                <button onclick="toggleDevChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="devChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
-                <div class="bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]">
-                    <p class="font-bold text-[10px] text-theme mb-0.5">Developer Bot</p>
-                    Hello Leo! Execution Rules moved to the top of your sidebar for immediate high-visibility access.
-                </div>
-            </div>
-            <div class="p-3 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
-                <input type="text" id="devChatInput" placeholder="Type message to developer..." class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-theme" onkeypress="if(event.key==='Enter')sendDevMessage()">
-                <button onclick="sendDevMessage()" class="bg-theme text-white px-3 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <button onclick="toggleDevChat()" class="w-12 h-12 bg-theme text-white rounded-full shadow-2xl flex items-center justify-center text-lg transition animate-bounce">
-            <i class="fa-solid fa-comments"></i>
-        </button>
-    </div>
-
-    <!-- Manual Trade Log Modal -->
-    <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-extrabold text-base">Record Manual Trade &amp; Evidence</h3>
-                <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="tradeForm" onsubmit="handleLogTrade(event)" class="space-y-3">
-                <input type="text" id="tradeSymbol" required placeholder="Symbol e.g. XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                <input type="number" id="tradePnL" step="0.01" required placeholder="Net PnL ($) e.g. 150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                <input type="number" id="tradeDay" min="1" max="31" value="25" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Entry Chart Photo</label>
-                    <input type="file" id="manualEntryFile" accept="image/*" required class="w-full text-xs">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result Outcome Photo</label>
-                    <input type="file" id="manualResultFile" accept="image/*" required class="w-full text-xs">
-                </div>
-                <select id="manualDisciplineStatus" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
-                    <option value="followed">Discipline Followed (Valid Edge)</option>
-                    <option value="failed">Rules Failed (Rule Broken)</option>
-                </select>
-                <textarea id="tradeNotes" rows="2" placeholder="Setup thesis &amp; notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
-                <button type="submit" class="w-full bg-theme text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Trade &amp; Sync Calendar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Lightbox Modal -->
+                  <!-- Lightbox Modal -->
     <div id="lightboxModal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 cursor-pointer">
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain">
     </div>
 
+    <!-- Auth Modals Container -->
+    <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+            
+            <!-- Close Button -->
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">&times;</button>
+
+            <!-- Sign Up Form -->
+            <div id="signup-form-container" class="space-y-4">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Create Account</h3>
+                <p class="text-xs text-gray-400">Join Traderwell to access your trading tools.</p>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="signup-email" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-emerald-500" placeholder="name@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Password</label>
+                    <input type="password" id="signup-password" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-emerald-500" placeholder="••••••••">
+                </div>
+                <button onclick="submitSignUp()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition">Sign Up</button>
+                <p class="text-xs text-center text-gray-400">
+                    Already have an account? <button onclick="switchToLogin()" class="text-emerald-400 hover:underline font-medium">Log In</button>
+                </p>
+            </div>
+
+            <!-- Login Form (Hidden by default) -->
+            <div id="login-form-container" class="hidden space-y-4">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Welcome Back</h3>
+                <p class="text-xs text-gray-400">Log in to your Traderwell dashboard.</p>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Email</label>
+                    <input type="email" id="login-email" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-emerald-500" placeholder="name@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Password</label>
+                    <input type="password" id="login-password" class="w-full bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-emerald-500" placeholder="••••••••">
+                </div>
+                <button onclick="submitLogin()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition">Log In</button>
+                <p class="text-xs text-center text-gray-400">
+                    Don't have an account? <button onclick="switchToSignUp()" class="text-emerald-400 hover:underline font-medium">Sign Up</button>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Script Engine -->
     <script>
+        // --- FIREBASE AUTHENTICATION LOGIC ---
+        window.openSignUpModal = function() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('signup-form-container').classList.remove('hidden');
+            document.getElementById('login-form-container').classList.add('hidden');
+        }
+
+        window.openLoginModal = function() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('login-form-container').classList.remove('hidden');
+            document.getElementById('signup-form-container').classList.add('hidden');
+        }
+
+        window.closeAuthModal = function() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        window.switchToLogin = function() {
+            document.getElementById('signup-form-container').classList.add('hidden');
+            document.getElementById('login-form-container').classList.remove('hidden');
+        }
+
+        window.switchToSignUp = function() {
+            document.getElementById('login-form-container').classList.add('hidden');
+            document.getElementById('signup-form-container').classList.remove('hidden');
+        }
+
+        window.submitSignUp = function() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        }
+
+        window.submitLogin = function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    closeAuthModal();
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        }
+
+        window.handleLogout = function() {
+            auth.signOut();
+        }
+
+        // Track Auth State changes
+        auth.onAuthStateChanged((user) => {
+            const authButtons = document.getElementById('auth-buttons');
+            const userProfile = document.getElementById('user-profile');
+            const emailDisplay = document.getElementById('user-email-display');
+
+            if (authButtons && userProfile && emailDisplay) {
+                if (user) {
+                    authButtons.classList.add('hidden');
+                    userProfile.classList.remove('hidden');
+                    emailDisplay.textContent = user.email;
+                } else {
+                    authButtons.classList.remove('hidden');
+                    userProfile.classList.add('hidden');
+                    emailDisplay.textContent = '';
+                }
+            }
+        });
+
         const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let currentYear = 2026;
         let currentMonthIndex = 8;
