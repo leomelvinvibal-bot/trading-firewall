@@ -133,7 +133,7 @@
                 </button>
 
                 <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">MAIN NAVIGATION</p>
-                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-theme bg-theme/10 transition">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
                 </button>
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
@@ -162,7 +162,7 @@
             <div class="max-w-7xl mx-auto space-y-6">
 
                 <!-- TAB 1: P&L CALENDAR -->
-                <div id="tab-home" class="tab-content space-y-6">
+                <div id="tab-home" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
                         <div class="flex items-center space-x-3">
                             <button onclick="changeMonth(-1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
@@ -377,12 +377,36 @@
         </main>
     </div>
 
+    <!-- JavaScript Application Controller -->
     <script>
-        // Core Logic & Security Portal Controller
+        // State management
+        let trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
+            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', photo: '' },
+            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', photo: '' },
+            { id: 'TW-9003', date: '2026-09-05', symbol: 'EURUSD', type: 'BUY', lot: 0.50, pnl: 210.00, status: 'Passed Rules', notes: 'FVG Mitigation', photo: '' }
+        ];
+
+        let criteria = JSON.parse(localStorage.getItem('traderwell_criteria')) || [
+            { text: 'Asian Liquidity Sweep verified prior to entry', checked: true },
+            { text: 'Higher Timeframe (15m/1h) Market Structure alignment', checked: true },
+            { text: 'Fixed Risk-to-Reward ratio of at least 1:2', checked: true },
+            { text: 'Spread protection & broker execution latency verified', checked: true }
+        ];
+
+        let editsLeft = parseInt(localStorage.getItem('traderwell_edits')) || 2;
+        let isCriteriaEditable = false;
+        let currentMonth = 8; // September (0-indexed)
+        let currentYear = 2026;
+        let pendingTradeDraft = null;
+        let equityChartInstance = null;
+        let disciplineChartInstance = null;
+
+        // Security Authentication
         function verifyMasterPin() {
             const pin = document.getElementById('masterPinInput').value.trim();
             if (pin === '2026' || pin === '1234') {
                 document.getElementById('securityLoginOverlay').classList.add('hidden');
+                initApp();
             } else {
                 alert('Invalid Master PIN. Please try again (Hint: 2026).');
             }
@@ -393,6 +417,7 @@
             document.getElementById('securityLoginOverlay').classList.remove('hidden');
         }
 
+        // Navigation Switcher
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -405,6 +430,11 @@
                 activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-100', 'dark:hover:bg-slate-800');
                 activeBtn.classList.add('bg-theme/20', 'text-theme', 'border', 'border-theme/60');
             }
+            if (tabId === 'home') renderCalendar();
+            if (tabId === 'dashboard') renderCharts();
+            if (tabId === 'sessions') renderSessionsMap();
+            if (tabId === 'journal') renderJournalTable();
+            if (tabId === 'gallery') renderGalleryWall();
         }
 
         function setThemeColor(name, hex, glow) {
@@ -412,16 +442,341 @@
             document.documentElement.style.setProperty('--theme-glow', glow);
         }
 
-        // Live Clock
+        function updateTraderProfileName() {
+            const newName = prompt('Enter trader name:', document.getElementById('headerTraderName').innerText);
+            if (newName) document.getElementById('headerTraderName').innerText = newName;
+        }
+
+        // Criteria & Discipline Guard
+        function renderCriteria() {
+            const container = document.getElementById('criteriaListContainer');
+            container.innerHTML = '';
+            criteria.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700';
+                div.innerHTML = `
+                    <label class="flex items-center space-x-3 text-xs cursor-pointer flex-1">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCriteriaCheck(${index})" class="w-4 h-4 rounded text-theme focus:ring-theme">
+                        <span class="${item.checked ? 'line-through text-gray-400' : 'font-medium'}">${item.text}</span>
+                    </label>
+                    ${isCriteriaEditable ? `<button onclick="deleteCriteria(${index})" class="text-red-400 hover:text-red-500 ml-2"><i class="fa-solid fa-trash text-xs"></i></button>` : ''}
+                `;
+                container.appendChild(div);
+            });
+            document.getElementById('editsLeftCount').innerText = editsLeft;
+        }
+
+        function toggleCriteriaCheck(index) {
+            criteria[index].checked = !criteria[index].checked;
+            localStorage.setItem('traderwell_criteria', JSON.stringify(criteria));
+            renderCriteria();
+        }
+
+        function toggleEditCriteriaMode() {
+            if (!isCriteriaEditable) {
+                if (editsLeft <= 0) {
+                    alert('Zero edits remaining! Discipline Guard has locked further modifications.');
+                    return;
+                }
+                editsLeft--;
+                localStorage.setItem('traderwell_edits', editsLeft);
+                isCriteriaEditable = true;
+                document.getElementById('lockStatusBadge').className = 'text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                document.getElementById('lockStatusBadge').innerHTML = '<i class="fa-solid fa-unlock mr-1"></i> Editable';
+            } else {
+                isCriteriaEditable = false;
+                document.getElementById('lockStatusBadge').className = 'text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider';
+                document.getElementById('lockStatusBadge').innerHTML = '<i class="fa-solid fa-lock mr-1"></i> Locked';
+            }
+            renderCriteria();
+        }
+
+        function verifyExecutionApproval() {
+            const unchecked = criteria.filter(c => !c.checked);
+            if (unchecked.length > 0) {
+                alert('Discipline Guard Block: You must fulfill all pre-trade checklist rules before committing entry setup.');
+                return;
+            }
+            const notes = document.getElementById('guardTradeNotes').value;
+            const symbol = document.getElementById('sideSymbol').value;
+            const type = document.getElementById('sideType').value;
+            const lot = document.getElementById('sideLot').value;
+            const reason = document.getElementById('sideReason').value;
+            
+            pendingTradeDraft = {
+                id: 'TW-' + Math.floor(1000 + Math.random() * 9000),
+                date: new Date().toISOString().split('T')[0],
+                symbol, type, lot, notes, reason,
+                status: 'Pending Result'
+            };
+
+            // Switch UI to Result Phase
+            document.getElementById('badgeEntryStatus').classList.remove('animate-glow-fast', 'bg-theme/20', 'text-theme');
+            document.getElementById('badgeEntryStatus').classList.add('opacity-50');
+            document.getElementById('badgeResultStatus').classList.remove('opacity-50');
+            document.getElementById('badgeResultStatus').classList.add('animate-glow-fast', 'bg-amber-500/20', 'text-amber-500');
+            
+            document.getElementById('entryTicketForm').classList.add('hidden');
+            document.getElementById('resultApprovalPanel').classList.remove('hidden');
+        }
+
+        function approveTradeResult(rulesFollowed) {
+            const pnl = parseFloat(document.getElementById('activeTradePnL').value) || 0;
+            pendingTradeDraft.pnl = pnl;
+            pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
+            
+            trades.push(pendingTradeDraft);
+            localStorage.setItem('traderwell_trades', JSON.stringify(trades));
+            
+            alert('Trade successfully logged and committed to journal history!');
+            location.reload();
+        }
+
+        // P&L Calendar Renderer
+        function renderCalendar() {
+            const grid = document.getElementById('fullMonthCalendarGrid');
+            grid.innerHTML = '';
+            
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            daysOfWeek.forEach(d => {
+                const header = document.createElement('div');
+                header.className = 'text-center text-[10px] font-extrabold text-gray-400 py-1 uppercase';
+                header.innerText = d;
+                grid.appendChild(header);
+            });
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendarMonthTitle').innerText = `${monthNames[currentMonth]} ${currentYear}`;
+
+            let monthNetTotal = 0;
+            let winDaysCount = 0;
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayTrades = trades.filter(t => t.date === dateStr);
+                const dayNet = dayTrades.reduce((acc, t) => acc + t.pnl, 0);
+
+                if (dayTrades.length > 0) monthNetTotal += dayNet;
+                if (dayNet > 0) winDaysCount++;
+
+                const cell = document.createElement('div');
+                cell.className = `min-h-[90px] p-2.5 rounded-2xl border transition flex flex-col justify-between ${
+                    dayTrades.length > 0 
+                        ? (dayNet >= 0 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400')
+                        : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-gray-400'
+                }`;
+                cell.innerHTML = `
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span>${day}</span>
+                        <span class="text-[9px] font-mono">${dayTrades.length > 0 ? `${dayTrades.length} trd` : ''}</span>
+                    </div>
+                    <div class="text-right font-mono text-xs font-extrabold">
+                        ${dayTrades.length > 0 ? (dayNet >= 0 ? `+$${dayNet.toFixed(2)}` : `-$${Math.abs(dayNet).toFixed(2)}`) : ''}
+                    </div>
+                `;
+                grid.appendChild(cell);
+            }
+
+            document.getElementById('summaryMonthNet').innerText = (monthNetTotal >= 0 ? `+$${monthNetTotal.toFixed(2)}` : `-$${Math.abs(monthNetTotal).toFixed(2)}`);
+            document.getElementById('summaryWinDays').innerText = winDaysCount;
+        }
+
+        function changeMonth(dir) {
+            currentMonth += dir;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        // Analytics Dashboard Charts
+        function renderCharts() {
+            const ctxEquity = document.getElementById('equityChart').getContext('2d');
+            const ctxDiscipline = document.getElementById('disciplineChart').getContext('2d');
+
+            if (equityChartInstance) equityChartInstance.destroy();
+            if (disciplineChartInstance) disciplineChartInstance.destroy();
+
+            let runningTotal = 10000;
+            const equityData = trades.map(t => { runningTotal += t.pnl; return runningTotal; });
+            const labels = trades.map(t => t.date);
+
+            equityChartInstance = new Chart(ctxEquity, {
+                type: 'line',
+                data: {
+                    labels: labels.length ? labels : ['Start'],
+                    datasets: [{
+                        label: 'Account Equity ($)',
+                        data: equityData.length ? equityData : [10000],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const passedCount = trades.filter(t => t.status === 'Passed Rules').length;
+            const failedCount = trades.filter(t => t.status === 'Failed Rules').length;
+
+            disciplineChartInstance = new Chart(ctxDiscipline, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passed Discipline Rules', 'Deviated Rules'],
+                    datasets: [{
+                        data: [passedCount || 1, failedCount],
+                        backgroundColor: ['#10b981', '#ef4444']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // Trading Sessions Map (Manila Synchronized)
+        function renderSessionsMap() {
+            const grid = document.getElementById('sessionsMapGrid');
+            grid.innerHTML = '';
+            
+            const now = new Date();
+            const utcHour = now.getUTCHours();
+
+            const sessions = [
+                { name: 'Sydney Session', openUTC: 22, closeUTC: 7, city: 'Sydney / Wellington' },
+                { name: 'Tokyo Session', openUTC: 0, closeUTC: 9, city: 'Tokyo / Singapore' },
+                { name: 'London Session', openUTC: 8, closeUTC: 17, city: 'London / Frankfurt' },
+                { name: 'New York Session', openUTC: 13, closeUTC: 22, city: 'New York / Chicago' }
+            ];
+
+            sessions.forEach(s => {
+                let isOpen = false;
+                if (s.openUTC < s.closeUTC) {
+                    isOpen = utcHour >= s.openUTC && utcHour < s.closeUTC;
+                } else {
+                    isOpen = utcHour >= s.openUTC || utcHour < s.closeUTC;
+                }
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl border ${isOpen ? 'bg-theme/10 border-theme/40 animate-pulse' : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-extrabold text-xs">${s.name}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isOpen ? 'bg-theme text-white' : 'bg-gray-200 dark:bg-slate-700 text-gray-400'}">${isOpen ? 'OPEN' : 'CLOSED'}</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">${s.city}</p>
+                    <p class="text-[10px] font-mono mt-1 text-theme font-bold">Hours: ${s.openUTC}:00 - ${s.closeUTC}:00 UTC</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Journal History Table
+        function renderJournalTable() {
+            const tbody = document.getElementById('journalTableBody');
+            tbody.innerHTML = '';
+            
+            trades.forEach(t => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 dark:hover:bg-slate-800/50 transition';
+                tr.innerHTML = `
+                    <td class="p-4 font-mono font-bold">${t.id}</td>
+                    <td class="p-4 font-bold">${t.symbol} (${t.type})</td>
+                    <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold ${t.status === 'Passed Rules' ? 'bg-theme/10 text-theme' : 'bg-red-500/10 text-red-400'}">${t.status}</span></td>
+                    <td class="p-4 text-right font-mono font-extrabold ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Chart Gallery Wall
+        function renderGalleryWall() {
+            const grid = document.getElementById('galleryWallGrid');
+            grid.innerHTML = '';
+
+            trades.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 space-y-3 shadow-xs';
+                card.innerHTML = `
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span>${t.symbol} (${t.date})</span>
+                        <span class="font-mono ${t.pnl >= 0 ? 'text-theme' : 'text-red-400'}">${t.pnl >= 0 ? `+$${t.pnl}` : `-$${Math.abs(t.pnl)}`}</span>
+                    </div>
+                    <div class="h-36 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono">
+                        <i class="fa-solid fa-chart-line mr-2 text-theme"></i> ${t.notes || 'Setup Execution Screen'}
+                    </div>
+                    <p class="text-[11px] text-gray-400">Strategy: ${t.reason || 'Asian Liquidity Sweep'}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // CSV Import / Export
+        function triggerCsvImport() {
+            document.getElementById('csvFileInput').click();
+        }
+
+        function handleCsvImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                let importedCount = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(',');
+                    if (cols.length >= 4) {
+                        trades.push({
+                            id: cols[0].trim() || 'TW-' + Math.floor(1000 + Math.random() * 9000),
+                            date: cols[1].trim() || new Date().toISOString().split('T')[0],
+                            symbol: cols[2].trim() || 'XAUUSD',
+                            type: 'BUY',
+                            lot: 0.10,
+                            pnl: parseFloat(cols[3]) || 100,
+                            status: 'Passed Rules',
+                            notes: 'Imported CSV Trade'
+                        });
+                        importedCount++;
+                    }
+                }
+                localStorage.setItem('traderwell_trades', JSON.stringify(trades));
+                alert(`Successfully imported ${importedCount} trades from CSV!`);
+                location.reload();
+            };
+            reader.readAsText(file);
+        }
+
+        function exportTradesCsv() {
+            let csv = 'TradeID,Date,Symbol,PnL,Status\n';
+            trades.forEach(t => {
+                csv += `${t.id},${t.date},${t.symbol},${t.pnl},${t.status}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'traderwell_journal_export.csv');
+            a.click();
+        }
+
+        // Initialization
+        function initApp() {
+            renderCriteria();
+            renderCalendar();
+            switchTab('execution');
+        }
+
         setInterval(() => {
             const now = new Date();
             document.getElementById('liveClockDisplay').innerText = now.toLocaleTimeString();
         }, 1000);
-
-        // Initial setup
-        window.addEventListener('DOMContentLoaded', () => {
-            switchTab('execution');
-        });
     </script>
 </body>
 </html>
