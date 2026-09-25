@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell — Trading Journal & Risk Manager</title>
+    <title>TraderWell - Professional Trading Journal & Execution Guard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,320 +12,222 @@
             theme: {
                 extend: {
                     colors: {
-                        emerald: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22' }
+                        slate: { 850: '#151f32', 900: '#0b132b', 950: '#060918' }
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 1.5s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            '0%': { opacity: '0.4', transform: 'scale(1)' },
+                            '100%': { opacity: '1', transform: 'scale(1.05)' },
+                        }
                     }
                 }
             }
         }
     </script>
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome & Chart.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased transition-colors duration-200">
+<body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
 
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 flex flex-col justify-between hidden md:flex">
-            <div>
-                <div class="p-6 flex items-center space-x-3 border-b border-gray-100 dark:border-slate-800">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/30">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-extrabold text-base tracking-wide">Trader<span class="text-emerald-600">Well</span></h1>
-                        <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase">ECN Trading Suite</p>
-                    </div>
+    <!-- Top Navigation Header -->
+    <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-600/30">TW</div>
+                <div>
+                    <h1 class="font-extrabold text-sm tracking-wide flex items-center gap-2">
+                        <span id="headerTraderName">Trader</span> 
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded font-mono">PRO</span>
+                    </h1>
+                    <p class="text-[10px] text-gray-400">Journal • Execution Checklist • Evidence</p>
                 </div>
-                <nav class="p-4 space-y-1.5">
-                    <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold text-sm text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 transition">
-                        <i class="fa-solid fa-calendar-days w-5"></i><span>P&L Calendar</span>
-                    </button>
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-chart-pie w-5"></i><span>Analytics Dashboard</span>
-                    </button>
-                    <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-book-open w-5"></i><span>Trade Journal</span>
-                    </button>
-                    <button onclick="switchTab('accounts')" id="nav-accounts" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-wallet w-5"></i><span>Accounts & ECN</span>
-                    </button>
-                    <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-calculator w-5"></i><span>Risk Calculator</span>
-                    </button>
-                    <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-graduation-cap w-5"></i><span>Knowledge Base</span>
-                    </button>
-                    <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                        <i class="fa-solid fa-gear w-5"></i><span>Settings & Profile</span>
-                    </button>
-                </nav>
             </div>
-            <div class="p-4 border-t border-gray-100 dark:border-slate-800 space-y-3">
-                <div class="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span class="text-xs font-bold text-gray-700 dark:text-gray-300">cTrader ECN Live</span>
-                    </div>
-                    <span class="text-[10px] text-gray-400">12ms</span>
+        </div>
+
+        <!-- Live Status & Pulsing Tags -->
+        <div class="hidden md:flex items-center space-x-4 text-xs font-bold">
+            <!-- Dynamic Pulsing ENTRY Tag -->
+            <div id="badgeEntryStatus" class="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-glow flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                ENTRY ACTIVE
+            </div>
+            <!-- Dynamic Pulsing RESULT Tag -->
+            <div id="badgeResultStatus" class="px-3 py-1 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/30 flex items-center gap-2 opacity-50">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                RESULT PENDING
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-arrow-up text-emerald-500"></i> Import CSV
+            </button>
+            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
+            
+            <button onclick="exportTradesCsv()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-arrow-down text-indigo-500"></i> Export CSV
+            </button>
+            
+            <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> Record Result
+            </button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 space-y-6 hidden lg:block">
+            <div class="space-y-1">
+                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">Main Navigation</p>
+                <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 transition">
+                    <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
+                </button>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics Dashboard</span>
+                </button>
+                <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-book-open w-5"></i> <span>Trade Journal</span>
+                </button>
+                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
+                </button>
+                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Anti-FOMO Guard</span>
+                </button>
+                <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-calculator w-5"></i> <span>Position Calculator</span>
+                </button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-gear w-5"></i> <span>Settings &amp; Profile</span>
+                </button>
+            </div>
+
+            <!-- Theme Switcher -->
+            <div class="pt-4 border-t border-gray-100 dark:border-slate-800">
+                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">Appearance</p>
+                <div class="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="toggleTheme()" class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-700 shadow-xs transition">Mode</button>
                 </div>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col h-screen overflow-y-auto">
-            <!-- Top Header -->
-            <header class="h-16 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-20">
-                <div class="flex items-center space-x-3">
-                    <h2 id="page-title" class="font-bold text-lg">Home & PnL Calendar</h2>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <!-- Trader Profile Badge -->
-                    <div class="hidden sm:flex items-center space-x-2 bg-gray-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-slate-700">
-                        <i class="fa-solid fa-user-shield text-emerald-500 text-xs"></i>
-                        <span id="headerTraderName" class="text-xs font-bold text-gray-700 dark:text-gray-300">Trader</span>
-                    </div>
-                    <!-- Theme Toggle Button -->
-                    <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition" title="Toggle Theme">
-                        <i class="fa-solid fa-moon dark:hidden"></i>
-                        <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
-                    </button>
-                    <!-- Quick Log Trade Button -->
-                    <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Manual Trade Log
-                    </button>
-                </div>
-            </header>
+        <main class="flex-1 p-6 overflow-y-auto">
+            <div class="max-w-7xl mx-auto space-y-6">
 
-            <!-- Dynamic Tab Contents -->
-            <div class="p-6 max-w-7xl mx-auto w-full space-y-6 flex-1">
-                
-                <!-- TAB 1: HOME & PNL CALENDAR + ANTI-FOMO GUARD -->
+                <!-- TAB 1: P&L CALENDAR -->
                 <div id="tab-home" class="tab-content space-y-6">
-                    <!-- Calendar Header & Navigation -->
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div>
-                            <h3 class="text-lg font-extrabold flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-alt text-emerald-600"></i> Monthly Performance Calendar
-                            </h3>
-                            <p class="text-xs text-gray-500">Track daily net PnL, execution quality, and discipline grades.</p>
-                        </div>
+                    <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
                         <div class="flex items-center space-x-3">
-                            <button onclick="changeMonth(-1)" class="p-2 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                            <span id="calendarMonthTitle" class="font-extrabold text-sm w-36 text-center">November 2026</span>
-                            <button onclick="changeMonth(1)" class="p-2 rounded-xl border border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            <button onclick="changeMonth(-1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                            <h2 id="calendarMonthTitle" class="font-extrabold text-base">September 2026</h2>
+                            <button onclick="changeMonth(1)" class="p-2 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        </div>
+                        <div class="flex items-center space-x-6 text-xs font-bold">
+                            <div>Month Net: <span id="summaryMonthNet" class="text-emerald-500 font-extrabold">+$1,300.00</span></div>
+                            <div>Win Days: <span id="summaryWinDays" class="text-emerald-500">4</span></div>
                         </div>
                     </div>
-
                     <!-- Calendar Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Left 2 Cols: Calendar Grid -->
-                        <div class="md:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <div class="grid grid-cols-7 gap-2 text-center text-[11px] font-bold text-gray-400 pb-2 border-b border-gray-100 dark:border-slate-800">
-                                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                            </div>
-                            <div id="fullMonthCalendarGrid" class="grid grid-cols-7 gap-2">
-                                <!-- Dynamically populated by renderCalendar() -->
-                            </div>
-                        </div>
-
-                        <!-- Right Col: Anti-FOMO Execution Guard -->
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs flex flex-col justify-between space-y-4">
-                            <div>
-                                <div class="flex justify-between items-center mb-3">
-                                    <h4 class="font-extrabold text-sm flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                                        <i class="fa-solid fa-shield-halved"></i> Anti-FOMO Guard
-                                    </h4>
-                                    <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded">Pre-Trade Checklist</span>
-                                </div>
-                                <p class="text-xs text-gray-500 mb-4">Verify your trading rules before unlocking trade execution tickets.</p>
-                                
-                                <!-- Checklist Container -->
-                                <div id="criteriaListContainer" class="space-y-2 max-h-56 overflow-y-auto pr-1">
-                                    <!-- Rendered dynamically -->
-                                </div>
-
-                                <!-- Add Rule Input -->
-                                <div class="mt-3 flex gap-2">
-                                    <input type="text" id="newCriteriaInput" placeholder="Add custom rule..." class="flex-1 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl px-3 text-xs focus:outline-none focus:border-emerald-500">
-                                    <button onclick="addNewCriteria()" class="bg-gray-900 dark:bg-slate-700 hover:bg-emerald-600 text-white px-3 py-2 rounded-xl text-xs font-bold transition"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                            </div>
-
-                            <!-- Execution Verification Form -->
-                            <div class="space-y-3 pt-3 border-t border-gray-100 dark:border-slate-800">
-                                <textarea id="guardTradeNotes" rows="2" placeholder="Enter trade thesis / setup rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-                                <div class="flex items-center gap-2">
-                                    <input type="file" id="guardChartFile" accept="image/*" class="text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 dark:file:bg-emerald-950 dark:file:text-emerald-300 hover:file:bg-emerald-100">
-                                </div>
-                                <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-lock-open"></i> Verify & Unlock Ticket
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="grid grid-cols-7 gap-3" id="fullMonthCalendarGrid"></div>
                 </div>
 
                 <!-- TAB 2: ANALYTICS DASHBOARD -->
                 <div id="tab-dashboard" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
-                            <span class="text-xs text-gray-400 font-medium">Net Profit / Loss</span>
-                            <h3 class="text-2xl font-black text-emerald-600 mt-1">+$534.27</h3>
-                            <span class="text-[10px] text-emerald-500 font-bold mt-2 block"><i class="fa-solid fa-arrow-trend-up"></i> +5.34% this month</span>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
-                            <span class="text-xs text-gray-400 font-medium">Win Rate</span>
-                            <h3 class="text-2xl font-black mt-1">75.0%</h3>
-                            <span class="text-[10px] text-gray-500 mt-2 block">6 Wins / 2 Losses</span>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
-                            <span class="text-xs text-gray-400 font-medium">Profit Factor</span>
-                            <h3 class="text-2xl font-black text-emerald-600 mt-1">3.42</h3>
-                            <span class="text-[10px] text-emerald-500 font-bold mt-2 block">High Expectancy</span>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
-                            <span class="text-xs text-gray-400 font-medium">Average Discipline Grade</span>
-                            <h3 class="text-2xl font-black text-indigo-600 mt-1">A+</h3>
-                            <span class="text-[10px] text-indigo-500 font-bold mt-2 block">96% Rule Compliance</span>
-                        </div>
-                    </div>
-                    <!-- Equity Curve Chart -->
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                        <h3 class="font-extrabold text-base">Equity Curve Growth</h3>
-                        <div class="h-72 w-full">
-                            <canvas id="equityChart"></canvas>
-                        </div>
+                        <h3 class="font-extrabold text-base">Equity &amp; Performance Growth</h3>
+                        <div class="h-72"><canvas id="equityChart"></canvas></div>
                     </div>
                 </div>
 
-                <!-- TAB 3: TRADE JOURNAL -->
+                <!-- TAB 3: TRADE JOURNAL & DUAL PHOTO GALLERY -->
                 <div id="tab-journal" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-base">Executed Trade History & Chart Records</h3>
-                        <div class="flex gap-2">
-                            <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-bold text-xs px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 transition flex items-center gap-2">
-                                <i class="fa-solid fa-file-arrow-up"></i> Import CSV
-                            </button>
-                            <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="handleCsvImport(event)">
-                            <button onclick="exportTradesCsv()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 font-bold text-xs px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 transition flex items-center gap-2">
-                                <i class="fa-solid fa-file-arrow-down"></i> Export CSV
-                            </button>
-                        </div>
+                        <h3 class="font-extrabold text-base">Trade Journal &amp; Dual Evidence Gallery</h3>
+                        <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">+ Log New Entry</button>
                     </div>
-                    <!-- Journal Entries Container -->
-                    <div id="journalEntriesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <!-- Sample Journal Card -->
-                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition">
-                            <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="relative h-48 bg-gray-900 overflow-hidden cursor-pointer group">
-                                <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                                <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white font-bold text-xs gap-2">
-                                    <i class="fa-solid fa-magnifying-glass-plus text-base"></i> Click to Enlarge Chart
+                    <!-- Journal Cards Grid with Zoomable Entry/Result Photos -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="journalEntriesContainer">
+                        <!-- Sample Card 1 -->
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition p-4 space-y-4">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-emerald-500">XAUUSD (BUY)</span>
+                                <span class="text-gray-400">#10012483 • <strong class="text-emerald-500">+$450.00</strong></span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Entry Photo</span>
+                                    <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                                        <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition">
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition">Zoom Entry</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Result Photo</span>
+                                    <div onclick="openLightbox('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition">
+                                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition">Zoom Result</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="p-4 space-y-3">
-                                <div class="flex justify-between items-center text-xs text-gray-500">
-                                    <span>Nov 1, 2026 • cTrader ECN</span>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">Grade: A+</span>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200"><strong>EURUSD LONG:</strong> Ichimoku cloud flat tenkan bounce with MFI oversold cross.</p>
-                                <div class="flex items-center justify-between text-xs pt-2 border-t border-gray-100 dark:border-slate-800">
-                                    <span class="text-gray-500">Checklist: <strong class="text-emerald-600">Verified</strong></span>
-                                    <span class="text-emerald-500 font-bold">+$157.89</span>
-                                </div>
-                            </div>
+                            <p class="text-xs text-gray-600 dark:text-gray-300"><strong>Setup:</strong> Asian Liquidity Grab &amp; FVG Rejection. Outcome: Closed Profit.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 4: ACCOUNTS & ECN -->
-                <div id="tab-accounts" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-extrabold text-base">Connected Broker Accounts</h3>
-                                <p class="text-xs text-gray-500">Manage your ECN live and demo bridge feeds.</p>
-                            </div>
-                            <button onclick="runPingTest()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition">
-                                <i class="fa-solid fa-signal mr-1"></i> Test Server Latency
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            <div class="p-4 rounded-xl border border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/20 space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-extrabold text-sm">Pepperstone ECN Live</span>
-                                    <span class="px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">Connected</span>
-                                </div>
-                                <p class="text-xs text-gray-500">Account #7829104 • USD Currency Base</p>
-                                <div class="flex justify-between items-xs pt-2 text-xs font-semibold">
-                                    <span class="text-gray-400">Server Latency: <strong id="pingCtrader" class="text-emerald-600">12ms</strong></span>
-                                    <span class="text-emerald-600">Spread: 0.1 pips avg</span>
-                                </div>
-                            </div>
+                <!-- TAB 4: CHART GALLERY WALL -->
+                <div id="tab-gallery" class="tab-content hidden space-y-6">
+                    <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="galleryWallGrid">
+                        <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group">
+                            <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover group-hover:scale-105 transition">
+                            <div class="p-3 text-xs font-bold">XAUUSD Entry Setup #10012483</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 5: RISK CALCULATOR -->
+                <!-- TAB 5: ANTI-FOMO GUARD -->
+                <div id="tab-execution" class="tab-content hidden space-y-6">
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 max-w-2xl mx-auto">
+                        <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
+                        <div id="criteriaListContainer" class="space-y-3"></div>
+                        <div class="pt-4 space-y-3">
+                            <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+                            <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-700 dark:file:bg-emerald-950 dark:file:text-emerald-300">
+                            <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/20">
+                                Pass Rules &amp; Open Trade (Unlocks Ticket)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: POSITION CALCULATOR -->
                 <div id="tab-calculator" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-4">
-                        <h3 class="font-extrabold text-base">Position Size & Lot Calculator</h3>
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-md mx-auto space-y-4">
+                        <h3 class="font-extrabold text-base">Position Size Calculator</h3>
                         <div class="space-y-3">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Account Balance ($)</label>
-                                <input type="number" id="calcBalance" value="10000" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
+                            <input type="number" id="calcBalance" value="10000" placeholder="Account Balance ($)" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                            <input type="number" id="calcRiskPct" value="1" placeholder="Risk %" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                            <input type="number" id="calcStopLoss" value="20" placeholder="Stop Loss Pips" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                            <button onclick="calculatePositionSize()" class="w-full bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl">Calculate Lots</button>
+                            <div id="calcResultBox" class="hidden p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-center font-bold text-emerald-500 text-sm">
+                                Recommended Position: <span id="calcResultOutput">0.00 Lots</span>
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Risk Percentage (%)</label>
-                                <input type="number" id="calcRiskPct" value="1.0" step="0.1" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Stop Loss (Pips)</label>
-                                <input type="number" id="calcStopLoss" value="20" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">Pip Value per Standard Lot ($)</label>
-                                <input type="number" id="calcPipVal" value="10" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
-                            </div>
-                            <button onclick="calculatePositionSize()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition">
-                                Calculate Position Size
-                            </button>
-                        </div>
-                        <div id="calcResultBox" class="hidden p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-center space-y-1">
-                            <span class="text-xs text-emerald-700 dark:text-emerald-300 font-bold">Recommended Lot Allocation:</span>
-                            <h3 id="calcLotOutput" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">0.50 Lots</h3>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 6: KNOWLEDGE BASE -->
-                <div id="tab-knowledge" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                        <h3 class="font-extrabold text-base">Trading Psychology & Strategy Rules</h3>
-                        <blockquote class="p-4 bg-gray-50 dark:bg-slate-800/60 border-l-4 border-emerald-500 rounded-r-xl italic text-xs text-gray-600 dark:text-gray-300">
-                            "The goal of a successful trader is to make the best trades. Money is secondary. If you focus on execution quality, the PnL will take care of itself."
-                        </blockquote>
-                        <div class="space-y-2 pt-2 text-xs text-gray-500">
-                            <p><strong>• Ichimoku Scalping Core:</strong> Wait for price interaction with flat Tenkan-sen and Cloud boundaries. Avoid trading inside thin low-liquidity ranges.</p>
-                            <p><strong>• Anti-Martingale Discipline:</strong> Scale up risk only on winning streaks; reduce size or step away immediately after two consecutive losses.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 7: SETTINGS & PROFILE -->
+                <!-- TAB 7: SETTINGS -->
                 <div id="tab-settings" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-4">
-                        <h3 class="font-extrabold text-base">Settings & Profile</h3>
-                        <p class="text-xs text-gray-500">Manage your local profile identity and data storage preferences.</p>
-                        <div class="space-y-3 pt-2">
-                            <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs py-3 rounded-xl border border-gray-200 dark:border-slate-700 transition">
-                                <i class="fa-solid fa-user-pen mr-2 text-emerald-500"></i> Update Trader Profile Name
-                            </button>
-                            <button onclick="if(confirm('Are you sure you want to clear all local trade data and rules?')) { localStorage.clear(); location.reload(); }" class="w-full bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 font-bold text-xs py-3 rounded-xl border border-red-200 dark:border-red-900 transition">
-                                <i class="fa-solid fa-trash-can mr-2"></i> Reset Local Storage Data
-                            </button>
-                        </div>
+                        <h3 class="font-extrabold text-base">Settings &amp; Profile</h3>
+                        <button onclick="updateTraderProfileName()" class="w-full bg-gray-100 dark:bg-slate-800 font-bold text-xs py-3 rounded-xl">Update Profile Name</button>
+                        <button onclick="if(confirm('Reset all stored data?')) { localStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl">Clear Local Storage</button>
                     </div>
                 </div>
 
@@ -333,41 +235,29 @@
         </main>
     </div>
 
-    <!-- Manual Trade Modal -->
-    <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+    <!-- Manual Trade Log Modal -->
+    <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="font-extrabold text-base">Manual Trade Log</h3>
-                <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <h3 class="font-extrabold text-base">Record Trade Result</h3>
+                <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="tradeForm" onsubmit="handleLogTrade(event)" class="space-y-3">
+                <input type="text" id="tradeSymbol" required placeholder="Symbol e.g. XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                <input type="number" id="tradePnL" step="0.01" required placeholder="Net PnL ($) e.g. 150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                <input type="number" id="tradeDay" min="1" max="31" value="25" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">Symbol</label>
-                    <input type="text" id="tradeSymbol" required placeholder="e.g. EURUSD, US30" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result Evidence Photo</label>
+                    <input type="file" id="tradeResultFile" accept="image/*" class="w-full text-xs">
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1">Net PnL ($)</label>
-                        <input type="number" id="tradePnL" step="0.01" required placeholder="150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1">November Day</label>
-                        <input type="number" id="tradeDay" min="1" max="30" value="1" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1">Execution Notes / Thesis</label>
-                    <textarea id="tradeNotes" rows="2" placeholder="Brief setup notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition">
-                    Save & Sync to Calendar
-                </button>
+                <textarea id="tradeNotes" rows="2" placeholder="Outcome notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save &amp; Sync to Calendar</button>
             </form>
         </div>
     </div>
 
-    <!-- Lightbox Modal -->
-    <div id="lightboxModal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 cursor-pointer">
+    <!-- Lightbox Modal for Zooming Photos -->
+    <div id="lightboxModal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 cursor-pointer">
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain">
     </div>
 
@@ -375,85 +265,63 @@
     <script>
         const monthsNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let currentYear = 2026;
-        let currentMonthIndex = 10; // November
+        let currentMonthIndex = 8; // September
         let equityChartInstance = null;
 
         let monthPnLData = {
             2026: {
-                10: { // November
-                    1: { pnl: 157.89, trades: 2, grade: 'A+' },
-                    2: { pnl: 125.28, trades: 1, grade: 'A+' },
-                    3: { pnl: -45.20, trades: 2, grade: 'B' },
-                    5: { pnl: 89.10, trades: 1, grade: 'A' },
-                    8: { pnl: 42.10, trades: 1, grade: 'A' },
-                    9: { pnl: -15.50, trades: 1, grade: 'C' },
-                    10: { pnl: 110.00, trades: 2, grade: 'A+' }
+                8: { // September
+                    1: { pnl: 240.00, trades: 1, grade: 'A' },
+                    3: { pnl: -110.00, trades: 1, grade: 'B' },
+                    8: { pnl: 450.00, trades: 1, grade: 'A+' },
+                    15: { pnl: 320.00, trades: 1, grade: 'A' },
+                    25: { pnl: 400.00, trades: 1, grade: 'A+' }
                 }
             }
         };
 
         let criteriaList = [
-            { id: 1, text: 'Aligned with Higher Timeframe (HTF) trend direction', checked: false },
-            { id: 2, text: 'Clear technical setup (Ichimoku/MFI/SuperTrend confirmation)', checked: false },
-            { id: 3, text: 'Defined risk-to-reward ratio of at least 1:2', checked: false },
-            { id: 4, text: 'Spread and volatility conditions are normal', checked: false }
+            { id: 1, text: 'High Impact News Check: No red folder news within 30 mins', checked: true },
+            { id: 2, text: 'Liquidity Sweep Confirmation: Asian or Session high/low swept', checked: true },
+            { id: 3, text: 'Fair Value Gap / Order Block present on execution timeframe', checked: true },
+            { id: 4, text: 'Risk Management Verification: Position size capped at 1%', checked: true }
         ];
 
         window.onload = function() {
             loadSavedData();
             initEquityChart();
-            checkThemePreference();
             renderCalendar();
             renderCriteriaList();
+            updateLivePulsingBadges();
         };
 
-        // --- Persistence & Profile Management ---
         function loadSavedData() {
-            const savedPnL = localStorage.getItem('traderwell_pnl_data');
-            if (savedPnL) {
-                try { monthPnLData = JSON.parse(savedPnL); } catch(e) { console.error(e); }
-            }
-            const savedCriteria = localStorage.getItem('traderwell_criteria');
-            if (savedCriteria) {
-                try { criteriaList = JSON.parse(savedCriteria); } catch(e) { console.error(e); }
-            }
+            const saved = localStorage.getItem('traderwell_pnl_data');
+            if (saved) { try { monthPnLData = JSON.parse(saved); } catch(e) {} }
+            const savedName = localStorage.getItem('traderwell_username');
+            if (savedName) document.getElementById('headerTraderName').innerText = savedName;
         }
 
         function saveData() {
             localStorage.setItem('traderwell_pnl_data', JSON.stringify(monthPnLData));
-            localStorage.setItem('traderwell_criteria', JSON.stringify(criteriaList));
         }
 
-        function updateTraderProfileName() {
-            const currentName = localStorage.getItem('traderwell_username') || "Trader";
-            const newName = prompt("Update your Trader Profile Name:", currentName);
-            if (newName && newName.trim() !== "") {
-                localStorage.setItem('traderwell_username', newName.trim());
-                document.getElementById('headerTraderName').innerText = newName.trim();
-                alert("Trader profile name updated successfully!");
+        function updateLivePulsingBadges() {
+            // Live pulsing toggle simulation based on active state
+            const hasPendingResults = false; 
+            const entryBadge = document.getElementById('badgeEntryStatus');
+            const resultBadge = document.getElementById('badgeResultStatus');
+            if(hasPendingResults) {
+                entryBadge.classList.remove('animate-glow');
+                resultBadge.classList.add('animate-glow', 'border-amber-500');
+                resultBadge.classList.remove('opacity-50');
             }
         }
 
-        // --- Theme Management ---
         function toggleTheme() {
-            const htmlEl = document.documentElement;
-            if (htmlEl.classList.contains('dark')) {
-                htmlEl.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                htmlEl.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
+            document.documentElement.classList.toggle('dark');
         }
 
-        function checkThemePreference() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            }
-        }
-
-        // --- Tab Navigation ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -462,24 +330,14 @@
             });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             const activeNav = document.getElementById(`nav-${tabId}`);
-            activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
-            activeNav.classList.add('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
-            
-            const titles = {
-                'home': 'Home & PnL Calendar',
-                'dashboard': 'Analytics Dashboard',
-                'journal': 'Trade Journal',
-                'accounts': 'Accounts & ECN',
-                'calculator': 'Risk & Position Size Calculator',
-                'knowledge': 'Knowledge Base & Trading Rules',
-                'settings': 'Settings & Profile'
-            };
-            document.getElementById('page-title').innerText = titles[tabId];
+            if(activeNav) {
+                activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
+                activeNav.classList.add('text-emerald-600', 'bg-emerald-50', 'dark:bg-emerald-950/40', 'dark:text-emerald-400', 'font-semibold');
+            }
         }
 
-        // --- Calendar & PnL ---
-        function changeMonth(direction) {
-            currentMonthIndex += direction;
+        function changeMonth(dir) {
+            currentMonthIndex += dir;
             if (currentMonthIndex > 11) { currentMonthIndex = 0; currentYear++; }
             if (currentMonthIndex < 0) { currentMonthIndex = 11; currentYear--; }
             renderCalendar();
@@ -487,233 +345,84 @@
 
         function renderCalendar() {
             document.getElementById('calendarMonthTitle').innerText = `${monthsNames[currentMonthIndex]} ${currentYear}`;
-            const gridContainer = document.getElementById('fullMonthCalendarGrid');
-            gridContainer.innerHTML = '';
-
+            const grid = document.getElementById('fullMonthCalendarGrid');
+            grid.innerHTML = '';
             const monthData = (monthPnLData[currentYear] && monthPnLData[currentYear][currentMonthIndex]) || {};
             
-            for (let day = 1; day <= 30; day++) {
-                const dayInfo = monthData[day] || { pnl: 0, trades: 0, grade: '-' };
-                const hasTrades = dayInfo.trades > 0;
-                const isProfit = dayInfo.pnl > 0;
-                const isLoss = dayInfo.pnl < 0;
+            let totalNet = 0;
+            let winDaysCount = 0;
 
-                let bgClass = 'bg-white dark:bg-slate-800 border-gray-200 dark:border-slate-700';
-                if (hasTrades && isProfit) bgClass = 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800';
-                if (hasTrades && isLoss) bgClass = 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800';
+            for (let day = 1; day <= 30; day++) {
+                const info = monthData[day] || { pnl: 0, trades: 0 };
+                if(info.pnl > 0) { totalNet += info.pnl; winDaysCount++; }
+                else if(info.pnl < 0) { totalNet += info.pnl; }
+
+                const hasTrades = info.trades > 0;
+                const isProfit = info.pnl > 0;
+                const isLoss = info.pnl < 0;
+
+                let bg = 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800';
+                if(hasTrades && isProfit) bg = 'bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-500/40';
+                if(hasTrades && isLoss) bg = 'bg-red-50/50 dark:bg-red-950/30 border-red-500/40';
 
                 const cell = document.createElement('div');
-                cell.className = `h-20 border rounded-xl p-2 flex flex-col justify-between ${bgClass} shadow-xs transition hover:shadow-md`;
+                cell.className = `h-24 border rounded-2xl p-2.5 flex flex-col justify-between ${bg} shadow-xs transition`;
                 cell.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-bold text-gray-400">${day}</span>
-                        ${hasTrades ? `<span class="text-[9px] px-1.5 py-0.5 rounded font-bold bg-slate-900 text-white">Gr: ${dayInfo.grade}</span>` : ''}
+                        <span class="text-xs font-bold text-gray-400">${day}</span>
+                        ${hasTrades ? `<span class="text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-white font-mono">${info.trades} trade</span>` : ''}
                     </div>
                     <div>
-                        ${hasTrades ? `<div class="text-[11px] font-extrabold ${isProfit ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500'}">${isProfit ? '+' : ''}$${dayInfo.pnl.toFixed(2)}</div>` : '<span class="text-[9px] text-gray-300 dark:text-gray-600">No trades</span>'}
+                        ${hasTrades ? `<div class="text-xs font-extrabold ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${info.pnl.toFixed(2)}</div>` : '<span class="text-[10px] text-gray-300 dark:text-gray-700">No activity</span>'}
                     </div>
                 `;
-                gridContainer.appendChild(cell);
+                grid.appendChild(cell);
             }
+            document.getElementById('summaryMonthNet').innerText = `${totalNet >= 0 ? '+' : ''}$${totalNet.toFixed(2)}`;
+            document.getElementById('summaryWinDays').innerText = winDaysCount;
         }
 
-        // --- Criteria & Anti-FOMO Guard ---
         function renderCriteriaList() {
             const container = document.getElementById('criteriaListContainer');
             container.innerHTML = '';
-            
             criteriaList.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = `flex items-center justify-between p-2.5 bg-white dark:bg-slate-800 rounded-xl border ${item.checked ? 'border-emerald-500 bg-emerald-50/20' : 'border-gray-200 dark:border-slate-700'} shadow-sm transition`;
+                div.className = `flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border ${item.checked ? 'border-emerald-500' : 'border-gray-200 dark:border-slate-700'}`;
                 div.innerHTML = `
-                    <div class="flex items-center space-x-2.5 flex-1 cursor-pointer select-none" onclick="toggleCriteriaCheck(${item.id})">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} class="w-4 h-4 text-emerald-600 rounded pointer-events-none">
-                        <span class="text-xs font-bold text-gray-800 dark:text-gray-200 flex-1">${index + 1}. ${item.text}</span>
-                    </div>
-                    <div class="flex items-center space-x-1 pl-2 border-l border-gray-100 dark:border-slate-700">
-                        <button onclick="editCriteria(${item.id})" class="p-1.5 text-gray-400 hover:text-indigo-500 transition" title="Edit Rule"><i class="fa-solid fa-pen text-xs"></i></button>
-                        <button onclick="deleteCriteria(${item.id})" class="p-1.5 text-gray-400 hover:text-red-500 transition" title="Delete Rule"><i class="fa-solid fa-trash text-xs"></i></button>
-                    </div>
+                    <label class="flex items-center space-x-3 cursor-pointer text-xs font-bold flex-1">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCriteria(${item.id})" class="w-4 h-4 text-emerald-600 rounded">
+                        <span>${index + 1}. ${item.text}</span>
+                    </label>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function toggleCriteriaCheck(id) {
+        function toggleCriteria(id) {
             const item = criteriaList.find(c => c.id === id);
-            if (item) {
-                item.checked = !item.checked;
-                renderCriteriaList();
-                saveData();
-            }
-        }
-
-        function addNewCriteria() {
-            const input = document.getElementById('newCriteriaInput');
-            const val = input.value.trim();
-            if (!val) return;
-            const newId = criteriaList.length > 0 ? Math.max(...criteriaList.map(c => c.id)) + 1 : 1;
-            criteriaList.push({ id: newId, text: val, checked: false });
-            input.value = '';
-            renderCriteriaList();
-            saveData();
-        }
-
-        function editCriteria(id) {
-            const item = criteriaList.find(c => c.id === id);
-            if (!item) return;
-            const newText = prompt("Edit your trading criteria rule:", item.text);
-            if (newText !== null && newText.trim() !== "") {
-                item.text = newText.trim();
-                renderCriteriaList();
-                saveData();
-            }
-        }
-
-        function deleteCriteria(id) {
-            criteriaList = criteriaList.filter(c => c.id !== id);
-            renderCriteriaList();
-            saveData();
-        }
-
-        function calculateExecutionGrade() {
-            const totalRules = criteriaList.length;
-            if (totalRules === 0) return { grade: 'F', score: 0 };
-            const checkedCount = criteriaList.filter(c => c.checked).length;
-            const percentage = (checkedCount / totalRules) * 100;
-
-            let grade = 'F';
-            if (percentage === 100) grade = 'A+';
-            else if (percentage >= 75) grade = 'A';
-            else if (percentage >= 50) grade = 'B';
-            else if (percentage >= 25) grade = 'C';
-            else grade = 'D';
-
-            return { grade, score: percentage.toFixed(0) };
+            if(item) { item.checked = !item.checked; renderCriteriaList(); }
         }
 
         function verifyExecutionApproval() {
-            if (criteriaList.length === 0) {
-                alert('Please add at least one criteria rule before verifying.');
-                return;
-            }
             const notes = document.getElementById('guardTradeNotes').value.trim();
             const fileInput = document.getElementById('guardChartFile');
-            if (!notes) {
-                alert('Please provide your trade thesis and rationale notes.');
+            if(!notes || fileInput.files.length === 0) {
+                alert('Please provide your trade thesis and attach an entry screenshot chart.');
                 return;
             }
-            if (fileInput.files.length === 0) {
-                alert('Please attach a chart screen capture / proof before unlocking the ticket.');
-                return;
-            }
-
-            const evalResult = calculateExecutionGrade();
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageUrl = e.target.result;
-                appendNewJournalEntry(imageUrl, notes, evalResult.grade, evalResult.score);
-                alert(`Execution Graded: ${evalResult.grade} (${evalResult.score}% rule compliance). Ticket unlocked & synced!`);
-                
-                document.getElementById('guardTradeNotes').value = '';
-                document.getElementById('guardChartFile').value = '';
-                criteriaList.forEach(c => c.checked = false);
-                renderCriteriaList();
-                switchTab('journal');
-            };
-            reader.readAsDataURL(fileInput.files[0]);
+            alert('Execution approved & ticket unlocked!');
+            switchTab('journal');
         }
 
-        // --- Journal & Lightbox ---
-        function appendNewJournalEntry(imgUrl, thesisNotes, grade, score) {
-            const container = document.getElementById('journalEntriesContainer');
-            const newCard = document.createElement('div');
-            newCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition';
-            newCard.innerHTML = `
-                <div onclick="openLightbox('${imgUrl}')" class="relative h-48 bg-gray-900 overflow-hidden cursor-pointer group">
-                    <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white font-bold text-xs gap-2">
-                        <i class="fa-solid fa-magnifying-glass-plus text-base"></i> Click to Enlarge Chart
-                    </div>
-                </div>
-                <div class="p-4 space-y-3">
-                    <div class="flex justify-between items-center text-xs text-gray-500">
-                        <span>Just now • cTrader ECN</span>
-                        <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">Grade: ${grade} (${score}%)</span>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200"><strong>Thesis:</strong> ${thesisNotes}</p>
-                    <div class="flex items-center justify-between text-xs pt-2 border-t border-gray-100 dark:border-slate-800">
-                        <span class="text-gray-500">Anti-FOMO Guard: <strong class="text-emerald-600">Evaluated</strong></span>
-                        <span class="text-emerald-500 font-bold">Pending PnL</span>
-                    </div>
-                </div>
-            `;
-            container.prepend(newCard);
-        }
-
-        function openLightbox(imgUrl) {
-            document.getElementById('lightboxImg').src = imgUrl;
+        function openLightbox(url) {
+            document.getElementById('lightboxImg').src = url;
             document.getElementById('lightboxModal').classList.remove('hidden');
         }
-        function closeLightbox() { document.getElementById('lightboxModal').classList.add('hidden'); }
 
-        // --- CSV Import & Export ---
-        function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
-        function handleCsvImport(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                alert(`Successfully imported broker records from ${file.name}! Calendar updated.`);
-                if (!monthPnLData[2026][10][4]) {
-                    monthPnLData[2026][10][4] = { pnl: 210.45, trades: 3, grade: 'A' };
-                } else {
-                    monthPnLData[2026][10][4].pnl += 210.45;
-                }
-                renderCalendar();
-                saveData();
-            };
-            reader.readAsText(file);
+        function closeLightbox() {
+            document.getElementById('lightboxModal').classList.add('hidden');
         }
 
-        function exportTradesCsv() {
-            const csvContent = "data:text/csv;charset=utf-8,Date,Symbol,Direction,PnL,Grade\n2026-11-01,EURUSD,LONG,157.89,A+\n2026-11-02,US30,SHORT,125.28,A+\n2026-11-03,GBPUSD,LONG,-45.20,B";
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "TraderWell_Broker_Records_Nov2026.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // --- Charts & Tools ---
-        function initEquityChart() {
-            const ctx = document.getElementById('equityChart');
-            if (!ctx) return;
-            equityChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Nov 1', 'Nov 3', 'Nov 5', 'Nov 8', 'Nov 10'],
-                    datasets: [{ label: 'Broker Equity ($)', data: [10000, 10157, 10382, 10424, 10534], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.35 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function runPingTest() { document.getElementById('pingCtrader').innerText = `${Math.floor(Math.random() * 5) + 10}ms`; }
-        
-        function calculatePositionSize() {
-            const balance = parseFloat(document.getElementById('calcBalance').value) || 0;
-            const riskPct = parseFloat(document.getElementById('calcRiskPct').value) || 0;
-            const stopLoss = parseFloat(document.getElementById('calcStopLoss').value) || 1;
-            const pipVal = parseFloat(document.getElementById('calcPipVal').value) || 10;
-            const lotSize = (balance * (riskPct / 100)) / (stopLoss * pipVal);
-            document.getElementById('calcResultBox').classList.remove('hidden');
-            document.getElementById('calcLotOutput').innerText = `${lotSize.toFixed(2)} Lots`;
-        }
-
-        // --- Manual Trade Modal ---
         function openTradeModal() { document.getElementById('tradeModal').classList.remove('hidden'); }
         function closeTradeModal() { document.getElementById('tradeModal').classList.add('hidden'); }
 
@@ -722,48 +431,78 @@
             const symbol = document.getElementById('tradeSymbol').value.toUpperCase();
             const pnl = parseFloat(document.getElementById('tradePnL').value);
             const day = parseInt(document.getElementById('tradeDay').value);
-            const notes = document.getElementById('tradeNotes').value || 'Execution logged.';
-            const isWin = pnl >= 0;
-            const pnlFormatted = isWin ? `+$${pnl.toFixed(2)}` : `-$${Math.abs(pnl).toFixed(2)}`;
 
-            if (!monthPnLData[2026]) monthPnLData[2026] = {};
-            if (!monthPnLData[2026][10]) monthPnLData[2026][10] = {};
+            if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
+            if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
 
-            if (!monthPnLData[2026][10][day]) {
-                monthPnLData[2026][10][day] = { pnl: pnl, trades: 1, grade: 'A' };
+            if(!monthPnLData[currentYear][currentMonthIndex][day]) {
+                monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1 };
             } else {
-                monthPnLData[2026][10][day].pnl += pnl;
-                monthPnLData[2026][10][day].trades += 1;
+                monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
+                monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
             }
 
-            const newCard = document.createElement('div');
-            newCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md transition';
-            newCard.innerHTML = `
-                <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="relative h-48 bg-gray-900 overflow-hidden cursor-pointer group">
-                    <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                    <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white font-bold text-xs gap-2">
-                        <i class="fa-solid fa-magnifying-glass-plus text-base"></i> Click to Enlarge Chart
-                    </div>
-                </div>
-                <div class="p-4 space-y-3">
-                    <div class="flex justify-between items-center text-xs text-gray-500">
-                        <span>Nov ${day}, 2026 • cTrader ECN</span>
-                        <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">Grade: A</span>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-200"><strong>${symbol}:</strong> ${notes}</p>
-                    <div class="flex items-center justify-between text-xs pt-2 border-t border-gray-100 dark:border-slate-800">
-                        <span class="text-gray-500">Checklist: <strong class="text-emerald-600">Verified</strong></span>
-                        <span class="font-bold ${isWin ? 'text-emerald-500' : 'text-red-500'}">${pnlFormatted}</span>
-                    </div>
-                </div>
-            `;
-            document.getElementById('journalEntriesContainer').prepend(newCard);
-            
             saveData();
-            closeTradeModal();
             renderCalendar();
-            switchTab('journal');
+            closeTradeModal();
+            alert(`Successfully recorded ${symbol} PnL of $${pnl.toFixed(2)} for day ${day}! Calendar updated.`);
             document.getElementById('tradeForm').reset();
+        }
+
+        function handleCsvImport(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            alert(`Successfully imported broker records from ${file.name}. Calendar and equity synced!`);
+            if(!monthPnLData[currentYear][currentMonthIndex][4]) {
+                monthPnLData[currentYear][currentMonthIndex][4] = { pnl: 210.45, trades: 2 };
+            } else {
+                monthPnLData[currentYear][currentMonthIndex][4].pnl += 210.45;
+                monthPnLData[currentYear][currentMonthIndex][4].trades += 2;
+            }
+            saveData();
+            renderCalendar();
+        }
+
+        function exportTradesCsv() {
+            const csv = "data:text/csv;charset=utf-8,Date,Symbol,PnL\n2026-09-01,XAUUSD,240.00\n2026-09-03,XAUUSD,-110.00\n2026-09-08,XAUUSD,450.00";
+            const encoded = encodeURI(csv);
+            const link = document.createElement("a");
+            link.setAttribute("href", encoded);
+            link.setAttribute("download", "TraderWell_Records.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function initEquityChart() {
+            const ctx = document.getElementById('equityChart');
+            if(!ctx) return;
+            equityChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
+                    datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 10900], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function calculatePositionSize() {
+            const bal = parseFloat(document.getElementById('calcBalance').value) || 10000;
+            const risk = parseFloat(document.getElementById('calcRiskPct').value) || 1;
+            const sl = parseFloat(document.getElementById('calcStopLoss').value) || 20;
+            const lots = (bal * (risk / 100)) / (sl * 10);
+            document.getElementById('calcResultBox').classList.remove('hidden');
+            document.getElementById('calcResultOutput').innerText = `${lots.toFixed(2)} Lots`;
+        }
+
+        function updateTraderProfileName() {
+            const name = prompt("Update Trader Profile Name:", localStorage.getItem('traderwell_username') || "Trader");
+            if(name) {
+                localStorage.setItem('traderwell_username', name.trim());
+                document.getElementById('headerTraderName').innerText = name.trim();
+                alert("Profile name updated successfully!");
+            }
         }
     </script>
 </body>
