@@ -77,7 +77,18 @@
             </div>
         </div>
 
+        <!-- Quick Theme Selector & Actions -->
         <div class="flex items-center space-x-3">
+            <div class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl border border-gray-200 dark:border-slate-700">
+                <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" title="Emerald Green" class="w-5 h-5 rounded-full bg-emerald-500 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" title="Luxury Gold" class="w-5 h-5 rounded-full bg-amber-500 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" title="Cyber Light Blue" class="w-5 h-5 rounded-full bg-sky-500 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Cozy Yellow', '#eab308', 'rgba(234, 179, 8, 0.6)')" title="Cozy Yellow" class="w-5 h-5 rounded-full bg-yellow-400 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Clean White', '#ffffff', 'rgba(255, 255, 255, 0.6)')" title="Clean White" class="w-5 h-5 rounded-full bg-white border border-gray-400 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Dark White', '#cbd5e1', 'rgba(203, 213, 225, 0.6)')" title="Dark White" class="w-5 h-5 rounded-full bg-slate-400 hover:scale-110 transition"></button>
+                <button onclick="setThemeColor('Royal Violet', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" title="Royal Violet" class="w-5 h-5 rounded-full bg-violet-600 hover:scale-110 transition"></button>
+            </div>
+
             <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
                 <i class="fa-solid fa-file-arrow-up text-theme"></i> Import CSV
             </button>
@@ -358,13 +369,13 @@
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-400">Select Accent Color Theme</label>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <button onclick="setThemeColor('emerald', '#10b981', 'rgba(16, 185, 129, 0.6)')" class="p-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">Emerald Green</button>
-                                <button onclick="setThemeColor('gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" class="p-3 rounded-xl bg-amber-500 text-white text-xs font-bold shadow-md">Luxury Gold</button>
-                                <button onclick="setThemeColor('lightblue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" class="p-3 rounded-xl bg-sky-500 text-white text-xs font-bold shadow-md">Cyber Light Blue</button>
-                                <button onclick="setThemeColor('yellow', '#eab308', 'rgba(234, 179, 8, 0.6)')" class="p-3 rounded-xl bg-yellow-400 text-slate-950 text-xs font-bold shadow-md">Cozy Yellow</button>
-                                <button onclick="setThemeColor('white', '#ffffff', 'rgba(255, 255, 255, 0.6)')" class="p-3 rounded-xl bg-gray-200 text-slate-950 text-xs font-bold shadow-md">Clean White</button>
-                                <button onclick="setThemeColor('darkwhite', '#cbd5e1', 'rgba(203, 213, 225, 0.6)')" class="p-3 rounded-xl bg-slate-700 text-slate-100 text-xs font-bold shadow-md">Dark White</button>
-                                <button onclick="setThemeColor('violet', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" class="p-3 rounded-xl bg-violet-600 text-white text-xs font-bold shadow-md">Royal Violet</button>
+                                <button onclick="setThemeColor('Emerald Green', '#10b981', 'rgba(16, 185, 129, 0.6)')" class="p-3 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">Emerald Green</button>
+                                <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" class="p-3 rounded-xl bg-amber-500 text-white text-xs font-bold shadow-md">Luxury Gold</button>
+                                <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" class="p-3 rounded-xl bg-sky-500 text-white text-xs font-bold shadow-md">Cyber Light Blue</button>
+                                <button onclick="setThemeColor('Cozy Yellow', '#eab308', 'rgba(234, 179, 8, 0.6)')" class="p-3 rounded-xl bg-yellow-400 text-slate-950 text-xs font-bold shadow-md">Cozy Yellow</button>
+                                <button onclick="setThemeColor('Clean White', '#ffffff', 'rgba(255, 255, 255, 0.6)')" class="p-3 rounded-xl bg-gray-200 text-slate-950 text-xs font-bold shadow-md">Clean White</button>
+                                <button onclick="setThemeColor('Dark White', '#cbd5e1', 'rgba(203, 213, 225, 0.6)')" class="p-3 rounded-xl bg-slate-700 text-slate-100 text-xs font-bold shadow-md">Dark White</button>
+                                <button onclick="setThemeColor('Royal Violet', '#8b5cf6', 'rgba(139, 92, 246, 0.6)')" class="p-3 rounded-xl bg-violet-600 text-white text-xs font-bold shadow-md">Royal Violet</button>
                             </div>
                         </div>
 
@@ -390,7 +401,7 @@
             <div id="devChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
                 <div class="bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]">
                     <p class="font-bold text-[10px] text-theme mb-0.5">Developer Bot</p>
-                    Hello Leo! Checklist 2x edit limit and 1-week lockout engine active. All color themes operational.
+                    Hello Leo! Quick theme switcher added directly to the header bar for instant toggling.
                 </div>
             </div>
             <div class="p-3 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
@@ -538,6 +549,7 @@
             document.documentElement.style.setProperty('--theme-glow', glow);
             localStorage.setItem('traderwell_theme_primary', color);
             localStorage.setItem('traderwell_theme_glow', glow);
+            initCharts();
             alert(`Theme successfully updated to ${name}!`);
         }
 
@@ -550,7 +562,6 @@
             }
 
             if (criteriaEditsRemaining <= 0) {
-                // Trigger 1 week lock (7 days)
                 criteriaLockUntilTimestamp = now + (7 * 24 * 60 * 60 * 1000);
                 saveData();
                 alert('You have used both allowed edits. The checklist is now locked for 1 full week.');
@@ -1005,7 +1016,7 @@
                     type: 'line',
                     data: {
                         labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
-                        datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 12324], borderColor: primaryColor, backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
+                        datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 12324], borderColor: primaryColor, backgroundColor: primaryColor + '20', borderWidth: 3, fill: true, tension: 0.3 }]
                     },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
@@ -1049,7 +1060,7 @@
             setTimeout(() => {
                 const reply = document.createElement('div');
                 reply.className = 'bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]';
-                reply.innerHTML = `<p class="font-bold text-[10px] text-indigo-400 mb-0.5">Developer Hub Notifier</p>Received your update note: "${userText}". All layout and engine connections are fully operational.`;
+                reply.innerHTML = `<p class="font-bold text-[10px] text-indigo-400 mb-0.5">Developer Hub Notifier</p>Received your update note: "${userText}". Quick theme switcher is fully live on the top bar!`;
                 msgBox.appendChild(reply);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 600);
