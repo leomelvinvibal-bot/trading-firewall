@@ -41,9 +41,9 @@
                 <div>
                     <h1 class="font-extrabold text-sm tracking-wide flex items-center gap-2">
                         <span id="headerTraderName">Leo Melvin</span> 
-                        <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded font-mono">PRO</span>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded font-mono">PRO EDGE</span>
                     </h1>
-                    <p class="text-[10px] text-gray-400">Journal • Execution Checklist • Evidence</p>
+                    <p class="text-[10px] text-gray-400">Execution Discipline • Sample Size Proof</p>
                 </div>
             </div>
         </div>
@@ -59,7 +59,7 @@
             </button>
             
             <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-plus"></i> Record Result
+                <i class="fa-solid fa-plus"></i> Manual Result
             </button>
         </div>
     </header>
@@ -73,7 +73,7 @@
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
                 </button>
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics Dashboard</span>
+                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics &amp; Discipline</span>
                 </button>
                 <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-book-open w-5"></i> <span>Trade Journal</span>
@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
                 </button>
                 <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Execution Rules</span>
+                    <i class="fa-solid fa-shield-halved w-5"></i> <span>Execution Rules (Locked)</span>
                 </button>
                 <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-calculator w-5"></i> <span>Position Calculator</span>
@@ -114,67 +114,62 @@
                     <div class="grid grid-cols-7 gap-3" id="fullMonthCalendarGrid"></div>
                 </div>
 
-                <!-- TAB 2: ANALYTICS DASHBOARD -->
+                <!-- TAB 2: ANALYTICS & DISCIPLINE DASHBOARD -->
                 <div id="tab-dashboard" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                        <h3 class="font-extrabold text-base">Equity Curve &amp; Performance Statistics</h3>
-                        <div class="h-72"><canvas id="equityChart"></canvas></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <h3 class="font-extrabold text-base">Equity Curve (Verified Edge)</h3>
+                            <div class="h-64"><canvas id="equityChart"></canvas></div>
+                        </div>
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <h3 class="font-extrabold text-base">Execution Discipline Performance</h3>
+                            <div class="h-64"><canvas id="disciplineChart"></canvas></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- TAB 3: TRADE JOURNAL -->
+                <!-- TAB 3: TRADE JOURNAL & DUAL EVIDENCE GALLERY -->
                 <div id="tab-journal" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-base">Trade Journal &amp; Dual Evidence Gallery</h3>
-                        <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">+ Log New Entry</button>
+                        <span class="text-xs text-gray-400 font-bold">Click any photo to zoom in</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="journalEntriesContainer">
-                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-4">
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-emerald-500">XAUUSD (BUY)</span>
-                                <span class="text-gray-400">#10012483 • <strong class="text-emerald-500">+$450.00</strong></span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Entry Photo</span>
-                                    <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
-                                        <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Entry</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Result Photo</span>
-                                    <div onclick="openLightbox('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
-                                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Result</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-600 dark:text-gray-300"><strong>Setup:</strong> Asian Liquidity Grab &amp; FVG Rejection. Outcome: Closed Profit.</p>
-                        </div>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="journalEntriesContainer"></div>
                 </div>
 
                 <!-- TAB 4: CHART GALLERY WALL -->
                 <div id="tab-gallery" class="tab-content hidden space-y-6">
-                    <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="galleryWallGrid">
-                        <div onclick="openLightbox('https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80')" class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group">
-                            <img src="https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover group-hover:scale-105 transition">
-                            <div class="p-3 text-xs font-bold">XAUUSD Entry Setup #10012483</div>
-                        </div>
-                    </div>
+                    <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="galleryWallGrid"></div>
                 </div>
 
                 <!-- TAB 5: EXECUTION RULES & ANTI-FOMO GUARD -->
                 <div id="tab-execution" class="tab-content space-y-6">
+                    <!-- CRITICAL WARNING BANNER -->
+                    <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex items-start space-x-3 text-xs">
+                        <i class="fa-solid fa-lock text-amber-500 text-base mt-0.5"></i>
+                        <div class="space-y-1">
+                            <h4 class="font-extrabold text-amber-500">System Criteria Locked: Why Rule Changes Destroy Edge</h4>
+                            <p class="text-gray-300">
+                                Changing entry criteria mid-stream destroys your true mathematical edge and turns trading into pure gambling. 
+                                TraderWell locks these rules to force you to execute your system faithfully across your full sample size, regardless of wins or losses, to prove profitability.
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        
-                        <!-- Left 2 Columns: Pre-Trade Execution Protocol Checklist -->
+                        <!-- Left 2 Columns: Locked Pre-Trade Execution Protocol Checklist -->
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
-                            <p class="text-xs text-gray-400">Verify all mandatory rules before taking any market entry</p>
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol (Locked System)</h3>
+                                <span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                    <i class="fa-solid fa-lock mr-1"></i> No Edits Allowed
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-400">All mandatory rules must be checked to confirm adherence to your system</p>
+                            
                             <div id="criteriaListContainer" class="space-y-3"></div>
+
                             <div class="pt-4 space-y-3">
                                 <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
                                 <div>
@@ -202,7 +197,7 @@
                                 </div>
                             </div>
 
-                            <!-- STATE 1: ENTRY FORM TICKET (Unlocked initially while ENTRY is beating) -->
+                            <!-- STATE 1: ENTRY FORM TICKET -->
                             <div id="entryTicketForm" class="space-y-3 transition-all duration-300">
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Symbol / Pair</label>
@@ -223,24 +218,24 @@
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Setup / Entry Reason</label>
-                                    <input type="text" id="sideReason" value="London Open Sweep + FVG" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                    <input type="text" id="sideReason" value="Asian Sweep + FVG Rejection" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                                 </div>
                                 <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[11px] text-emerald-400 font-bold text-center">
-                                    <i class="fa-solid fa-circle-info mr-1"></i> ENTRY badge is beating. Complete checklist on left &amp; click "Pass Rules" to commit entry.
+                                    <i class="fa-solid fa-circle-info mr-1"></i> ENTRY badge is beating. Complete checklist &amp; pass rules.
                                 </div>
                             </div>
 
-                            <!-- STATE 2: RESULT APPROVAL PANEL (Hidden until Entry is committed, then RESULT starts beating) -->
+                            <!-- STATE 2: RESULT APPROVAL PANEL -->
                             <div id="resultApprovalPanel" class="hidden space-y-3 transition-all duration-300">
                                 <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-500 font-bold text-center animate-pulse">
-                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> Trade active! RESULT badge is beating. Upload final outcome photo to approve.
+                                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT badge is beating. Upload final outcome photo.
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Net PnL ($)</label>
                                     <input type="number" step="0.01" id="activeTradePnL" placeholder="e.g. 150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Secondary Outcome Photo Captured on Chart</label>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Outcome Screen Capture (Result)</label>
                                     <input type="file" id="activeResultFile" accept="image/*" class="w-full text-xs">
                                 </div>
                                 <button onclick="approveTradeResult()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">
@@ -249,7 +244,6 @@
                             </div>
 
                         </div>
-
                     </div>
                 </div>
 
@@ -286,7 +280,7 @@
     <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="font-extrabold text-base">Record Trade Result &amp; Upload Outcome</h3>
+                <h3 class="font-extrabold text-base">Record Manual Trade &amp; Dual Evidence</h3>
                 <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="tradeForm" onsubmit="handleLogTrade(event)" class="space-y-3">
@@ -294,11 +288,15 @@
                 <input type="number" id="tradePnL" step="0.01" required placeholder="Net PnL ($) e.g. 150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                 <input type="number" id="tradeDay" min="1" max="31" value="25" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result / Outcome Screen Capture</label>
-                    <input type="file" id="tradeResultFile" accept="image/*" required class="w-full text-xs">
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Entry Chart Photo (Secondary Screen)</label>
+                    <input type="file" id="manualEntryFile" accept="image/*" required class="w-full text-xs">
                 </div>
-                <textarea id="tradeNotes" rows="2" placeholder="Outcome notes or setup summary..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Result &amp; Sync Calendar</button>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result Outcome Photo (Secondary Screen)</label>
+                    <input type="file" id="manualResultFile" accept="image/*" required class="w-full text-xs">
+                </div>
+                <textarea id="tradeNotes" rows="2" placeholder="Setup thesis &amp; notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Trade &amp; Sync Calendar</button>
             </form>
         </div>
     </div>
@@ -314,7 +312,9 @@
         let currentYear = 2026;
         let currentMonthIndex = 8; // September
         let equityChartInstance = null;
+        let disciplineChartInstance = null;
         let workflowState = 'ENTRY'; // 'ENTRY' or 'RESULT'
+        let pendingEntryData = null;
 
         let monthPnLData = {
             2026: {
@@ -328,30 +328,46 @@
             }
         };
 
+        // Locked system criteria (cannot be edited to preserve edge)
         let criteriaList = [
-            { id: 1, text: 'High Impact News Check: No red folder news within 30 mins', checked: true },
-            { id: 2, text: 'Liquidity Sweep Confirmation: Asian or Session high/low swept', checked: true },
-            { id: 3, text: 'Fair Value Gap / Order Block present on execution timeframe', checked: true },
-            { id: 4, text: 'Risk Management Verification: Position size capped at 1%', checked: true }
+            { id: 1, text: 'High Impact News Check: No red folder news within 30 mins' },
+            { id: 2, text: 'Liquidity Sweep Confirmation: Asian or Session high/low swept' },
+            { id: 3, text: 'Fair Value Gap / Order Block present on execution timeframe' },
+            { id: 4, text: 'Risk Management Verification: Position size strictly capped at 1%' }
+        ];
+
+        let tradeJournalEntries = [
+            {
+                id: 10012483,
+                symbol: 'XAUUSD (BUY)',
+                pnl: 450.00,
+                entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80',
+                resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+                setup: 'Asian Liquidity Grab & FVG Rejection. Outcome: Closed Profit.'
+            }
         ];
 
         window.onload = function() {
             loadSavedData();
-            initEquityChart();
+            initCharts();
             renderCalendar();
             renderCriteriaList();
+            renderJournalAndGallery();
             updateWorkflowUI();
         };
 
         function loadSavedData() {
             const saved = localStorage.getItem('traderwell_pnl_data');
             if (saved) { try { monthPnLData = JSON.parse(saved); } catch(e) {} }
+            const savedJournal = localStorage.getItem('traderwell_journal');
+            if (savedJournal) { try { tradeJournalEntries = JSON.parse(savedJournal); } catch(e) {} }
             const savedName = localStorage.getItem('traderwell_username');
             if (savedName) document.getElementById('headerTraderName').innerText = savedName;
         }
 
         function saveData() {
             localStorage.setItem('traderwell_pnl_data', JSON.stringify(monthPnLData));
+            localStorage.setItem('traderwell_journal', JSON.stringify(tradeJournalEntries));
         }
 
         function updateWorkflowUI() {
@@ -361,7 +377,6 @@
             const resultPanel = document.getElementById('resultApprovalPanel');
 
             if (workflowState === 'ENTRY') {
-                // ENTRY badge beats, entry form is active
                 entryBadge.classList.add('animate-glow-fast', 'border-emerald-500/40');
                 entryBadge.classList.remove('opacity-50');
                 resultBadge.classList.remove('animate-glow-fast', 'border-amber-500');
@@ -370,7 +385,6 @@
                 entryForm.classList.remove('hidden');
                 resultPanel.classList.add('hidden');
             } else {
-                // RESULT badge beats, result approval panel is active
                 entryBadge.classList.remove('animate-glow-fast');
                 entryBadge.classList.add('opacity-50');
                 resultBadge.classList.add('animate-glow-fast', 'border-amber-500');
@@ -446,33 +460,55 @@
             container.innerHTML = '';
             criteriaList.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = `flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border ${item.checked ? 'border-emerald-500' : 'border-gray-200 dark:border-slate-700'}`;
+                div.className = `flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-emerald-500/50`;
                 div.innerHTML = `
                     <label class="flex items-center space-x-3 cursor-pointer text-xs font-bold flex-1">
-                        <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCriteria(${item.id})" class="w-4 h-4 text-emerald-600 rounded">
+                        <input type="checkbox" id="crit_${item.id}" class="w-4 h-4 text-emerald-600 rounded">
                         <span>${index + 1}. ${item.text}</span>
                     </label>
+                    <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-lock text-[9px] mr-1"></i> Locked</span>
                 `;
                 container.appendChild(div);
             });
         }
 
-        function toggleCriteria(id) {
-            const item = criteriaList.find(c => c.id === id);
-            if(item) { item.checked = !item.checked; renderCriteriaList(); }
-        }
-
         function verifyExecutionApproval() {
+            // Verify all criteria are checked
+            for(let item of criteriaList) {
+                const chk = document.getElementById(`crit_${item.id}`);
+                if(!chk || !chk.checked) {
+                    alert('System Rule Violation: You must strictly check and follow all locked criteria before committing an entry. Do not trade on impulse!');
+                    return;
+                }
+            }
+
             const notes = document.getElementById('guardTradeNotes').value.trim();
             const fileInput = document.getElementById('guardChartFile');
+            const symbol = document.getElementById('sideSymbol').value.toUpperCase();
+            const type = document.getElementById('sideType').value;
+            const lot = document.getElementById('sideLot').value;
+            const reason = document.getElementById('sideReason').value;
+
             if(!notes || fileInput.files.length === 0) {
                 alert('Please provide your trade thesis and attach the secondary screen photo captured on chart for entry.');
                 return;
             }
-            // Transition state: Entry is set, now RESULT starts beating!
-            workflowState = 'RESULT';
-            updateWorkflowUI();
-            alert('Entry rules passed and chart photo captured! State shifted: RESULT badge is now beating.');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                pendingEntryData = {
+                    id: Math.floor(10000000 + Math.random() * 90000000),
+                    symbol: `${symbol} (${type.includes('BUY') ? 'BUY' : 'SELL'})`,
+                    entryImg: e.target.result,
+                    setup: `${reason} - ${notes}`
+                };
+
+                // Shift to RESULT state
+                workflowState = 'RESULT';
+                updateWorkflowUI();
+                alert('All system criteria strictly followed! Entry committed. State shifted: RESULT badge is now beating.');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
         }
 
         function approveTradeResult() {
@@ -480,33 +516,118 @@
             const fileInput = document.getElementById('activeResultFile');
 
             if (isNaN(pnl) || fileInput.files.length === 0) {
-                alert('Please enter the Net PnL and attach the secondary outcome photo captured on chart.');
+                alert('Please enter Net PnL and attach the secondary outcome photo captured on chart.');
                 return;
             }
 
-            const day = 25; // Default current simulated active day
-            if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
-            if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if(pendingEntryData) {
+                    pendingEntryData.resultImg = e.target.result;
+                    pendingEntryData.pnl = pnl;
+                    tradeJournalEntries.unshift(pendingEntryData);
+                }
 
-            if(!monthPnLData[currentYear][currentMonthIndex][day]) {
-                monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1 };
-            } else {
-                monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
-                monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
-            }
+                const day = 25; // Current active calendar day
+                if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
+                if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
 
-            saveData();
-            renderCalendar();
+                if(!monthPnLData[currentYear][currentMonthIndex][day]) {
+                    monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1 };
+                } else {
+                    monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
+                    monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
+                }
 
-            // Reset workflow back to ENTRY state
-            workflowState = 'ENTRY';
-            updateWorkflowUI();
-            document.getElementById('guardTradeNotes').value = '';
-            document.getElementById('guardChartFile').value = '';
-            document.getElementById('activeTradePnL').value = '';
-            document.getElementById('activeResultFile').value = '';
+                saveData();
+                renderCalendar();
+                renderJournalAndGallery();
 
-            alert('Result approved, outcome captured, and calendar successfully synced!');
+                // Reset workflow
+                workflowState = 'ENTRY';
+                updateWorkflowUI();
+                pendingEntryData = null;
+                document.getElementById('guardTradeNotes').value = '';
+                document.getElementById('guardChartFile').value = '';
+                document.getElementById('activeTradePnL').value = '';
+                document.getElementById('activeResultFile').value = '';
+                criteriaList.forEach(item => {
+                    const c = document.getElementById(`crit_${item.id}`);
+                    if(c) c.checked = false;
+                });
+
+                alert('Result approved, dual evidence captured, and calendar successfully synced with your strict system execution!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function renderJournalAndGallery() {
+            const journalContainer = document.getElementById('journalEntriesContainer');
+            const galleryContainer = document.getElementById('galleryWallGrid');
+            
+            journalContainer.innerHTML = '';
+            galleryContainer.innerHTML = '';
+
+            tradeJournalEntries.forEach(entry => {
+                const isProfit = entry.pnl >= 0;
+
+                // Journal card
+                const jCard = document.createElement('div');
+                jCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-4';
+                jCard.innerHTML = `
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-emerald-500">${entry.symbol}</span>
+                        <span class="text-gray-400">#${entry.id} • <strong class="${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</strong></span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Entry Photo</span>
+                            <div onclick="openLightbox('${entry.entryImg}')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                                <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Entry</div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Result Photo</span>
+                            <div onclick="openLightbox('${entry.resultImg}')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                                <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Result</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-300"><strong>Setup:</strong> ${entry.setup}</p>
+                `;
+                journalContainer.appendChild(jCard);
+
+                // Gallery wall items (Entry & Result cards)
+                const gEntry = document.createElement('div');
+                gEntry.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group shadow-xs';
+                gEntry.innerHTML = `
+                    <div onclick="openLightbox('${entry.entryImg}')" class="h-48 overflow-hidden relative">
+                        <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Entry</div>
+                    </div>
+                    <div class="p-3 text-xs font-bold flex justify-between items-center">
+                        <span>${entry.symbol} Entry #${entry.id}</span>
+                        <span class="text-[10px] text-amber-500">ENTRY</span>
+                    </div>
+                `;
+                galleryContainer.appendChild(gEntry);
+
+                const gResult = document.createElement('div');
+                gResult.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group shadow-xs';
+                gResult.innerHTML = `
+                    <div onclick="openLightbox('${entry.resultImg}')" class="h-48 overflow-hidden relative">
+                        <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Result</div>
+                    </div>
+                    <div class="p-3 text-xs font-bold flex justify-between items-center">
+                        <span>${entry.symbol} Result #${entry.id}</span>
+                        <span class="text-[10px] ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
+                    </div>
+                `;
+                galleryContainer.appendChild(gResult);
+            });
         }
 
         function openLightbox(url) {
@@ -526,34 +647,56 @@
             const symbol = document.getElementById('tradeSymbol').value.toUpperCase();
             const pnl = parseFloat(document.getElementById('tradePnL').value);
             const day = parseInt(document.getElementById('tradeDay').value);
-            const resultFile = document.getElementById('tradeResultFile').files[0];
+            const entryFile = document.getElementById('manualEntryFile').files[0];
+            const resultFile = document.getElementById('manualResultFile').files[0];
+            const notes = document.getElementById('tradeNotes').value;
 
-            if (!resultFile) {
-                alert('Please upload the result/outcome screenshot photo.');
+            if(!entryFile || !resultFile) {
+                alert('Please upload both entry and result screen photos.');
                 return;
             }
 
-            if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
-            if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
+            const reader1 = new FileReader();
+            reader1.onload = function(e1) {
+                const reader2 = new FileReader();
+                reader2.onload = function(e2) {
+                    tradeJournalEntries.unshift({
+                        id: Math.floor(10000000 + Math.random() * 90000000),
+                        symbol: `${symbol} (MANUAL)`,
+                        pnl: pnl,
+                        entryImg: e1.target.result,
+                        resultImg: e2.target.result,
+                        setup: notes || 'Manual Trade Entry'
+                    });
 
-            if(!monthPnLData[currentYear][currentMonthIndex][day]) {
-                monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1 };
-            } else {
-                monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
-                monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
-            }
+                    if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
+                    if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
 
-            saveData();
-            renderCalendar();
-            closeTradeModal();
-            alert(`Result recorded and outcome photo uploaded! Calendar successfully synced for ${symbol} ($${pnl.toFixed(2)}).`);
-            document.getElementById('tradeForm').reset();
+                    if(!monthPnLData[currentYear][currentMonthIndex][day]) {
+                        monthPnLData[currentYear][currentMonthIndex][day] = { pnl: pnl, trades: 1 };
+                    } else {
+                        monthPnLData[currentYear][currentMonthIndex][day].pnl += pnl;
+                        monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
+                    }
+
+                    saveData();
+                    renderCalendar();
+                    renderJournalAndGallery();
+                    closeTradeModal();
+                    alert(`Trade logged with dual evidence photos and calendar successfully synced!`);
+                    document.getElementById('tradeForm').reset();
+                };
+                reader2.readAsDataURL(resultFile);
+            };
+            reader1.readAsDataURL(entryFile);
         }
 
         function handleCsvImport(e) {
             const file = e.target.files[0];
             if(!file) return;
-            alert(`Successfully imported broker records from ${file.name}. Calendar and equity synced!`);
+            alert(`Successfully imported broker records from ${file.name}. Calendar and PnL synced correctly!`);
+            if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
+            if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
             if(!monthPnLData[currentYear][currentMonthIndex][4]) {
                 monthPnLData[currentYear][currentMonthIndex][4] = { pnl: 210.45, trades: 2 };
             } else {
@@ -571,23 +714,36 @@
             const encoded = encodeURI(csv);
             const link = document.createElement("a");
             link.setAttribute("href", encoded);
-            link.setAttribute("download", "TraderWell_Records.csv");
+            link.setAttribute("download", "TraderWell_Edge_Records.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function initEquityChart() {
-            const ctx = document.getElementById('equityChart');
-            if(!ctx) return;
-            equityChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
-                    datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 10900], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
+        function initCharts() {
+            const ctx1 = document.getElementById('equityChart');
+            if(ctx1) {
+                equityChartInstance = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: ['Sep 1', 'Sep 3', 'Sep 8', 'Sep 15', 'Sep 25'],
+                        datasets: [{ label: 'Equity ($)', data: [10000, 10240, 10130, 10580, 10900], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', borderWidth: 3, fill: true, tension: 0.3 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            const ctx2 = document.getElementById('disciplineChart');
+            if(ctx2) {
+                disciplineChartInstance = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                        datasets: [{ label: 'Adherence %', data: [100, 100, 100, 100], backgroundColor: '#10b981', borderRadius: 8 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 } }, plugins: { legend: { display: false } } }
+                });
+            }
         }
 
         function calculatePositionSize() {
