@@ -906,36 +906,61 @@
             reader.onload = function(e) {
                 const text = e.target.result;
                 const lines = text.split('\n');
-                let importedCount = 0;
+                let updatedCount = 0;
+                let addedCount = 0;
                 
-                const newImportedTrades = [];
+                // Load existing trades securely from storage
+                let currentTrades = [];
+                try {
+                    currentTrades = JSON.parse(localStorage.getItem('traderwell_trades')) || trades || [];
+                } catch (err) {
+                    currentTrades = trades || [];
+                }
+
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (!line) continue;
                     const cols = line.split(',');
                     if (cols.length >= 4) {
-                        newImportedTrades.push({
-                            id: cols[0].trim() || 'TW-' + Math.floor(1000 + Math.random() * 9000),
-                            date: cols[1].trim() || new Date().toISOString().split('T')[0],
-                            symbol: cols[2].trim() || 'XAUUSD',
-                            type: 'BUY',
-                            lot: 0.10,
-                            pnl: parseFloat(cols[3]) || 100,
-                            status: cols[4] ? cols[4].trim() : 'Passed Rules',
-                            notes: 'Imported CSV Trade',
-                            entryPhoto: '',
-                            resultPhoto: '',
-                            criteria: []
-                        });
-                        importedCount++;
+                        const csvId = cols[0].trim();
+                        const csvDate = cols[1].trim() || new Date().toISOString().split('T')[0];
+                        const csvSymbol = cols[2].trim() || 'XAUUSD';
+                        const csvPnl = parseFloat(cols[3]) || 0;
+                        const csvStatus = cols[4] ? cols[4].trim() : 'Passed Rules';
+
+                        // Check if this CSV row matches an existing Gallery record by ID or Date+Symbol
+                        let existingIndex = currentTrades.findIndex(t => t.id === csvId || (t.date === csvDate && t.symbol === csvSymbol));
+
+                        if (existingIndex !== -1) {
+                            // Merge CSV financial data into the existing gallery record (Preserves photos!)
+                            currentTrades[existingIndex].pnl = csvPnl;
+                            currentTrades[existingIndex].status = csvStatus;
+                            currentTrades[existingIndex].date = csvDate;
+                            updatedCount++;
+                        } else {
+                            // Add as a new entry if no match exists
+                            currentTrades.unshift({
+                                id: csvId || 'TW-' + Math.floor(1000 + Math.random() * 9000),
+                                date: csvDate,
+                                symbol: csvSymbol,
+                                type: 'BUY',
+                                lot: 0.10,
+                                pnl: csvPnl,
+                                status: csvStatus,
+                                notes: 'Imported CSV Statement',
+                                entryPhoto: '',
+                                resultPhoto: '',
+                                criteria: []
+                            });
+                            addedCount++;
+                        }
                     }
                 }
 
-                // MERGE: Prepend new CSV imports onto existing trades array so gallery photos are preserved
-                trades = [...newImportedTrades, ...trades];
+                trades = currentTrades;
 
                 if (saveTradesToStorage()) {
-                    alert(`Successfully imported ${importedCount} trades from CSV! Your existing gallery photos remain safe.`);
+                    alert(`CSV Synchronization Complete: Updated ${updatedCount} existing gallery records and added ${addedCount} new trades. Gallery photos and PnL computations are now fully aligned.`);
                     location.reload();
                 }
             };
