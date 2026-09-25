@@ -48,20 +48,6 @@
             </div>
         </div>
 
-        <!-- Live Status & Pulsing Tags (ENTRY vs RESULT) -->
-        <div class="hidden md:flex items-center space-x-4 text-xs font-bold">
-            <!-- Dynamic Pulsing ENTRY Tag -->
-            <div id="badgeEntryStatus" class="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-glow-fast flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                ENTRY ACTIVE
-            </div>
-            <!-- Dynamic Pulsing RESULT Tag -->
-            <div id="badgeResultStatus" class="px-3 py-1 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/30 flex items-center gap-2 opacity-60">
-                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                RESULT PENDING
-            </div>
-        </div>
-
         <div class="flex items-center space-x-3">
             <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
                 <i class="fa-solid fa-file-arrow-up text-emerald-500"></i> Import CSV
@@ -105,11 +91,6 @@
                     <i class="fa-solid fa-gear w-5"></i> <span>Settings &amp; Profile</span>
                 </button>
             </div>
-
-            <div class="pt-4 border-t border-gray-100 dark:border-slate-800">
-                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">Appearance</p>
-                <button onclick="toggleTheme()" class="w-full py-2 text-xs font-bold rounded-xl bg-gray-100 dark:bg-slate-800 transition">Toggle Theme Mode</button>
-            </div>
         </aside>
 
         <!-- Main Content Area -->
@@ -141,13 +122,12 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: TRADE JOURNAL & DUAL ZOOMABLE PHOTOS -->
+                <!-- TAB 3: TRADE JOURNAL -->
                 <div id="tab-journal" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-base">Trade Journal &amp; Dual Evidence Gallery</h3>
                         <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">+ Log New Entry</button>
                     </div>
-                    <!-- Journal Cards Grid with Zoomable Photos -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="journalEntriesContainer">
                         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-4">
                             <div class="flex justify-between items-center text-xs">
@@ -186,20 +166,53 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: ANTI-FOMO GUARD -->
-                <div id="tab-execution" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 max-w-2xl mx-auto">
-                        <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
-                        <div id="criteriaListContainer" class="space-y-3"></div>
-                        <div class="pt-4 space-y-3">
-                            <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Entry Chart Screen Capture</label>
-                                <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs">
+                <!-- TAB 5: ANTI-FOMO GUARD WITH LIVE PULSING ENTRY & RESULT WORDS -->
+                <div id="tab-execution" class="tab-content space-y-6">
+                    
+                    <!-- LIVE BEATING / PULSING ENTRY & RESULT HEADER BAR -->
+                    <div class="flex items-center justify-center space-x-6 py-3 px-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-xs">
+                        <!-- Dynamic Pulsing ENTRY Word -->
+                        <div id="badgeEntryStatus" class="px-6 py-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-sm font-black tracking-widest animate-glow-fast flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            ENTRY
+                        </div>
+                        <span class="text-gray-400 font-bold">→</span>
+                        <!-- Dynamic Pulsing RESULT Word -->
+                        <div id="badgeResultStatus" class="px-6 py-2 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/30 text-sm font-black tracking-widest flex items-center gap-2.5 opacity-50">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                            RESULT
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Pre-Trade Execution Protocol Checklist -->
+                        <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol</h3>
+                            <div id="criteriaListContainer" class="space-y-3"></div>
+                            <div class="pt-4 space-y-3">
+                                <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Entry Chart Screen Capture</label>
+                                    <input type="file" id="guardChartFile" accept="image/*" class="w-full text-xs">
+                                </div>
+                                <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/20">
+                                    Pass Rules &amp; Open Trade (Unlocks Ticket)
+                                </button>
                             </div>
-                            <button onclick="verifyExecutionApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-600/20">
-                                Pass Rules &amp; Open Trade (Unlocks Ticket)
-                            </button>
+                        </div>
+
+                        <!-- Log New Setup Position Box -->
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <h3 class="font-extrabold text-base">Log New Setup Position</h3>
+                            <div class="space-y-3">
+                                <input type="text" id="sideSymbol" value="XAUUSD" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
+                                <select id="sideType" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
+                                    <option>BUY (Long)</option>
+                                    <option>SELL (Short)</option>
+                                </select>
+                                <input type="text" id="sideLot" value="0.10" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                                <input type="text" id="sideReason" value="London Open Sweep + FVG" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -265,7 +278,7 @@
         let currentYear = 2026;
         let currentMonthIndex = 8; // September
         let equityChartInstance = null;
-        let hasActiveEntryWithoutResult = true; // Controls pulsing badge states
+        let entryFiled = false; // Controls pulsing beat status
 
         let monthPnLData = {
             2026: {
@@ -309,23 +322,19 @@
             const entryBadge = document.getElementById('badgeEntryStatus');
             const resultBadge = document.getElementById('badgeResultStatus');
             
-            if (hasActiveEntryWithoutResult) {
-                // Entry filled/passed, now Result is pending & pulsing
-                entryBadge.classList.remove('animate-glow-fast', 'border-emerald-500/30');
+            if (!entryFiled) {
+                // ENTRY word beats actively until filed
+                entryBadge.classList.add('animate-glow-fast', 'border-emerald-500/40');
+                entryBadge.classList.remove('opacity-50');
+                resultBadge.classList.remove('animate-glow-fast', 'border-amber-500');
+                resultBadge.classList.add('opacity-50');
+            } else {
+                // Entry stops beating, RESULT word starts its lively beating until result is logged
+                entryBadge.classList.remove('animate-glow-fast');
                 entryBadge.classList.add('opacity-50');
                 resultBadge.classList.add('animate-glow-fast', 'border-amber-500');
-                resultBadge.classList.remove('opacity-60');
-            } else {
-                // Entry is active/waiting to be filed
-                entryBadge.classList.add('animate-glow-fast');
-                entryBadge.classList.remove('opacity-50');
-                resultBadge.classList.remove('animate-glow-fast');
-                resultBadge.classList.add('opacity-60');
+                resultBadge.classList.remove('opacity-50');
             }
-        }
-
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
         }
 
         function switchTab(tabId) {
@@ -416,10 +425,9 @@
                 alert('Please provide your trade thesis and attach an entry screenshot chart.');
                 return;
             }
-            hasActiveEntryWithoutResult = true;
+            entryFiled = true; // Stops ENTRY beat and starts RESULT beat
             updateLivePulsingBadges();
-            alert('Execution approved! Entry filed. Entry pulse stopped, Result pulse active until outcome is recorded.');
-            switchTab('journal');
+            alert('Execution approved! Entry chart filed successfully. ENTRY beat stopped, RESULT beat is now active until outcome is encoded.');
         }
 
         function openLightbox(url) {
@@ -456,7 +464,7 @@
                 monthPnLData[currentYear][currentMonthIndex][day].trades += 1;
             }
 
-            hasActiveEntryWithoutResult = false;
+            entryFiled = false; // Reset for next trade cycle
             updateLivePulsingBadges();
             saveData();
             renderCalendar();
@@ -478,6 +486,8 @@
             saveData();
             renderCalendar();
         }
+
+        function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
 
         function exportTradesCsv() {
             const csv = "data:text/csv;charset=utf-8,Date,Symbol,PnL\n2026-09-01,XAUUSD,240.00\n2026-09-03,XAUUSD,-110.00\n2026-09-08,XAUUSD,450.00";
