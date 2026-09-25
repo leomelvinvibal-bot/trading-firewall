@@ -55,7 +55,6 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col relative">
-
     <!-- SECURITY LOGIN & SIGNUP PORTAL (Overlay) -->
     <div id="securityLoginOverlay" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full space-y-6 text-center">
@@ -68,7 +67,6 @@
                 <button onclick="switchAuthMode('login')" id="authTabLogin" class="flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm">Secure Login</button>
                 <button onclick="switchAuthMode('signup')" id="authTabSignup" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition">Sign Up</button>
             </div>
-
             <!-- LOGIN FORM -->
             <div id="loginFormContainer" class="space-y-4">
                 <div>
@@ -80,7 +78,6 @@
                     Authenticate & Access Terminal
                 </button>
             </div>
-
             <!-- SIGNUP FORM -->
             <div id="signupFormContainer" class="hidden space-y-3 text-left">
                 <div>
@@ -103,11 +100,9 @@
                     Register &amp; Launch Terminal
                 </button>
             </div>
-
             <p class="text-[10px] text-gray-500">Protected by Discipline Guard™ Edge Encryption</p>
         </div>
     </div>
-
     <!-- Top Navigation Header -->
     <header class="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-4">
@@ -127,7 +122,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Quick Theme Selector & Actions -->
         <div class="flex items-center space-x-3">
             <div class="hidden md:flex items-center space-x-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-xl border border-gray-200 dark:border-slate-700">
@@ -135,7 +129,6 @@
                 <button onclick="setThemeColor('Luxury Gold', '#f59e0b', 'rgba(245, 158, 11, 0.6)')" title="Luxury Gold" class="w-5 h-5 rounded-full bg-amber-500 hover:scale-110 transition"></button>
                 <button onclick="setThemeColor('Cyber Light Blue', '#0ea5e9', 'rgba(14, 165, 233, 0.6)')" title="Cyber Light Blue" class="w-5 h-5 rounded-full bg-sky-500 hover:scale-110 transition"></button>
             </div>
-
             <button onclick="triggerCsvImport()" class="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
                 <i class="fa-solid fa-file-arrow-up text-theme"></i> Import CSV
             </button>
@@ -150,7 +143,6 @@
             </button>
         </div>
     </header>
-
     <div class="flex-1 flex">
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 space-y-6 hidden lg:block">
@@ -159,7 +151,6 @@
                 <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-xs font-extrabold text-theme bg-theme/20 border border-theme/60 animate-pulse-vivid transition shadow-lg mb-4">
                     <i class="fa-solid fa-shield-halved w-5 text-theme text-base"></i> <span>Execution Rules (Guarded)</span>
                 </button>
-
                 <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">MAIN NAVIGATION</p>
                 <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
@@ -184,11 +175,9 @@
                 </button>
             </div>
         </aside>
-
         <!-- Main Content Area -->
         <main class="flex-1 p-6 overflow-y-auto">
             <div class="max-w-7xl mx-auto space-y-6">
-
                 <!-- TAB 1: P&L CALENDAR -->
                 <div id="tab-home" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center bg-white dark:bg-slate-900 p-4 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs">
@@ -204,7 +193,6 @@
                     </div>
                     <div class="grid grid-cols-7 gap-3" id="fullMonthCalendarGrid"></div>
                 </div>
-
                 <!-- TAB 2: ANALYTICS DASHBOARD -->
                 <div id="tab-dashboard" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -221,7 +209,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- TAB 3: TRADING SESSIONS MAP -->
                 <div id="tab-sessions" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
@@ -237,7 +224,6 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2" id="sessionsMapGrid"></div>
                     </div>
                 </div>
-
                 <!-- TAB 4: TRADE JOURNAL HISTORY -->
                 <div id="tab-journal" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
@@ -260,8 +246,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- TAB 5: CHART GALLERY WALL (Newest First) -->
+                <!-- TAB 5: CHART GALLERY WALL -->
                 <div id="tab-gallery" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
                         <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
@@ -269,7 +254,6 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
                 </div>
-
                 <!-- TAB 6: EXECUTION RULES & DISCIPLINE GUARD -->
                 <div id="tab-execution" class="tab-content space-y-6">
                     <div class="bg-slate-900 border-2 border-theme/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl">
@@ -281,7 +265,6 @@
                             </p>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <div class="flex justify-between items-center">
@@ -296,7 +279,6 @@
                                 </div>
                             </div>
                             <div id="criteriaListContainer" class="space-y-3"></div>
-
                             <div class="pt-4 space-y-3">
                                 <textarea id="guardTradeNotes" rows="3" placeholder="Enter trade thesis and execution rationale..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs focus:outline-none focus:border-theme"></textarea>
                                 <div>
@@ -308,7 +290,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <!-- Log New Setup Position -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 relative">
                             <h3 class="font-extrabold text-base">Log New Setup Position</h3>
@@ -322,7 +303,6 @@
                                     <span class="w-2 h-2 rounded-full bg-amber-500"></span> RESULT
                                 </div>
                             </div>
-
                             <div id="entryTicketForm" class="space-y-3 transition-all duration-300">
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Symbol / Pair</label>
@@ -346,7 +326,6 @@
                                     <input type="text" id="sideReason" value="Asian Sweep + FVG Rejection" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                                 </div>
                             </div>
-
                             <div id="resultApprovalPanel" class="hidden space-y-3 transition-all duration-300">
                                 <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-500 font-bold text-center animate-pulse">
                                     <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT pending. Upload final outcome.
@@ -369,10 +348,8 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- TAB 7: KNOWLEDGE HUB (Bookshelf & Master Portraits with PDFs) -->
+                <!-- TAB 7: KNOWLEDGE HUB -->
                 <div id="tab-knowledge" class="tab-content hidden space-y-6">
-                    <!-- Bookshelf Header Hero with Legendary Traders Background -->
                     <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-8 overflow-hidden shadow-2xl">
                         <div class="absolute inset-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=80');"></div>
                         <div class="relative z-10 space-y-4 max-w-2xl">
@@ -383,10 +360,7 @@
                             </p>
                         </div>
                     </div>
-
-                    <!-- Bookshelf & Books Grid with direct PDF links -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Book 1: Trading in the Zone -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="w-20 h-28 bg-amber-700 rounded-lg mx-auto shadow-xl border-l-4 border-amber-900 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
@@ -400,8 +374,6 @@
                                 <i class="fa-solid fa-book-open-reader mr-1.5"></i> Read PDF Book
                             </a>
                         </div>
-
-                        <!-- Book 2: Reminiscences of a Stock Operator -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="w-20 h-28 bg-indigo-900 rounded-lg mx-auto shadow-xl border-l-4 border-indigo-950 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
@@ -415,8 +387,6 @@
                                 <i class="fa-solid fa-book-open-reader mr-1.5"></i> Read PDF Book
                             </a>
                         </div>
-
-                        <!-- Book 3: Market Wizards / Institutional Guide -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 text-center flex flex-col justify-between">
                             <div class="space-y-3">
                                 <div class="w-20 h-28 bg-emerald-900 rounded-lg mx-auto shadow-xl border-l-4 border-emerald-950 flex flex-col justify-between p-2 text-white font-serif text-[10px]">
@@ -432,7 +402,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- TAB 8: SETTINGS -->
                 <div id="tab-settings" class="tab-content hidden space-y-6">
                     <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-xl mx-auto space-y-5">
@@ -449,11 +418,9 @@
                         <button onclick="if(confirm('Reset all data?')) { localStorage.clear(); sessionStorage.clear(); location.reload(); }" class="w-full bg-red-50 text-red-600 font-bold text-xs py-3 rounded-xl transition">Clear Local Storage</button>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
-
     <!-- FLOATING SUPPORT CHAT WIDGET -->
     <div class="fixed bottom-6 right-6 z-50">
         <div id="supportChatBox" class="hidden bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl w-80 mb-3 flex flex-col overflow-hidden">
@@ -478,14 +445,19 @@
             <i class="fa-solid fa-comments"></i>
         </button>
     </div>
-
     <!-- JavaScript Application Controller -->
     <script>
-        // State management
-        let trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
-            { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', entryPhoto: '', resultPhoto: '', criteria: [] },
-            { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', entryPhoto: '', resultPhoto: '', criteria: [] }
-        ];
+        // State management with safe error handling
+        let trades = [];
+        try {
+            trades = JSON.parse(localStorage.getItem('traderwell_trades')) || [
+                { id: 'TW-9001', date: '2026-09-01', symbol: 'XAUUSD', type: 'BUY', lot: 0.10, pnl: 145.50, status: 'Passed Rules', notes: 'Asian Session Sweep', entryPhoto: '', resultPhoto: '', criteria: [] },
+                { id: 'TW-9002', date: '2026-09-03', symbol: 'US30', type: 'SELL', lot: 0.20, pnl: -80.00, status: 'Passed Rules', notes: 'London Open Rejection', entryPhoto: '', resultPhoto: '', criteria: [] }
+            ];
+        } catch (e) {
+            console.error('Error loading trades from localStorage:', e);
+            trades = [];
+        }
 
         let criteria = JSON.parse(localStorage.getItem('traderwell_criteria')) || [
             { text: 'Asian Liquidity Sweep verified prior to entry', checked: true },
@@ -493,8 +465,7 @@
             { text: 'Fixed Risk-to-Reward ratio of at least 1:2', checked: true },
             { text: 'Spread protection & broker execution latency verified', checked: true }
         ];
-
-        let editsLeft = parseInt(localStorage.getItem('traderwell_edits')) || 2;
+        let editsLeft = parseInt(localStorage.getItem('traderwell_edits')) ?? 2;
         let isCriteriaEditable = false;
         let currentMonth = 8; // September (0-indexed)
         let currentYear = 2026;
@@ -502,7 +473,18 @@
         let equityChartInstance = null;
         let disciplineChartInstance = null;
 
-        // Check Session Authentication on Load
+        // Safe Storage Helper to prevent Photo Loss / Quota Errors
+        function saveTradesToStorage() {
+            try {
+                localStorage.setItem('traderwell_trades', JSON.stringify(trades));
+                return true;
+            } catch (e) {
+                alert('Storage Quota Exceeded! You have stored too many screenshots. Please clear old trade records or compress your images before uploading new ones.');
+                console.error(e);
+                return false;
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('traderwell_username');
             if (savedName) {
@@ -514,13 +496,11 @@
             }
         });
 
-        // Auth Tab Switcher (Login vs Signup)
         function switchAuthMode(mode) {
             const loginTab = document.getElementById('authTabLogin');
             const signupTab = document.getElementById('authTabSignup');
             const loginForm = document.getElementById('loginFormContainer');
             const signupForm = document.getElementById('signupFormContainer');
-
             if (mode === 'login') {
                 loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-theme text-white transition shadow-sm';
                 signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 hover:text-white transition';
@@ -534,7 +514,6 @@
             }
         }
 
-        // Security Authentication
         function verifyMasterPin() {
             const pin = document.getElementById('masterPinInput').value.trim();
             const storedPin = localStorage.getItem('traderwell_pin') || '2026';
@@ -551,17 +530,14 @@
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const pin = document.getElementById('signupPin').value.trim();
-
             if (!name || !pin) {
                 alert('Please enter your name and choose a PIN.');
                 return;
             }
-
             localStorage.setItem('traderwell_username', name);
             localStorage.setItem('traderwell_email', email);
             localStorage.setItem('traderwell_pin', pin);
             sessionStorage.setItem('traderwell_authenticated', 'true');
-
             document.getElementById('headerTraderName').innerText = name;
             document.getElementById('securityLoginOverlay').classList.add('hidden');
             alert(`Account created successfully for ${name}! Welcome to TraderWell.`);
@@ -575,7 +551,6 @@
             switchAuthMode('login');
         }
 
-        // Navigation Switcher
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -608,7 +583,6 @@
             }
         }
 
-        // Criteria & Discipline Guard
         function renderCriteria() {
             const container = document.getElementById('criteriaListContainer');
             container.innerHTML = '';
@@ -652,7 +626,6 @@
             renderCriteria();
         }
 
-        // Helper to convert File to Base64
         function fileToBase64(fileInput) {
             return new Promise((resolve) => {
                 if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
@@ -690,7 +663,6 @@
                 status: 'Pending Result'
             };
 
-            // Switch UI to Result Phase
             document.getElementById('badgeEntryStatus').classList.remove('animate-glow-fast', 'bg-theme/20', 'text-theme');
             document.getElementById('badgeEntryStatus').classList.add('opacity-50');
             document.getElementById('badgeResultStatus').classList.remove('opacity-50');
@@ -709,13 +681,12 @@
             pendingTradeDraft.status = rulesFollowed ? 'Passed Rules' : 'Failed Rules';
             
             trades.unshift(pendingTradeDraft);
-            localStorage.setItem('traderwell_trades', JSON.stringify(trades));
-            
-            alert('Trade successfully logged and committed to journal history!');
-            location.reload();
+            if (saveTradesToStorage()) {
+                alert('Trade successfully logged and committed to journal history!');
+                location.reload();
+            }
         }
 
-        // P&L Calendar Renderer
         function renderCalendar() {
             const grid = document.getElementById('fullMonthCalendarGrid');
             grid.innerHTML = '';
@@ -727,29 +698,23 @@
                 header.innerText = d;
                 grid.appendChild(header);
             });
-
             const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             document.getElementById('calendarMonthTitle').innerText = `${monthNames[currentMonth]} ${currentYear}`;
-
             let monthNetTotal = 0;
             let winDaysCount = 0;
-
             for (let i = 0; i < firstDay; i++) {
                 const emptyCell = document.createElement('div');
                 grid.appendChild(emptyCell);
             }
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const dayTrades = trades.filter(t => t.date === dateStr);
                 const dayNet = dayTrades.reduce((acc, t) => acc + t.pnl, 0);
-
                 if (dayTrades.length > 0) monthNetTotal += dayNet;
                 if (dayNet > 0) winDaysCount++;
-
                 const cell = document.createElement('div');
                 cell.className = `min-h-[90px] p-2.5 rounded-2xl border transition flex flex-col justify-between ${
                     dayTrades.length > 0 
@@ -767,7 +732,6 @@
                 `;
                 grid.appendChild(cell);
             }
-
             document.getElementById('summaryMonthNet').innerText = (monthNetTotal >= 0 ? `+$${monthNetTotal.toFixed(2)}` : `-$${Math.abs(monthNetTotal).toFixed(2)}`);
             document.getElementById('summaryWinDays').innerText = winDaysCount;
         }
@@ -779,18 +743,14 @@
             renderCalendar();
         }
 
-        // Analytics Dashboard Charts
         function renderCharts() {
             const ctxEquity = document.getElementById('equityChart').getContext('2d');
             const ctxDiscipline = document.getElementById('disciplineChart').getContext('2d');
-
             if (equityChartInstance) equityChartInstance.destroy();
             if (disciplineChartInstance) disciplineChartInstance.destroy();
-
             let runningTotal = 10000;
             const equityData = trades.map(t => { runningTotal += t.pnl; return runningTotal; });
             const labels = trades.map(t => t.date);
-
             equityChartInstance = new Chart(ctxEquity, {
                 type: 'line',
                 data: {
@@ -806,10 +766,8 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });
-
             const passedCount = trades.filter(t => t.status === 'Passed Rules').length;
             const failedCount = trades.filter(t => t.status === 'Failed Rules').length;
-
             disciplineChartInstance = new Chart(ctxDiscipline, {
                 type: 'doughnut',
                 data: {
@@ -823,21 +781,18 @@
             });
         }
 
-        // Trading Sessions Map
         function renderSessionsMap() {
             const grid = document.getElementById('sessionsMapGrid');
             grid.innerHTML = '';
             
             const now = new Date();
             const utcHour = now.getUTCHours();
-
             const sessions = [
                 { name: 'Sydney Session', openUTC: 22, closeUTC: 7, city: 'Sydney / Wellington' },
                 { name: 'Tokyo Session', openUTC: 0, closeUTC: 9, city: 'Tokyo / Singapore' },
                 { name: 'London Session', openUTC: 8, closeUTC: 17, city: 'London / Frankfurt' },
                 { name: 'New York Session', openUTC: 13, closeUTC: 22, city: 'New York / Chicago' }
             ];
-
             sessions.forEach(s => {
                 let isOpen = false;
                 if (s.openUTC < s.closeUTC) {
@@ -845,7 +800,6 @@
                 } else {
                     isOpen = utcHour >= s.openUTC || utcHour < s.closeUTC;
                 }
-
                 const card = document.createElement('div');
                 card.className = `p-4 rounded-2xl border ${isOpen ? 'bg-theme/10 border-theme/40 animate-pulse' : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700'}`;
                 card.innerHTML = `
@@ -860,7 +814,6 @@
             });
         }
 
-        // Journal History Table
         function renderJournalTable() {
             const tbody = document.getElementById('journalTableBody');
             tbody.innerHTML = '';
@@ -878,11 +831,9 @@
             });
         }
 
-        // Chart Gallery Wall
         function renderGalleryWall() {
             const grid = document.getElementById('galleryWallGrid');
             grid.innerHTML = '';
-
             trades.forEach(t => {
                 const card = document.createElement('div');
                 card.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 space-y-3 shadow-xs';
@@ -890,11 +841,9 @@
                 let entryImgHtml = t.entryPhoto 
                     ? `<img src="${t.entryPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
                     : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-chart-line mr-2 text-theme"></i> No Entry Photo</div>`;
-
                 let resultImgHtml = t.resultPhoto 
                     ? `<img src="${t.resultPhoto}" class="w-full h-32 object-cover rounded-xl border border-gray-200 dark:border-slate-700">`
                     : `<div class="h-32 bg-gray-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-gray-400 text-xs font-mono"><i class="fa-solid fa-flag-checkered mr-2 text-amber-500"></i> No Outcome Photo</div>`;
-
                 card.innerHTML = `
                     <div class="flex justify-between items-center text-xs font-bold">
                         <span>${t.symbol} (${t.date})</span>
@@ -920,7 +869,6 @@
             });
         }
 
-        // Support Chat Widget Logic
         function toggleSupportChat() {
             const box = document.getElementById('supportChatBox');
             box.classList.toggle('hidden');
@@ -930,7 +878,6 @@
             const input = document.getElementById('chatInputMessage');
             const text = input.value.trim();
             if (!text) return;
-
             const container = document.getElementById('chatMessagesContainer');
             
             const userBubble = document.createElement('div');
@@ -939,7 +886,6 @@
             container.appendChild(userBubble);
             input.value = '';
             container.scrollTop = container.scrollHeight;
-
             setTimeout(() => {
                 const replyBubble = document.createElement('div');
                 replyBubble.className = 'p-2.5 bg-slate-800 rounded-xl text-gray-300 max-w-[85%]';
@@ -949,7 +895,6 @@
             }, 1000);
         }
 
-        // CSV Import / Export
         function triggerCsvImport() {
             document.getElementById('csvFileInput').click();
         }
@@ -983,9 +928,10 @@
                         importedCount++;
                     }
                 }
-                localStorage.setItem('traderwell_trades', JSON.stringify(trades));
-                alert(`Successfully imported ${importedCount} trades from CSV without disturbing existing gallery records!`);
-                location.reload();
+                if (saveTradesToStorage()) {
+                    alert(`Successfully imported ${importedCount} trades from CSV without disturbing existing gallery records!`);
+                    location.reload();
+                }
             };
             reader.readAsText(file);
         }
