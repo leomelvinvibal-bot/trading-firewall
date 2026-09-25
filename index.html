@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraderWell - Professional Trading Journal & Execution Guard</title>
+    <title>TraderWell - Professional Trading Journal & Discipline Guard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -59,7 +59,7 @@
             </button>
             
             <button onclick="openTradeModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
-                <i class="fa-solid fa-plus"></i> Manual Result
+                <i class="fa-solid fa-plus"></i> Record Result
             </button>
         </div>
     </header>
@@ -73,10 +73,10 @@
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
                 </button>
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics &amp; Discipline</span>
+                    <i class="fa-solid fa-chart-pie w-5"></i> <span>Analytics Dashboard</span>
                 </button>
                 <button onclick="switchTab('journal')" id="nav-journal" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-book-open w-5"></i> <span>Trade Journal</span>
+                    <i class="fa-solid fa-book-open w-5"></i> <span>Trade Journal History</span>
                 </button>
                 <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
@@ -84,8 +84,8 @@
                 <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-shield-halved w-5"></i> <span>Execution Rules (Locked)</span>
                 </button>
-                <button onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-calculator w-5"></i> <span>Position Calculator</span>
+                <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-graduation-cap w-5"></i> <span>Trader's Knowledge Hub</span>
                 </button>
                 <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-gear w-5"></i> <span>Settings &amp; Profile</span>
@@ -122,28 +122,48 @@
                             <div class="h-64"><canvas id="equityChart"></canvas></div>
                         </div>
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
-                            <h3 class="font-extrabold text-base">Execution Discipline Performance</h3>
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-extrabold text-base">Execution Discipline Performance</h3>
+                                <span id="disciplineBadgeStatus" class="text-[10px] px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-400">100% Adherence</span>
+                            </div>
                             <div class="h-64"><canvas id="disciplineChart"></canvas></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 3: TRADE JOURNAL & DUAL EVIDENCE GALLERY -->
+                <!-- TAB 3: TRADE JOURNAL HISTORY (Clean PnL List) -->
                 <div id="tab-journal" class="tab-content hidden space-y-6">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-base">Trade Journal &amp; Dual Evidence Gallery</h3>
+                        <h3 class="font-extrabold text-base">Trade Journal History (P&amp;L Records)</h3>
+                        <span class="text-xs text-gray-400 font-bold">Photos &amp; setup notes are logged in Chart Gallery Wall</span>
+                    </div>
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-50 dark:bg-slate-800/50 text-gray-400 border-b border-gray-200 dark:border-slate-800 uppercase font-mono text-[10px]">
+                                    <tr>
+                                        <th class="p-4">Trade ID</th>
+                                        <th class="p-4">Symbol</th>
+                                        <th class="p-4">Execution Status</th>
+                                        <th class="p-4 text-right">Net PnL</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="journalTableBody" class="divide-y divide-gray-200 dark:divide-slate-800"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: CHART GALLERY WALL (Photos, Notes & PnL) -->
+                <div id="tab-gallery" class="tab-content hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
                         <span class="text-xs text-gray-400 font-bold">Click any photo to zoom in</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="journalEntriesContainer"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="galleryWallGrid"></div>
                 </div>
 
-                <!-- TAB 4: CHART GALLERY WALL -->
-                <div id="tab-gallery" class="tab-content hidden space-y-6">
-                    <h3 class="font-extrabold text-base">Interactive Chart Evidence Gallery Wall</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="galleryWallGrid"></div>
-                </div>
-
-                <!-- TAB 5: EXECUTION RULES & ANTI-FOMO GUARD -->
+                <!-- TAB 5: EXECUTION RULES & DISCIPLINE GUARD -->
                 <div id="tab-execution" class="tab-content space-y-6">
                     <!-- CRITICAL WARNING BANNER -->
                     <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl flex items-start space-x-3 text-xs">
@@ -152,13 +172,12 @@
                             <h4 class="font-extrabold text-amber-500">System Criteria Locked: Why Rule Changes Destroy Edge</h4>
                             <p class="text-gray-300">
                                 Changing entry criteria mid-stream destroys your true mathematical edge and turns trading into pure gambling. 
-                                TraderWell locks these rules to force you to execute your system faithfully across your full sample size, regardless of wins or losses, to prove profitability.
+                                TraderWell locks these rules to force you to execute faithfully across your sample size, regardless of wins or losses.
                             </p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- Left 2 Columns: Locked Pre-Trade Execution Protocol Checklist -->
                         <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
                             <div class="flex justify-between items-center">
                                 <h3 class="font-extrabold text-base">Pre-Trade Execution Protocol (Locked System)</h3>
@@ -166,7 +185,7 @@
                                     <i class="fa-solid fa-lock mr-1"></i> No Edits Allowed
                                 </span>
                             </div>
-                            <p class="text-xs text-gray-400">All mandatory rules must be checked to confirm adherence to your system</p>
+                            <p class="text-xs text-gray-400">All mandatory rules must be checked to confirm strict adherence to your system</p>
                             
                             <div id="criteriaListContainer" class="space-y-3"></div>
 
@@ -182,7 +201,7 @@
                             </div>
                         </div>
 
-                        <!-- Right Column: Log New Setup Position (Dynamic Beating Badges Workflow) -->
+                        <!-- Right Column: Log New Setup Position -->
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4 relative">
                             <h3 class="font-extrabold text-base">Log New Setup Position</h3>
                             
@@ -197,7 +216,6 @@
                                 </div>
                             </div>
 
-                            <!-- STATE 1: ENTRY FORM TICKET -->
                             <div id="entryTicketForm" class="space-y-3 transition-all duration-300">
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Symbol / Pair</label>
@@ -220,12 +238,8 @@
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Setup / Entry Reason</label>
                                     <input type="text" id="sideReason" value="Asian Sweep + FVG Rejection" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                                 </div>
-                                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[11px] text-emerald-400 font-bold text-center">
-                                    <i class="fa-solid fa-circle-info mr-1"></i> ENTRY badge is beating. Complete checklist &amp; pass rules.
-                                </div>
                             </div>
 
-                            <!-- STATE 2: RESULT APPROVAL PANEL -->
                             <div id="resultApprovalPanel" class="hidden space-y-3 transition-all duration-300">
                                 <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-500 font-bold text-center animate-pulse">
                                     <i class="fa-solid fa-triangle-exclamation mr-1"></i> RESULT badge is beating. Upload final outcome photo.
@@ -238,26 +252,62 @@
                                     <label class="block text-[10px] font-bold text-gray-400 mb-1">Attach Outcome Screen Capture (Result)</label>
                                     <input type="file" id="activeResultFile" accept="image/*" class="w-full text-xs">
                                 </div>
-                                <button onclick="approveTradeResult()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg">
-                                    Approve Result &amp; Sync Calendar
+                                <button onclick="approveTradeResult(true)" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition shadow-lg mb-2">
+                                    Approve Result (Rules Followed)
+                                </button>
+                                <button onclick="approveTradeResult(false)" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-bold text-xs py-3 rounded-xl transition">
+                                    Mark as Failed Rules (Rule Broken)
                                 </button>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 6: POSITION CALCULATOR -->
-                <div id="tab-calculator" class="tab-content hidden space-y-6">
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs max-w-md mx-auto space-y-4">
-                        <h3 class="font-extrabold text-base">Position Size Calculator</h3>
-                        <div class="space-y-3">
-                            <input type="number" id="calcBalance" value="10000" placeholder="Account Balance ($)" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                            <input type="number" id="calcRiskPct" value="1" placeholder="Risk %" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                            <input type="number" id="calcStopLoss" value="20" placeholder="Stop Loss Pips" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
-                            <button onclick="calculatePositionSize()" class="w-full bg-emerald-600 text-white font-bold text-xs py-3 rounded-xl">Calculate Lots</button>
-                            <div id="calcResultBox" class="hidden p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-center font-bold text-emerald-500 text-sm">
-                                Recommended Position: <span id="calcResultOutput">0.00 Lots</span>
+                <!-- TAB 6: TRADER'S KNOWLEDGE HUB (Mark Douglas & RRR Education) -->
+                <div id="tab-knowledge" class="tab-content hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Mark Douglas Psychology Card -->
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-bold"><i class="fa-solid fa-brain text-lg"></i></div>
+                                <div>
+                                    <h3 class="font-extrabold text-base">Trading in the Zone Mindset</h3>
+                                    <p class="text-xs text-gray-400">Mark Douglas Core Philosophy</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3 text-xs text-gray-300 leading-relaxed">
+                                <p><strong>1. Accept Risk Completely:</strong> Before placing any trade, define your exact risk. If you accept that any single trade can lose, you eliminate emotional pain, fear, and revenge trading.</p>
+                                <p><strong>2. Think in Probabilities:</strong> The market is a random distribution of outcomes on a micro level, but a consistent statistical edge on a macro sample size (e.g., 50 to 100 trades).</p>
+                                <p><strong>3. The Edge Principle:</strong> An edge simply means that with a defined set of criteria, outcome A will occur more frequently than outcome B over 100 trades. Individual wins or losses are meaningless; execution discipline is everything.</p>
+                            </div>
+                            <div class="pt-2">
+                                <a href="https://www.investopedia.com/articles/trading/08/trading-psychology-basics.asp" target="_blank" class="text-xs font-bold text-indigo-400 hover:underline flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Read Guide on Trading Psychology
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Win Rate & RRR Sample Guide -->
+                        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold"><i class="fa-solid fa-calculator text-lg"></i></div>
+                                <div>
+                                    <h3 class="font-extrabold text-base">Win Rate &amp; Risk-to-Reward (RRR) Guide</h3>
+                                    <p class="text-xs text-gray-400">Simple Math for Newbie Traders</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3 text-xs text-gray-300 leading-relaxed">
+                                <p><strong>What is RRR?</strong> Risk-to-Reward Ratio measures how much money you risk (Stop Loss) versus how much you aim to make (Take Profit).</p>
+                                <div class="p-3 bg-gray-50 dark:bg-slate-800 rounded-xl space-y-1 font-mono text-[11px]">
+                                    <div class="text-emerald-400">Example 1: 1:2 RRR at 40% Win Rate</div>
+                                    <div>Risk $100 to make $200. Over 10 trades (4 wins = +$800, 6 losses = -$600) = <strong class="text-emerald-400">+$200 Net Profit</strong></div>
+                                </div>
+                                <p><strong>Sample Size Rule:</strong> You cannot judge a trading system in 3 or 5 trades. You must test your strategy across at least <strong>50 to 100 trades</strong> while keeping your entry criteria locked.</p>
+                            </div>
+                            <div class="pt-2">
+                                <a href="https://www.babypips.com/learn/forex/risk-to-reward-ratio" target="_blank" class="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Explore BabyPips Risk Management Free PDF &amp; Guides
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -280,7 +330,7 @@
     <div id="tradeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center z-50 p-4">
         <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="font-extrabold text-base">Record Manual Trade &amp; Dual Evidence</h3>
+                <h3 class="font-extrabold text-base">Record Manual Trade &amp; Evidence</h3>
                 <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <form id="tradeForm" onsubmit="handleLogTrade(event)" class="space-y-3">
@@ -288,20 +338,24 @@
                 <input type="number" id="tradePnL" step="0.01" required placeholder="Net PnL ($) e.g. 150.00 or -45.00" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                 <input type="number" id="tradeDay" min="1" max="31" value="25" required class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs">
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Entry Chart Photo (Secondary Screen)</label>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Entry Chart Photo</label>
                     <input type="file" id="manualEntryFile" accept="image/*" required class="w-full text-xs">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result Outcome Photo (Secondary Screen)</label>
+                    <label class="block text-[10px] font-bold text-gray-400 mb-1">Result Outcome Photo</label>
                     <input type="file" id="manualResultFile" accept="image/*" required class="w-full text-xs">
                 </div>
+                <select id="manualDisciplineStatus" class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold">
+                    <option value="followed">Discipline Followed (Valid Edge)</option>
+                    <option value="failed">Rules Failed (Rule Broken)</option>
+                </select>
                 <textarea id="tradeNotes" rows="2" placeholder="Setup thesis &amp; notes..." class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-3 text-xs"></textarea>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition">Save Trade &amp; Sync Calendar</button>
             </form>
         </div>
     </div>
 
-    <!-- Lightbox Modal for Zooming Photos -->
+    <!-- Lightbox Modal -->
     <div id="lightboxModal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center z-50 p-4 cursor-pointer">
         <img id="lightboxImg" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain">
     </div>
@@ -313,7 +367,7 @@
         let currentMonthIndex = 8; // September
         let equityChartInstance = null;
         let disciplineChartInstance = null;
-        let workflowState = 'ENTRY'; // 'ENTRY' or 'RESULT'
+        let workflowState = 'ENTRY';
         let pendingEntryData = null;
 
         let monthPnLData = {
@@ -328,7 +382,6 @@
             }
         };
 
-        // Locked system criteria (cannot be edited to preserve edge)
         let criteriaList = [
             { id: 1, text: 'High Impact News Check: No red folder news within 30 mins' },
             { id: 2, text: 'Liquidity Sweep Confirmation: Asian or Session high/low swept' },
@@ -343,7 +396,8 @@
                 pnl: 450.00,
                 entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80',
                 resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-                setup: 'Asian Liquidity Grab & FVG Rejection. Outcome: Closed Profit.'
+                setup: 'Asian Liquidity Grab & FVG Rejection. Outcome: Closed Profit.',
+                discipline: 'followed'
             }
         ];
 
@@ -473,11 +527,10 @@
         }
 
         function verifyExecutionApproval() {
-            // Verify all criteria are checked
             for(let item of criteriaList) {
                 const chk = document.getElementById(`crit_${item.id}`);
                 if(!chk || !chk.checked) {
-                    alert('System Rule Violation: You must strictly check and follow all locked criteria before committing an entry. Do not trade on impulse!');
+                    alert('System Rule Violation: You must strictly check and follow all locked criteria before committing an entry.');
                     return;
                 }
             }
@@ -486,11 +539,10 @@
             const fileInput = document.getElementById('guardChartFile');
             const symbol = document.getElementById('sideSymbol').value.toUpperCase();
             const type = document.getElementById('sideType').value;
-            const lot = document.getElementById('sideLot').value;
             const reason = document.getElementById('sideReason').value;
 
             if(!notes || fileInput.files.length === 0) {
-                alert('Please provide your trade thesis and attach the secondary screen photo captured on chart for entry.');
+                alert('Please provide your trade thesis and attach the entry chart photo.');
                 return;
             }
 
@@ -503,7 +555,6 @@
                     setup: `${reason} - ${notes}`
                 };
 
-                // Shift to RESULT state
                 workflowState = 'RESULT';
                 updateWorkflowUI();
                 alert('All system criteria strictly followed! Entry committed. State shifted: RESULT badge is now beating.');
@@ -511,12 +562,12 @@
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        function approveTradeResult() {
+        function approveTradeResult(followedRules) {
             const pnl = parseFloat(document.getElementById('activeTradePnL').value);
             const fileInput = document.getElementById('activeResultFile');
 
             if (isNaN(pnl) || fileInput.files.length === 0) {
-                alert('Please enter Net PnL and attach the secondary outcome photo captured on chart.');
+                alert('Please enter Net PnL and attach the outcome chart photo.');
                 return;
             }
 
@@ -525,10 +576,11 @@
                 if(pendingEntryData) {
                     pendingEntryData.resultImg = e.target.result;
                     pendingEntryData.pnl = pnl;
+                    pendingEntryData.discipline = followedRules ? 'followed' : 'failed';
                     tradeJournalEntries.unshift(pendingEntryData);
                 }
 
-                const day = 25; // Current active calendar day
+                const day = 25;
                 if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
                 if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
 
@@ -542,8 +594,8 @@
                 saveData();
                 renderCalendar();
                 renderJournalAndGallery();
+                initCharts();
 
-                // Reset workflow
                 workflowState = 'ENTRY';
                 updateWorkflowUI();
                 pendingEntryData = null;
@@ -556,78 +608,73 @@
                     if(c) c.checked = false;
                 });
 
-                alert('Result approved, dual evidence captured, and calendar successfully synced with your strict system execution!');
+                alert(followedRules ? 'Result approved! Rules followed and calendar synced.' : 'Warning: Recorded as FAILED RULES (Rule Broken). This will reflect on your discipline score.');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
         function renderJournalAndGallery() {
-            const journalContainer = document.getElementById('journalEntriesContainer');
+            const tableBody = document.getElementById('journalTableBody');
             const galleryContainer = document.getElementById('galleryWallGrid');
             
-            journalContainer.innerHTML = '';
+            tableBody.innerHTML = '';
             galleryContainer.innerHTML = '';
+
+            let followedCount = 0;
+            let totalCount = tradeJournalEntries.length;
 
             tradeJournalEntries.forEach(entry => {
                 const isProfit = entry.pnl >= 0;
+                const isFollowed = entry.discipline !== 'failed';
+                if(isFollowed) followedCount++;
 
-                // Journal card
-                const jCard = document.createElement('div');
-                jCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-4';
-                jCard.innerHTML = `
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-emerald-500">${entry.symbol}</span>
-                        <span class="text-gray-400">#${entry.id} • <strong class="${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</strong></span>
+                // Clean History Table Row
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 dark:hover:bg-slate-800/55 transition';
+                row.innerHTML = `
+                    <td class="p-4 font-mono font-bold text-gray-400">#${entry.id}</td>
+                    <td class="p-4 font-extrabold text-emerald-500">${entry.symbol}</td>
+                    <td class="p-4">
+                        ${isFollowed ? '<span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">Followed Rules</span>' : '<span class="text-[10px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold">Failed Rules (Broken)</span>'}
+                    </td>
+                    <td class="p-4 text-right font-extrabold ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+
+                // Gallery Wall Card with photos, notes, and PnL
+                const gCard = document.createElement('div');
+                gCard.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-3';
+                gCard.innerHTML = `
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-emerald-500">${entry.symbol}</span>
+                        <span class="${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Entry Photo</span>
-                            <div onclick="openLightbox('${entry.entryImg}')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                            <span class="text-[9px] font-bold text-amber-500 uppercase">Entry Photo</span>
+                            <div onclick="openLightbox('${entry.entryImg}')" class="h-28 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Entry</div>
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
                             </div>
                         </div>
                         <div>
-                            <span class="text-[10px] font-bold text-emerald-500 uppercase tracking-wider">Result Photo</span>
-                            <div onclick="openLightbox('${entry.resultImg}')" class="h-32 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
+                            <span class="text-[9px] font-bold text-emerald-500 uppercase">Result Photo</span>
+                            <div onclick="openLightbox('${entry.resultImg}')" class="h-28 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden cursor-pointer group relative mt-1">
                                 <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[11px] font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Result</div>
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom</div>
                             </div>
                         </div>
                     </div>
-                    <p class="text-xs text-gray-600 dark:text-gray-300"><strong>Setup:</strong> ${entry.setup}</p>
-                `;
-                journalContainer.appendChild(jCard);
-
-                // Gallery wall items (Entry & Result cards)
-                const gEntry = document.createElement('div');
-                gEntry.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group shadow-xs';
-                gEntry.innerHTML = `
-                    <div onclick="openLightbox('${entry.entryImg}')" class="h-48 overflow-hidden relative">
-                        <img src="${entry.entryImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Entry</div>
-                    </div>
-                    <div class="p-3 text-xs font-bold flex justify-between items-center">
-                        <span>${entry.symbol} Entry #${entry.id}</span>
-                        <span class="text-[10px] text-amber-500">ENTRY</span>
+                    <div class="space-y-1">
+                        <p class="text-[11px] text-gray-300"><strong>Notes:</strong> ${entry.setup}</p>
+                        <div>${isFollowed ? '<span class="text-[9px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">Criteria Followed</span>' : '<span class="text-[9px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold">Failed Rules</span>'}</div>
                     </div>
                 `;
-                galleryContainer.appendChild(gEntry);
-
-                const gResult = document.createElement('div');
-                gResult.className = 'bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden cursor-pointer group shadow-xs';
-                gResult.innerHTML = `
-                    <div onclick="openLightbox('${entry.resultImg}')" class="h-48 overflow-hidden relative">
-                        <img src="${entry.resultImg}" class="w-full h-full object-cover group-hover:scale-105 transition">
-                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition gap-1.5"><i class="fa-solid fa-magnifying-glass-plus"></i> Zoom Result</div>
-                    </div>
-                    <div class="p-3 text-xs font-bold flex justify-between items-center">
-                        <span>${entry.symbol} Result #${entry.id}</span>
-                        <span class="text-[10px] ${isProfit ? 'text-emerald-500' : 'text-red-500'}">${isProfit ? '+' : ''}$${entry.pnl.toFixed(2)}</span>
-                    </div>
-                `;
-                galleryContainer.appendChild(gResult);
+                galleryContainer.appendChild(gCard);
             });
+
+            const disciplinePct = totalCount > 0 ? Math.round((followedCount / totalCount) * 100) : 100;
+            document.getElementById('disciplineBadgeStatus').innerText = `${disciplinePct}% Adherence`;
         }
 
         function openLightbox(url) {
@@ -649,12 +696,8 @@
             const day = parseInt(document.getElementById('tradeDay').value);
             const entryFile = document.getElementById('manualEntryFile').files[0];
             const resultFile = document.getElementById('manualResultFile').files[0];
+            const discipline = document.getElementById('manualDisciplineStatus').value;
             const notes = document.getElementById('tradeNotes').value;
-
-            if(!entryFile || !resultFile) {
-                alert('Please upload both entry and result screen photos.');
-                return;
-            }
 
             const reader1 = new FileReader();
             reader1.onload = function(e1) {
@@ -666,7 +709,8 @@
                         pnl: pnl,
                         entryImg: e1.target.result,
                         resultImg: e2.target.result,
-                        setup: notes || 'Manual Trade Entry'
+                        setup: notes || 'Manual Trade Entry',
+                        discipline: discipline
                     });
 
                     if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
@@ -682,8 +726,9 @@
                     saveData();
                     renderCalendar();
                     renderJournalAndGallery();
+                    initCharts();
                     closeTradeModal();
-                    alert(`Trade logged with dual evidence photos and calendar successfully synced!`);
+                    alert(`Trade logged successfully!`);
                     document.getElementById('tradeForm').reset();
                 };
                 reader2.readAsDataURL(resultFile);
@@ -723,6 +768,7 @@
         function initCharts() {
             const ctx1 = document.getElementById('equityChart');
             if(ctx1) {
+                if(equityChartInstance) equityChartInstance.destroy();
                 equityChartInstance = new Chart(ctx1, {
                     type: 'line',
                     data: {
@@ -735,24 +781,19 @@
 
             const ctx2 = document.getElementById('disciplineChart');
             if(ctx2) {
+                let followedCount = tradeJournalEntries.filter(t => t.discipline !== 'failed').length;
+                let failedCount = tradeJournalEntries.length - followedCount;
+
+                if(disciplineChartInstance) disciplineChartInstance.destroy();
                 disciplineChartInstance = new Chart(ctx2, {
-                    type: 'bar',
+                    type: 'doughnut',
                     data: {
-                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                        datasets: [{ label: 'Adherence %', data: [100, 100, 100, 100], backgroundColor: '#10b981', borderRadius: 8 }]
+                        labels: ['Followed Rules', 'Failed Rules (Broken)'],
+                        datasets: [{ data: [followedCount || 1, failedCount], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 0 }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 } }, plugins: { legend: { display: false } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } } }
                 });
             }
-        }
-
-        function calculatePositionSize() {
-            const bal = parseFloat(document.getElementById('calcBalance').value) || 10000;
-            const risk = parseFloat(document.getElementById('calcRiskPct').value) || 1;
-            const sl = parseFloat(document.getElementById('calcStopLoss').value) || 20;
-            const lots = (bal * (risk / 100)) / (sl * 10);
-            document.getElementById('calcResultBox').classList.remove('hidden');
-            document.getElementById('calcResultOutput').innerText = `${lots.toFixed(2)} Lots`;
         }
 
         function updateTraderProfileName() {
