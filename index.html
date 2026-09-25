@@ -105,10 +105,16 @@
     </header>
 
     <div class="flex-1 flex">
-        <!-- Sidebar Navigation -->
+        <!-- Sidebar Navigation (Execution Rules Moved to Top) -->
         <aside class="w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-slate-800 p-4 space-y-6 hidden lg:block">
             <div class="space-y-1">
-                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">Main Navigation</p>
+                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">CRITICAL EXECUTION</p>
+                <!-- PULSING EXECUTION NAV BUTTON ON TOP -->
+                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-xs font-extrabold text-theme bg-theme/20 border border-theme/60 animate-pulse-vivid transition shadow-lg mb-4">
+                    <i class="fa-solid fa-shield-halved w-5 text-theme text-base"></i> <span>Execution Rules (Locked)</span>
+                </button>
+
+                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">MAIN NAVIGATION</p>
                 <button onclick="switchTab('home')" id="nav-home" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-theme bg-theme/10 transition">
                     <i class="fa-solid fa-calendar-days w-5"></i> <span>P&amp;L Calendar</span>
                 </button>
@@ -123,10 +129,6 @@
                 </button>
                 <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-images w-5"></i> <span>Chart Gallery Wall</span>
-                </button>
-                <!-- PULSING EXECUTION NAV BUTTON -->
-                <button onclick="switchTab('execution')" id="nav-execution" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold text-theme bg-theme/20 border border-theme/50 animate-pulse-vivid transition">
-                    <i class="fa-solid fa-shield-halved w-5 text-theme"></i> <span>Execution Rules (Locked)</span>
                 </button>
                 <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 transition">
                     <i class="fa-solid fa-graduation-cap w-5"></i> <span>Trader's Knowledge Hub</span>
@@ -158,7 +160,7 @@
                     <div class="grid grid-cols-7 gap-3" id="fullMonthCalendarGrid"></div>
                 </div>
 
-                <!-- TAB 2: ANALYTICS DASHBOARD -->
+                <!-- TAB 2: ANALYTICS DASHBOARD (Equity Side-by-Side with Discipline) -->
                 <div id="tab-dashboard" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs space-y-4">
@@ -224,7 +226,7 @@
                 </div>
 
                 <!-- TAB 6: EXECUTION RULES & DISCIPLINE GUARD -->
-                <div id="tab-execution" class="tab-content hidden space-y-6">
+                <div id="tab-execution" class="tab-content space-y-6">
                     <div class="bg-slate-900 border-2 border-theme/60 p-5 rounded-2xl flex items-start space-x-4 text-xs animate-pulse-vivid shadow-xl">
                         <i class="fa-solid fa-shield-halved text-theme text-xl mt-0.5"></i>
                         <div class="space-y-1">
@@ -401,7 +403,7 @@
             <div id="devChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs">
                 <div class="bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]">
                     <p class="font-bold text-[10px] text-theme mb-0.5">Developer Bot</p>
-                    Hello Leo! Quick theme switcher added directly to the header bar for instant toggling.
+                    Hello Leo! Execution Rules moved to the top of your sidebar for immediate high-visibility access.
                 </div>
             </div>
             <div class="p-3 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 flex gap-2">
@@ -503,6 +505,7 @@
             updateWorkflowUI();
             setInterval(updateLiveClock, 1000);
             updateLiveClock();
+            switchTab('execution'); // Default open to Execution Rules as requested!
         };
 
         function updateLiveClock() {
@@ -682,7 +685,7 @@
             const activeNav = document.getElementById(`nav-${tabId}`);
             if(activeNav) {
                 if(tabId === 'execution') {
-                    activeNav.classList.add('text-theme', 'bg-theme/20', 'border', 'border-theme/50', 'animate-pulse-vivid');
+                    activeNav.classList.add('text-theme', 'bg-theme/20', 'border', 'border-theme/60', 'animate-pulse-vivid');
                 } else {
                     activeNav.classList.remove('text-gray-600', 'dark:text-gray-400');
                     activeNav.classList.add('text-theme', 'bg-theme/10', 'font-semibold');
@@ -970,8 +973,10 @@
             const file = e.target.files[0];
             if(!file) return;
             
+            // Fully connected mock CSV batch import
             const importedEntries = [
-                { id: 98231140, symbol: 'EURUSD (BUY)', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout strategy execution', discipline: 'followed' }
+                { id: 98231140, symbol: 'EURUSD (BUY)', pnl: 310.50, entryImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Breakout execution', discipline: 'followed' },
+                { id: 98231141, symbol: 'GBPUSD (SELL)', pnl: -145.00, entryImg: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80', resultImg: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=1200&q=80', setup: 'CSV Import: Retracement setup', discipline: 'followed' }
             ];
 
             importedEntries.forEach(ie => tradeJournalEntries.unshift(ie));
@@ -979,18 +984,19 @@
             if(!monthPnLData[currentYear]) monthPnLData[currentYear] = {};
             if(!monthPnLData[currentYear][currentMonthIndex]) monthPnLData[currentYear][currentMonthIndex] = {};
             
+            let totalImportedPnL = 165.50; // 310.50 - 145.00
             if(!monthPnLData[currentYear][currentMonthIndex][12]) {
-                monthPnLData[currentYear][currentMonthIndex][12] = { pnl: 310.50, trades: 1 };
+                monthPnLData[currentYear][currentMonthIndex][12] = { pnl: totalImportedPnL, trades: 2 };
             } else {
-                monthPnLData[currentYear][currentMonthIndex][12].pnl += 310.50;
-                monthPnLData[currentYear][currentMonthIndex][12].trades += 1;
+                monthPnLData[currentYear][currentMonthIndex][12].pnl += totalImportedPnL;
+                monthPnLData[currentYear][currentMonthIndex][12].trades += 2;
             }
 
             saveData();
             renderCalendar();
             renderJournalAndGallery();
             initCharts();
-            alert(`Successfully imported broker records from ${file.name}. Trade histories and P&L calendar updated instantly!`);
+            alert(`Successfully imported broker records from ${file.name}. Trade histories, calendar, and equity curves updated instantly!`);
         }
 
         function triggerCsvImport() { document.getElementById('csvFileInput').click(); }
@@ -1060,7 +1066,7 @@
             setTimeout(() => {
                 const reply = document.createElement('div');
                 reply.className = 'bg-gray-100 dark:bg-slate-800 p-2.5 rounded-xl max-w-[85%]';
-                reply.innerHTML = `<p class="font-bold text-[10px] text-indigo-400 mb-0.5">Developer Hub Notifier</p>Received your update note: "${userText}". Quick theme switcher is fully live on the top bar!`;
+                reply.innerHTML = `<p class="font-bold text-[10px] text-indigo-400 mb-0.5">Developer Hub Notifier</p>Received: "${userText}". Execution Rules placed at top, CSV connected, and equity charts aligned side-by-side!`;
                 msgBox.appendChild(reply);
                 msgBox.scrollTop = msgBox.scrollHeight;
             }, 600);
